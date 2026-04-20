@@ -1355,8 +1355,8 @@ function findSettingValue(settingsSheet, keyName) {
 // 権限（OAuth）承認を強制的にプロンプトするためのダミー関数
 // ===================================
 function forceAuth() {
-  // ① Google Drive の権限を強制取得
-  DriveApp.getFilesByName('ダミー');
+  // ① Google Drive の権限を強制取得（作成権限フルアクセスを要求するため createFolder を使用）
+  DriveApp.createFolder('ダミー_権限取得用_あとで削除してOK');
   
   // ② Gmail (メール送信) の権限を強制取得
   GmailApp.getInboxUnreadCount();

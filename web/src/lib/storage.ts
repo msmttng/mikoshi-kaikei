@@ -26,6 +26,24 @@ export function getSubmitter(): string {
 }
 
 // ===================================
+// 管理者キーの保存・取得
+// ===================================
+
+/** 管理者キーをSessionStorageに保存 */
+export function saveAdminKey(key: string): void {
+  if (key) {
+    sessionStorage.setItem('mikoshi_admin_key', key);
+  } else {
+    sessionStorage.removeItem('mikoshi_admin_key');
+  }
+}
+
+/** 管理者キーをSessionStorageから取得 */
+export function getAdminKey(): string {
+  return sessionStorage.getItem('mikoshi_admin_key') || '';
+}
+
+// ===================================
 // マスタデータのキャッシュ
 // ===================================
 

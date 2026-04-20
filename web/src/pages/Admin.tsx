@@ -5,7 +5,8 @@
 // 機能: 未精算一覧 + 一括精算 + 会計サマリー + スプレッドシートリンク
 
 import { useState, useEffect, useCallback } from 'react';
-import { getUnsettled, markSettled, getReport, deleteEntry, updateEntry } from '../lib/api';
+import { getUnsettled, markSettled, getReport, deleteEntry, updateEntry, generateReportSheet } from '../lib/api';
+import { getAdminKey, saveAdminKey, getCachedMasters } from '../lib/storage';
 import { Spinner } from '../components/Spinner';
 import { Toast } from '../components/Toast';
 import { MasterManager } from '../components/MasterManager';
@@ -25,9 +26,7 @@ type Tab = 'unsettled' | 'report' | 'masters';
 
 export function Admin() {
   // --- 認証 ---
-  const [adminKey, setAdminKey] = useState(() =>
-    sessionStorage.getItem('mikoshi_admin_key') || ''
-  );
+  const [adminKey, setAdminKey] = useState(() => getAdminKey() || '');
   const [keyInput, setKeyInput] = useState('');
   const [authenticated, setAuthenticated] = useState(false);
   const [authError, setAuthError] = useState('');
@@ -51,6 +50,8 @@ export function Admin() {
   const [reportYear, setReportYear] = useState(() =>
     new Date().getFullYear().toString()
   );
+  
+  const masters = getCachedMasters();
 
   // --- UI ---
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
@@ -71,11 +72,11 @@ export function Admin() {
       await getUnsettled(key);
       setAdminKey(key);
       setAuthenticated(true);
-      sessionStorage.setItem('mikoshi_admin_key', key);
+      saveAdminKey(key);
     } catch {
       setAuthError('認証に失敗しました。管理者キーを確認してください。');
       setAuthenticated(false);
-      sessionStorage.removeItem('mikoshi_admin_key');
+      saveAdminKey('');
     } finally {
       setLoading(false);
     }
@@ -155,6 +156,24 @@ export function Admin() {
     }
   };
 
+  const handleGenerateSheet = async () => {
+    if (!adminKey) return;
+    setProcessing(true);
+    try {
+      const res = await generateReportSheet(adminKey, reportYear) as { message: string, sheetUrl: string, pdfUrl?: string };
+      if (res.pdfUrl) {
+        setToast({ message: '報告書を作成しました。PDFを開きます...', type: 'success' });
+        window.open(res.pdfUrl, '_blank');
+      } else {
+        setToast({ message: res.message || '報告書シートを生成しました', type: 'success' });
+      }
+    } catch (err) {
+      setToast({ message: '報告書シートの生成に失敗しました', type: 'error' });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   // 編集処理
   const startEdit = (item: LedgerEntry, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -213,7 +232,7 @@ export function Admin() {
     setAuthenticated(false);
     setAdminKey('');
     setKeyInput('');
-    sessionStorage.removeItem('mikoshi_admin_key');
+    saveAdminKey('');
   };
 
   const formatAmount = (n: number) => `¥${n.toLocaleString()}`;
@@ -570,15 +589,34 @@ export function Admin() {
                   <h3 className="text-sm font-bold text-stone-600 mb-3 flex items-center gap-1">
                     <span className="w-2 h-2 rounded-full bg-matsuri-500"></span> 支出内訳
                   </h3>
-                  <div className="flex flex-col gap-2">
+                  <div className="flex flex-col gap-3">
                     {Object.entries(report.expenseByCategory)
                       .sort(([, a], [, b]) => b - a)
-                      .map(([cat, amt]) => (
-                        <div key={cat} className="flex items-center justify-between">
-                          <span className="text-sm text-stone-600">{cat}</span>
-                          <span className="text-sm font-bold text-matsuri-600 amount-display">{formatAmount(amt)}</span>
-                        </div>
-                      ))}
+                      .map(([cat, amt]) => {
+                        const budget = masters?.expenseBudgets?.[cat];
+                        const ratio = budget ? Math.min(Math.round((amt / budget) * 100), 100) : 0;
+                        return (
+                          <div key={cat} className="flex flex-col gap-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-stone-600">{cat}</span>
+                              <div className="text-right">
+                                <span className="text-sm font-bold text-matsuri-600 amount-display">{formatAmount(amt)}</span>
+                                {budget && (
+                                  <span className="text-[10px] text-stone-400 font-medium ml-1">/ {formatAmount(budget)}</span>
+                                )}
+                              </div>
+                            </div>
+                            {budget && (
+                              <div className="w-full h-1.5 bg-stone-100 rounded-full overflow-hidden mt-0.5">
+                                <div 
+                                  className={`h-full rounded-full transition-all ${ratio >= 90 ? 'bg-red-500' : 'bg-matsuri-400'}`} 
+                                  style={{ width: `${ratio}%` }}
+                                ></div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                   </div>
                   <AccountingCharts data={report.expenseByCategory} colors={['#ef4444', '#dc2626', '#b91c1c', '#991b1b', '#7f1d1d']} />
                 </div>
@@ -594,13 +632,19 @@ export function Admin() {
             </div>
           )}
 
-          {/* スプレッドシートリンク */}
-          <div className="mt-6 card p-4 text-center">
-            <p className="text-xs text-stone-500 mb-2">詳細はスプレッドシートで確認</p>
+          {/* スプレッドシートリンクと報告書エクスポート */}
+          <div className="px-5 pb-5 flex flex-col gap-3 mt-4">
+            <button
+              onClick={handleGenerateSheet}
+              disabled={processing}
+              className="w-full py-3 bg-stone-800 text-white font-bold rounded-xl active:scale-95 transition-all text-sm shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {processing ? '生成中...' : '📄 会計報告書を生成 (PDF)'}
+            </button>
             <button
               onClick={() => window.open(SPREADSHEET_URL, '_blank')}
-              className="text-sm font-medium text-matsuri-600 px-4 py-2 rounded-xl
-                bg-matsuri-50 active:bg-matsuri-100 transition-colors">
+              className="w-full py-3 text-sm font-bold text-matsuri-700 bg-matsuri-50 border-2 border-matsuri-100 rounded-xl active:scale-95 transition-all flex items-center justify-center gap-2"
+            >
               📊 スプレッドシートを開く
             </button>
           </div>

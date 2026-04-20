@@ -19,6 +19,7 @@ export interface MasterData {
   descriptions?: string[];       // 但し書きリスト
   payees?: string[];             // 支払先リスト
   carryoverBalance: number;      // 前年度繰越金
+  expenseBudgets?: Record<string, number>; // 支出カテゴリに対する予算
   // 旧互換用
   categories?: string[];
 }

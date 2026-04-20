@@ -92,6 +92,7 @@ function getMasters() {
   var incomeCategories = [];
   var descriptions = [];
   var payees = [];
+  var expenseBudgets = {};
   var carryoverBalance = 0;
   var currentSection = '';
 
@@ -107,7 +108,11 @@ function getMasters() {
     }
     if (label === '支出区分リスト') {
       currentSection = 'expenseCategories';
-      if (value) expenseCategories.push(value);
+      if (value) {
+        expenseCategories.push(value);
+        var bg = parseFloat(String(data[i][2] || '').replace(/[,，円¥\s]/g, ''));
+        if (!isNaN(bg) && bg > 0) expenseBudgets[value] = bg;
+      }
       continue;
     }
     if (label === '収入区分リスト') {
@@ -139,7 +144,11 @@ function getMasters() {
     // セクション内のデータ行
     if (!label && value) {
       if (currentSection === 'submitters') submitters.push(value);
-      else if (currentSection === 'expenseCategories') expenseCategories.push(value);
+      else if (currentSection === 'expenseCategories') {
+        expenseCategories.push(value);
+        var bg2 = parseFloat(String(data[i][2] || '').replace(/[,，円¥\s]/g, ''));
+        if (!isNaN(bg2) && bg2 > 0) expenseBudgets[value] = bg2;
+      }
       else if (currentSection === 'incomeCategories') incomeCategories.push(value);
       else if (currentSection === 'descriptions') descriptions.push(value);
       else if (currentSection === 'payees') payees.push(value);
@@ -182,7 +191,8 @@ function getMasters() {
     incomeCategories: incomeCategories,
     descriptions: descriptions,
     payees: payees,
-    carryoverBalance: carryoverBalance
+    carryoverBalance: carryoverBalance,
+    expenseBudgets: expenseBudgets
   };
 }
 
@@ -1049,9 +1059,12 @@ function generateReportSheet(fiscalYear) {
   sheet.setColumnWidth(5, 120);
   sheet.setColumnWidth(6, 80);
 
+  var pdfUrl = 'https://docs.google.com/spreadsheets/d/' + ss.getId() + '/export?format=pdf&gid=' + sheet.getSheetId() + '&size=A4&portrait=true&fitw=true&gridlines=false';
+
   return {
     message: sheetName + 'を生成しました',
-    sheetUrl: ss.getUrl() + '#gid=' + sheet.getSheetId()
+    sheetUrl: ss.getUrl() + '#gid=' + sheet.getSheetId(),
+    pdfUrl: pdfUrl
   };
 }
 

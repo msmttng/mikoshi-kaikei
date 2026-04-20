@@ -51,6 +51,8 @@ export function SubmitForm({ type }: SubmitFormProps) {
   const [note, setNote] = useState('');
   const [imageBase64, setImageBase64] = useState('');
   const [imageMimeType, setImageMimeType] = useState('');
+  const [currentPreview, setCurrentPreview] = useState<string | null>(null);
+  const [pendingImages, setPendingImages] = useState<{base64: string, mimeType: string, previewUrl: string}[]>([]);
 
   // --- OCR 状態 ---
   const [ocrRunning, setOcrRunning] = useState(false);
@@ -79,12 +81,19 @@ export function SubmitForm({ type }: SubmitFormProps) {
     ? (masters.expenseCategories || masters.categories || [])
     : (masters.incomeCategories || masters.categories || []);
 
-  // 画像選択時: base64 保存 + OCR 自動実行
-  const handleImageReady = useCallback(async (base64: string, mime: string) => {
+  // 画像処理コアロジック
+  const processImage = useCallback(async (base64: string, mime: string, preview: string) => {
     setImageBase64(base64);
     setImageMimeType(mime);
+    setCurrentPreview(preview);
     setOcrResult(null);
     setOcrError('');
+    setCategory('');
+    setAmount('');
+    setDescription('');
+    setPayee('');
+    setQuantity('');
+    setNote('');
 
     // OCR を非同期実行
     setOcrRunning(true);
@@ -92,30 +101,45 @@ export function SubmitForm({ type }: SubmitFormProps) {
       const result = await runOcr(base64, mime);
       setOcrResult(result);
 
-      // OCR結果をフォームに自動入力（空のフィールドのみ）
-      if (result.date && !date) setDate(result.date);
-      if (result.amount !== null && !amount) {
+      // OCR結果をフォームに自動入力
+      if (result.date) setDate(result.date);
+      if (result.amount !== null) {
         setAmount(result.amount.toLocaleString());
       }
-      if (result.description && !description) setDescription(result.description);
-      if (result.payee && !payee) setPayee(result.payee);
+      if (result.description) setDescription(result.description);
+      if (result.payee) setPayee(result.payee);
 
       setToast({ message: 'OCR読取が完了しました', type: 'success' });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'OCR処理に失敗しました';
       setOcrError(msg);
       // OCR失敗は致命的ではない → 手入力で続行可能
-      console.warn('OCR失敗:', msg);
     } finally {
       setOcrRunning(false);
     }
-  }, [date, amount, description, payee]);
+  }, []);
+
+  // 画像選択時: 複数画像をキューに追加し、最初の1枚を即座に処理
+  const handleImagesReady = useCallback(async (images: {base64: string, mimeType: string, previewUrl: string}[]) => {
+    if (images.length === 0) return;
+    
+    const first = images[0];
+    setPendingImages(images.slice(1)); // 残りをキューへ
+    
+    await processImage(first.base64, first.mimeType, first.previewUrl);
+    
+    if (images.length > 1) {
+      setToast({ message: `残り ${images.length - 1} 枚の領収書が順番待ちです`, type: 'success' });
+    }
+  }, [processImage]);
 
   const handleImageClear = useCallback(() => {
     setImageBase64('');
     setImageMimeType('');
+    setCurrentPreview(null);
     setOcrResult(null);
     setOcrError('');
+    setPendingImages([]); // 全てクリア
   }, []);
 
   // バリデーション
@@ -169,8 +193,16 @@ export function SubmitForm({ type }: SubmitFormProps) {
         ocrConfidence,
       });
 
-      setToast({ message: '登録しました！', type: 'success' });
-      setTimeout(() => navigate('/'), 1500);
+      if (pendingImages.length > 0) {
+        // 次の画像を処理
+        const next = pendingImages[0];
+        setPendingImages(prev => prev.slice(1));
+        setToast({ message: `登録しました！残り ${pendingImages.length} 枚です`, type: 'success' });
+        await processImage(next.base64, next.mimeType, next.previewUrl);
+      } else {
+        setToast({ message: '全て登録しました！', type: 'success' });
+        setTimeout(() => navigate('/'), 1500);
+      }
     } catch (err) {
       const msg = err instanceof Error ? err.message : '送信に失敗しました';
       setToast({ message: msg, type: 'error' });
@@ -224,10 +256,32 @@ export function SubmitForm({ type }: SubmitFormProps) {
       <form onSubmit={handleSubmit} className="flex-1 px-5 py-5 flex flex-col gap-5 page-content">
         {/* 領収書画像 */}
         <FormField label="領収書・証憑" hint="カメラで撮影 or ギャラリーから選択">
-          <ReceiptUploader
-            onImageReady={handleImageReady}
-            onImageClear={handleImageClear}
-          />
+          {!currentPreview ? (
+            <ReceiptUploader
+              onImagesReady={handleImagesReady}
+            />
+          ) : (
+            <div className="relative rounded-2xl overflow-hidden border-2 border-matsuri-100 shadow-sm bg-white">
+              <img
+                src={currentPreview}
+                alt="領収書プレビュー"
+                className="w-full max-h-48 object-contain bg-stone-50"
+              />
+              <button
+                type="button"
+                onClick={handleImageClear}
+                className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center text-sm hover:bg-black/70 transition-colors active:scale-90"
+                aria-label="画像を削除"
+              >
+                ✕
+              </button>
+              {pendingImages.length > 0 && (
+                <div className="absolute top-2 left-2 px-3 py-1 bg-black/70 rounded-full text-white text-xs font-bold shadow-md">
+                  残り {pendingImages.length} 枚
+                </div>
+              )}
+            </div>
+          )}
         </FormField>
 
         {/* OCR ステータス表示 */}
@@ -402,6 +456,8 @@ export function SubmitForm({ type }: SubmitFormProps) {
                 <Spinner size="sm" className="border-white/30 border-t-white" />
                 <span>送信中...</span>
               </>
+            ) : pendingImages.length > 0 ? (
+              <span>登録し、残り {pendingImages.length} 枚へ進む</span>
             ) : (
               <span>{isExpense ? '支出を登録する' : '収入を登録する'}</span>
             )}

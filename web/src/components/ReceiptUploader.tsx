@@ -8,19 +8,17 @@ import imageCompression from 'browser-image-compression';
 import { fileToBase64 } from '../lib/api';
 
 interface ReceiptUploaderProps {
-  onImageReady: (base64: string, mimeType: string) => void;
-  onImageClear: () => void;
+  onImagesReady: (images: {base64: string, mimeType: string, previewUrl: string}[]) => void;
 }
 
-export function ReceiptUploader({ onImageReady, onImageClear }: ReceiptUploaderProps) {
-  const [preview, setPreview] = useState<string | null>(null);
+export function ReceiptUploader({ onImagesReady }: ReceiptUploaderProps) {
   const [processing, setProcessing] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   // ファイル選択時の処理
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
 
     setProcessing(true);
 
@@ -32,68 +30,48 @@ export function ReceiptUploader({ onImageReady, onImageClear }: ReceiptUploaderP
         useWebWorker: true,
       };
 
-      // 圧縮処理を実行
-      const compressedFile = await imageCompression(file, options);
+      const processedImages = [];
+      for (const file of files) {
+        // 圧縮処理を実行
+        const compressedFile = await imageCompression(file, options);
+        // プレビュー用 URL を生成（圧縮後の画像を使用）
+        const objectUrl = URL.createObjectURL(compressedFile);
+        // base64 に変換
+        const base64 = await fileToBase64(compressedFile);
+        
+        processedImages.push({
+          base64,
+          mimeType: compressedFile.type,
+          previewUrl: objectUrl
+        });
+      }
 
-      // プレビュー用 URL を生成（圧縮後の画像を使用）
-      const objectUrl = URL.createObjectURL(compressedFile);
-      setPreview(objectUrl);
-
-      // base64 に変換して親コンポーネントに通知
-      const base64 = await fileToBase64(compressedFile);
-      onImageReady(base64, compressedFile.type);
+      // 親コンポーネントに配列を通知
+      onImagesReady(processedImages);
     } catch (err) {
       console.error('画像の読み込みに失敗:', err);
     } finally {
       setProcessing(false);
+      if (inputRef.current) {
+        inputRef.current.value = ''; // 連続で同じファイルをアップロードできるようにリセット
+      }
     }
-  };
-
-  // 画像をクリア
-  const handleClear = () => {
-    setPreview(null);
-    if (inputRef.current) {
-      inputRef.current.value = '';
-    }
-    onImageClear();
   };
 
   return (
     <div className="flex flex-col gap-3">
-      {/* 画像プレビュー */}
-      {preview ? (
-        <div className="relative rounded-2xl overflow-hidden border-2 border-matsuri-100 
-          shadow-sm bg-white">
-          <img
-            src={preview}
-            alt="領収書プレビュー"
-            className="w-full max-h-48 object-contain bg-stone-50"
-          />
-          {/* 処理中のオーバーレイ */}
-          {processing && (
-            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-              <div className="bg-white rounded-xl px-4 py-2 flex items-center gap-2 shadow-lg">
-                <div className="spinner" />
-                <span className="text-sm font-medium text-stone-700">読み込み中...</span>
-              </div>
-            </div>
-          )}
-          {/* クリアボタン */}
-          {!processing && (
-            <button
-              type="button"
-              onClick={handleClear}
-              className="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/50 
-                text-white flex items-center justify-center text-sm 
-                hover:bg-black/70 transition-colors active:scale-90"
-              aria-label="画像を削除"
-            >
-              ✕
-            </button>
-          )}
+      {/* 処理中のオーバーレイ */}
+      {processing && (
+        <div className="relative rounded-2xl overflow-hidden border-2 border-matsuri-100 shadow-sm bg-white p-6">
+          <div className="flex flex-col items-center justify-center gap-3">
+            <div className="spinner" />
+            <span className="text-sm font-medium text-stone-700">画像を処理中...</span>
+          </div>
         </div>
-      ) : (
-        /* 撮影/選択ボタン */
+      )}
+
+      {/* 撮影/選択ボタン（処理中以外でプレビューが無い状態、プレビュー表示はSubmitForm側で制御） */}
+      {!processing && (
         <button
           type="button"
           onClick={() => inputRef.current?.click()}
@@ -103,7 +81,7 @@ export function ReceiptUploader({ onImageReady, onImageClear }: ReceiptUploaderP
         >
           <span className="text-3xl">📷</span>
           <span className="text-sm font-medium text-stone-500">
-            タップして領収書を撮影
+            タップして領収書を撮影（複数選択可）
           </span>
           <span className="text-xs text-stone-400">
             カメラまたはギャラリーから選択
@@ -115,6 +93,7 @@ export function ReceiptUploader({ onImageReady, onImageClear }: ReceiptUploaderP
       <input
         ref={inputRef}
         type="file"
+        multiple
         accept="image/*"
         capture="environment"
         onChange={handleFileChange}

@@ -270,19 +270,16 @@ export function SubmitForm({ type }: SubmitFormProps) {
         {/* 提出者 */}
         <FormField label="提出者" required error={errors.submitter}>
           <div className="relative">
-            <input
-              type="text"
-              list="submitter-list"
+            <select
               value={submitter}
               onChange={(e) => setSubmitter(e.target.value)}
-              placeholder="名前を入力または選択"
-              className="form-input"
-            />
-            <datalist id="submitter-list">
+              className="form-input form-select"
+            >
+              <option value="">選択してください</option>
               {masters.submitters.map((name) => (
-                <option key={name} value={name} />
+                <option key={name} value={name}>{name}</option>
               ))}
-            </datalist>
+            </select>
           </div>
         </FormField>
 

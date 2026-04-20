@@ -1074,7 +1074,7 @@ function runOcr(payload) {
  * @returns {Object} - パース済み OCR 結果
  */
 function callGeminiWithImage(apiKey, base64, mimeType, prompt) {
-  var model = 'gemini-2.5-flash';
+  var model = 'gemini-2.0-flash';
   var url = 'https://generativelanguage.googleapis.com/v1beta/models/'
     + model + ':generateContent?key=' + apiKey;
 

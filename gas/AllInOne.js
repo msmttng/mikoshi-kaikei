@@ -1136,7 +1136,7 @@ function callGeminiWithImage(apiKey, base64, mimeType, prompt) {
     muteHttpExceptions: true
   };
 
-  var maxRetries = 3;
+  var maxRetries = 6;
   var attempt = 0;
   var response, statusCode;
   var lastErrorText = "";
@@ -1153,7 +1153,7 @@ function callGeminiWithImage(apiKey, base64, mimeType, prompt) {
         lastErrorText = response.getContentText();
         attempt++;
         if (attempt < maxRetries) {
-          Utilities.sleep(Math.pow(2, attempt) * 1000); // 2秒, 4秒...
+          Utilities.sleep((Math.pow(2, attempt) * 1500) + 1500); // 3s, 4.5s, 7.5s, 13.5s...
         }
       } else {
         // その他のエラー (400など) は即時終了
@@ -1165,7 +1165,7 @@ function callGeminiWithImage(apiKey, base64, mimeType, prompt) {
       lastErrorText = e.message;
       attempt++;
       if (attempt < maxRetries) {
-        Utilities.sleep(Math.pow(2, attempt) * 1000);
+        Utilities.sleep((Math.pow(2, attempt) * 1500) + 1500);
       } else if (statusCode === undefined) {
         // HTTPステータスも取得できなかった場合
         throw new Error('Gemini APIとの通信に失敗しました (' + e.message + ')');

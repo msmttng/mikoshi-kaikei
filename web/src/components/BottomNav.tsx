@@ -12,6 +12,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { path: '/', icon: '🏠', label: 'ホーム' },
   { path: '/history', icon: '📋', label: '履歴' },
+  { path: '/admin', icon: '⚙️', label: '管理' },
 ];
 
 export function BottomNav() {

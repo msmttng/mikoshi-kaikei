@@ -9,6 +9,12 @@ import { getMyHistory, getMasters } from '../lib/api';
 import { getSubmitter, getCachedMasters, saveMasters, DEFAULT_MASTERS } from '../lib/storage';
 import type { LedgerEntry, MasterData } from '../lib/types';
 
+const formatDateStr = (dStr: string) => {
+  const d = new Date(dStr);
+  if (isNaN(d.getTime())) return dStr;
+  return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+};
+
 export function Home() {
   const navigate = useNavigate();
   const [recentItems, setRecentItems] = useState<LedgerEntry[]>([]);
@@ -48,14 +54,11 @@ export function Home() {
       {/* ヘッダー */}
       <header className="px-5 pt-8 pb-4">
         <div className="flex items-center gap-3 mb-1">
-          <span className="text-3xl">⛩️</span>
+          <span className="text-3xl">🏮</span>
           <div>
             <h1 className="text-xl font-bold text-matsuri-800 tracking-tight">
-              神輿会 経費精算
+              仲羽田青年会 経費精算サイト
             </h1>
-            <p className="text-xs text-stone-500 font-medium">
-              {submitter ? `${submitter} さん` : 'ようこそ'}
-            </p>
           </div>
         </div>
       </header>
@@ -73,9 +76,6 @@ export function Home() {
                 <p className="text-2xl font-bold text-stone-800 amount-display mt-0.5">
                   {formatAmount(masters.carryoverBalance)}
                 </p>
-              </div>
-              <div className="w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center">
-                <span className="text-xl">💰</span>
               </div>
             </div>
           </div>
@@ -155,25 +155,35 @@ export function Home() {
             {recentItems.map((item) => (
               <div
                 key={item.id}
-                className="card px-4 py-3 flex items-center justify-between"
+                className="card px-4 py-3 w-full text-left"
               >
-                <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs text-stone-400 font-medium">
-                      {item.date}
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap
+                      ${item.type === '支出' ? 'bg-matsuri-50 text-matsuri-600' : 'bg-amber-50 text-amber-700'}`}>
+                      {item.type}
                     </span>
-                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full
-                      ${item.status === '未精算' ? 'badge-unsettled' : 'badge-settled'}`}>
-                      {item.status}
-                    </span>
+                    <span className="text-[10px] text-stone-400 whitespace-nowrap">{formatDateStr(item.date)}</span>
                   </div>
-                  <div className="text-sm font-medium text-stone-700 mt-0.5 truncate">
-                    {item.category} — {item.description || item.payee || '(詳細なし)'}
-                  </div>
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap
+                    ${item.status === '未精算' ? 'badge-unsettled' : 'badge-settled'}`}>
+                    {item.status}
+                  </span>
                 </div>
-                <div className={`text-sm font-bold amount-display ml-3
-                  ${item.type === '支出' ? 'text-matsuri-600' : 'text-green-700'}`}>
-                  {item.type === '支出' ? '-' : '+'}{formatAmount(item.amount)}
+                
+                <div className="flex items-start justify-between mt-1.5 gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-bold text-stone-700 truncate">
+                      {item.category}
+                    </div>
+                    <div className="text-[11px] text-stone-500 mt-0.5 leading-snug break-words">
+                      {item.description || item.payee || '(詳細なし)'}
+                    </div>
+                  </div>
+                  <div className={`text-sm font-bold amount-display flex-shrink-0
+                    ${item.type === '支出' ? 'text-matsuri-600' : 'text-green-700'}`}>
+                    {item.type === '支出' ? '-' : '+'}{formatAmount(item.amount)}
+                  </div>
                 </div>
               </div>
             ))}

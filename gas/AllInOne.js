@@ -48,6 +48,9 @@ function doPost(e) {
       case 'updateMasterList':
         result = updateMasterList(payload);
         break;
+      case 'updateCarryoverBalance':
+        result = updateCarryoverBalance(payload);
+        break;
       default:
         throw new Error('不明なアクション: ' + action);
     }
@@ -797,18 +800,48 @@ function updateMasterList(payload) {
     sheet.deleteRows(sectionStartRow + 1, linesToDelete);
   }
 
-  // 追加する
+  // 要素を追加
   if (payload.items.length > 0) {
-    sheet.insertRowsAfter(sectionStartRow, payload.items.length);
     var insertData = [];
     for (var j = 0; j < payload.items.length; j++) {
-      insertData.push(['', payload.items[j], '']);
+      insertData.push([payload.items[j], '']);
     }
-    sheet.getRange(sectionStartRow + 1, 1, payload.items.length, 3).setValues(insertData);
+    sheet.insertRowsAfter(sectionStartRow, insertData.length);
+    sheet.getRange(sectionStartRow + 1, 1, insertData.length, 2).setValues(insertData);
   }
 
   return { success: true };
 }
+
+/**
+ * 繰越金の更新（管理者用）
+ */
+function updateCarryoverBalance(payload) {
+  validateAdminKey(payload.adminKey);
+  
+  if (payload.balance === undefined) {
+    throw new Error('金額が指定されていません');
+  }
+
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('設定');
+  if (!sheet) throw new Error('「設定」シートが見つかりません');
+
+  var data = sheet.getDataRange().getValues();
+  for (var i = 0; i < data.length; i++) {
+    if (String(data[i][0]).trim() === '前年度繰越金') {
+      sheet.getRange(i + 1, 2).setValue(payload.balance);
+      return { success: true };
+    }
+  }
+  
+  // 見つからなければ末尾に追加
+  var lastRow = sheet.getLastRow();
+  sheet.getRange(lastRow + 2, 1).setValue('前年度繰越金').setFontWeight('bold').setBackground('#fff3e0');
+  sheet.getRange(lastRow + 2, 2).setValue(payload.balance);
+  return { success: true };
+}
+
 
 
 

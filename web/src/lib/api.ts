@@ -81,6 +81,11 @@ export async function updateMasterList(sectionName: string, items: string[], adm
   return callApi<{ success: boolean }>('updateMasterList', { sectionName, items, adminKey });
 }
 
+/** 前年度繰越金の更新（管理者用） */
+export async function updateCarryoverBalance(balance: number, adminKey: string): Promise<{ success: boolean }> {
+  return callApi<{ success: boolean }>('updateCarryoverBalance', { balance, adminKey });
+}
+
 /** 画像の OCR を実行（Gemini 経由） */
 export async function runOcr(imageBase64: string, imageMimeType: string): Promise<OcrResult> {
   return callApi<OcrResult>('ocr', { imageBase64, imageMimeType });

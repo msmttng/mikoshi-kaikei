@@ -10,6 +10,12 @@ import { getSubmitter, getCachedMasters, DEFAULT_MASTERS } from '../lib/storage'
 import { Spinner } from '../components/Spinner';
 import type { LedgerEntry } from '../lib/types';
 
+const formatDateStr = (dStr: string) => {
+  const d = new Date(dStr);
+  if (isNaN(d.getTime())) return dStr;
+  return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+};
+
 export function History() {
   const [items, setItems] = useState<LedgerEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -84,32 +90,39 @@ export function History() {
                 onClick={() => setSelectedItem(item)}
                 className="card px-4 py-3 w-full text-left active:scale-[0.99] transition-transform"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-1">
                   <div className="flex items-center gap-2">
-                    <span className={`text-xs font-bold px-2 py-0.5 rounded-full
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap
                       ${item.type === '支出' ? 'bg-matsuri-50 text-matsuri-600' : 'bg-amber-50 text-amber-700'}`}>
                       {item.type}
                     </span>
-                    <span className="text-xs text-stone-400">{item.date}</span>
+                    <span className="text-[10px] text-stone-400 whitespace-nowrap">{formatDateStr(item.date)}</span>
                   </div>
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full
+                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap
                     ${item.status === '未精算' ? 'badge-unsettled' : 'badge-settled'}`}>
                     {item.status}
                   </span>
                 </div>
-                <div className="flex items-center justify-between mt-1.5">
-                  <div className="text-sm font-medium text-stone-700 truncate flex-1 mr-2">
-                    {item.category}
-                    {item.description && ` — ${item.description}`}
+                
+                <div className="flex items-start justify-between mt-1.5 gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-bold text-stone-700 truncate">
+                      {item.category}
+                    </div>
+                    {item.description && (
+                      <div className="text-[11px] text-stone-500 mt-0.5 leading-snug break-words">
+                        {item.description}
+                      </div>
+                    )}
+                    {item.payee && (
+                      <div className="text-[10px] text-stone-400 mt-1 truncate">支払先: {item.payee}</div>
+                    )}
                   </div>
                   <div className={`text-sm font-bold amount-display flex-shrink-0
                     ${item.type === '支出' ? 'text-matsuri-600' : 'text-green-700'}`}>
                     {item.type === '支出' ? '-' : '+'}{formatAmount(item.amount)}
                   </div>
                 </div>
-                {item.payee && (
-                  <div className="text-xs text-stone-400 mt-1">{item.payee}</div>
-                )}
               </button>
             ))}
           </div>

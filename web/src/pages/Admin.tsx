@@ -12,6 +12,12 @@ import { MasterManager } from '../components/MasterManager';
 import { AccountingCharts } from '../components/AccountingCharts';
 import type { LedgerEntry, AccountingReport } from '../lib/types';
 
+const formatDateStr = (dStr: string) => {
+  const d = new Date(dStr);
+  if (isNaN(d.getTime())) return dStr;
+  return `${d.getFullYear()}/${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+};
+
 // スプレッドシート URL
 const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1Ar-HSbG_5dVPJEforaEBfc0jy1Ip2A202QH_RMPexSA/edit';
 
@@ -440,28 +446,34 @@ export function Admin() {
                       {selectedIds.has(item.id) && <span className="text-white text-xs font-bold">✓</span>}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-stone-600">{item.submitter}</span>
-                        <span className="text-xs text-stone-400">{item.date}</span>
-                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full
+                      {/* 1行目: 日付とバッジ */}
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap
                           ${item.type === '支出' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
                           {item.type}
                         </span>
+                        <span className="text-[10px] text-stone-400 whitespace-nowrap">{formatDateStr(item.date)}</span>
                       </div>
-                      <div className="text-sm text-stone-700 truncate mt-0.5">
+                      {/* 2行目: 提出者名 */}
+                      <div className="text-sm font-bold text-stone-700 truncate">
+                        {item.submitter}
+                      </div>
+                      {/* 3行目: カテゴリと詳細 */}
+                      <div className="text-[11px] text-stone-500 mt-0.5 leading-snug break-words">
                         {item.category}{item.description && ` — ${item.description}`}
                       </div>
                       {item.quantity && (
-                        <div className="text-xs text-stone-400 mt-0.5">数量: {item.quantity}</div>
+                        <div className="text-[10px] text-stone-400 mt-0.5">数量: {item.quantity}</div>
                       )}
                     </div>
-                    <div className="flex flex-col items-end gap-2 ml-2 flex-shrink-0">
+                    
+                    <div className="flex flex-col items-end justify-between self-stretch flex-shrink-0 ml-2">
                       <div className={`text-sm font-bold amount-display ${item.type === '支出' ? 'text-matsuri-600' : 'text-green-700'}`}>
                         {formatAmount(item.amount)}
                       </div>
-                      <div className="flex gap-1.5" onClick={e => e.stopPropagation()}>
-                        <button onClick={(e) => startEdit(item, e)} className="p-2 bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 active:scale-95 transition-all shadow-sm">✏️</button>
-                        <button onClick={(e) => handleDelete(item.id, e)} className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 active:scale-95 transition-all shadow-sm">🗑️</button>
+                      <div className="flex gap-2 mt-auto pt-2" onClick={e => e.stopPropagation()}>
+                        <button onClick={(e) => startEdit(item, e)} className="p-1.5 bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 active:scale-95 transition-all shadow-sm">✏️</button>
+                        <button onClick={(e) => handleDelete(item.id, e)} className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 active:scale-95 transition-all shadow-sm">🗑️</button>
                       </div>
                     </div>
                   </div>

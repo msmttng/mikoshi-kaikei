@@ -117,18 +117,44 @@ function getMasters() {
       if (currentSection === 'expenseCategories') expenseCategories.push(value);
       if (currentSection === 'incomeCategories') incomeCategories.push(value);
     }
-    // B列が空でA列に値がある場合（名前が直接A列にある等）
+    // B列が空でA列に値がある場合
     if (label && !value && currentSection) {
       if (currentSection === 'submitters') submitters.push(label);
-      if (currentSection === 'expenseCategories') expenseCategories.push(label);
-      if (currentSection === 'incomeCategories') incomeCategories.push(label);
+      else if (currentSection === 'expenseCategories') expenseCategories.push(label);
+      else if (currentSection === 'incomeCategories') incomeCategories.push(label);
+      else if (currentSection === 'descriptions') descriptions.push(label);
+      else if (currentSection === 'payees') payees.push(label);
     }
   }
+
+  // --- 過去データ（台帳）から自動抽出してリストを拡張 ---
+  var ledgerSheet = ss.getSheetByName('台帳');
+  if (ledgerSheet) {
+    var ledgerData = ledgerSheet.getDataRange().getValues();
+    // 1行目のヘッダーをスキップ
+    for (var j = 1; j < ledgerData.length; j++) {
+      var rowDesc = String(ledgerData[j][8] || '').trim(); // I列: 但し書き
+      var rowPayee = String(ledgerData[j][9] || '').trim(); // J列: 支払先
+
+      if (rowDesc && descriptions.indexOf(rowDesc) === -1) {
+        descriptions.push(rowDesc);
+      }
+      if (rowPayee && payees.indexOf(rowPayee) === -1) {
+        payees.push(rowPayee);
+      }
+    }
+  }
+
+  // 見やすくするためにソート（五十音順）
+  descriptions.sort(function(a, b) { return a.localeCompare(b, 'ja'); });
+  payees.sort(function(a, b) { return a.localeCompare(b, 'ja'); });
 
   return {
     submitters: submitters,
     expenseCategories: expenseCategories,
     incomeCategories: incomeCategories,
+    descriptions: descriptions,
+    payees: payees,
     carryoverBalance: carryoverBalance
   };
 }

@@ -1103,12 +1103,46 @@ function callGeminiWithImage(apiKey, base64, mimeType, prompt) {
     muteHttpExceptions: true
   };
 
-  var response = UrlFetchApp.fetch(url, options);
-  var statusCode = response.getResponseCode();
+  var maxRetries = 3;
+  var attempt = 0;
+  var response, statusCode;
+  var lastErrorText = "";
+
+  while (attempt < maxRetries) {
+    try {
+      response = UrlFetchApp.fetch(url, options);
+      statusCode = response.getResponseCode();
+      
+      if (statusCode === 200) {
+        break; // 成功
+      } else if (statusCode === 503 || statusCode === 429 || statusCode === 500) {
+        // 過負荷やレートリミットの場合はリトライ
+        lastErrorText = response.getContentText();
+        attempt++;
+        if (attempt < maxRetries) {
+          Utilities.sleep(Math.pow(2, attempt) * 1000); // 2秒, 4秒...
+        }
+      } else {
+        // その他のエラー (400など) は即時終了
+        console.error('Gemini API エラー: ' + statusCode + ' ' + response.getContentText());
+        throw new Error('OCR処理に失敗しました（ステータス: ' + statusCode + '）');
+      }
+    } catch (e) {
+      // ネットワーク切断などでfetch自体が例外を投げた場合もリトライ
+      lastErrorText = e.message;
+      attempt++;
+      if (attempt < maxRetries) {
+        Utilities.sleep(Math.pow(2, attempt) * 1000);
+      } else if (statusCode === undefined) {
+        // HTTPステータスも取得できなかった場合
+        throw new Error('Gemini APIとの通信に失敗しました (' + e.message + ')');
+      }
+    }
+  }
 
   if (statusCode !== 200) {
-    console.error('Gemini API エラー: ' + statusCode + ' ' + response.getContentText());
-    throw new Error('OCR処理に失敗しました（ステータス: ' + statusCode + '）');
+    console.error('Gemini API リトライ上限到達: ' + statusCode + ' ' + lastErrorText);
+    throw new Error('OCRサーバーが混雑しています。少し待ってから再度お試しください（ステータス: ' + statusCode + '）');
   }
 
   var json = JSON.parse(response.getContentText());

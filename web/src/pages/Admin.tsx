@@ -160,15 +160,35 @@ export function Admin() {
     if (!adminKey) return;
     setProcessing(true);
     try {
-      const res = await generateReportSheet(adminKey, reportYear) as { message: string, sheetUrl: string, pdfUrl?: string };
-      if (res.pdfUrl) {
-        setToast({ message: '報告書を作成しました。PDFを開きます...', type: 'success' });
-        window.open(res.pdfUrl, '_blank');
+      const res = await generateReportSheet(adminKey, reportYear) as { message: string, sheetUrl: string, pdfBase64?: string };
+      if (res.pdfBase64) {
+        setToast({ message: '報告書を作成しました。ダウンロードを開始します...', type: 'success' });
+        
+        // Base64からBlobへ変換
+        const byteCharacters = atob(res.pdfBase64);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+          byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: 'application/pdf' });
+        
+        // ダウンロードのトリガー
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = `${reportYear}年度_会計報告書.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+        
       } else {
         setToast({ message: res.message || '報告書シートを生成しました', type: 'success' });
       }
     } catch (err) {
-      setToast({ message: '報告書シートの生成に失敗しました', type: 'error' });
+      const errMsg = err instanceof Error ? err.message : '報告書シートの生成に失敗しました';
+      setToast({ message: `生成エラー: ${errMsg}`, type: 'error' });
     } finally {
       setProcessing(false);
     }

@@ -39,6 +39,9 @@ function doPost(e) {
       case 'getReport':
         result = getAccountingReport(payload);
         break;
+      case 'generateReportSheet':
+        result = generateReportSheet(payload);
+        break;
       case 'deleteEntry':
         result = deleteEntry(payload);
         break;
@@ -943,16 +946,18 @@ function getAccountingReport(payload) {
 }
 
 /**
- * 会計報告シートを自動生成または更新する
- * 管理者が GAS エディタから手動実行、またはボタンで呼び出す想定
- * @param {string} fiscalYear - 年度（例: "2026"）
+ * 会計報告シートを自動生成・更新し、PDF（Base64）を作成する
+ * @param {Object} payload - { adminKey: string, fiscalYear: string }
  */
-function generateReportSheet(fiscalYear) {
+function generateReportSheet(payload) {
+  verifyAdmin(payload.adminKey);
+  
+  var fiscalYear = payload.fiscalYear;
   if (!fiscalYear) {
     fiscalYear = new Date().getFullYear().toString();
   }
 
-  var report = getAccountingReport({ adminKey: '', fiscalYear: fiscalYear });
+  var report = getAccountingReport({ adminKey: payload.adminKey, fiscalYear: fiscalYear });
   var ss = SpreadsheetApp.getActiveSpreadsheet();
 
   var sheetName = fiscalYear + '年度 会計報告';
@@ -1061,10 +1066,31 @@ function generateReportSheet(fiscalYear) {
 
   var pdfUrl = 'https://docs.google.com/spreadsheets/d/' + ss.getId() + '/export?format=pdf&gid=' + sheet.getSheetId() + '&size=A4&portrait=true&fitw=true&gridlines=false';
 
+  // --- PDFをバイナリとしてフェッチし、Base64化する ---
+  var pdfBase64 = null;
+  try {
+    // 範囲の再計算や描写を確実に行わせるため少しスリープ
+    Utilities.sleep(1000);
+    SpreadsheetApp.flush();
+    var response = UrlFetchApp.fetch(pdfUrl, {
+      headers: {
+        'Authorization': 'Bearer ' + ScriptApp.getOAuthToken()
+      },
+      muteHttpExceptions: true
+    });
+    if (response.getResponseCode() === 200) {
+      pdfBase64 = Utilities.base64Encode(response.getBlob().getBytes());
+    } else {
+      console.error('PDF作成に失敗:', response.getContentText());
+    }
+  } catch (e) {
+    console.error('PDFダウンロードエラー:', e.message);
+  }
+
   return {
     message: sheetName + 'を生成しました',
     sheetUrl: ss.getUrl() + '#gid=' + sheet.getSheetId(),
-    pdfUrl: pdfUrl
+    pdfBase64: pdfBase64
   };
 }
 

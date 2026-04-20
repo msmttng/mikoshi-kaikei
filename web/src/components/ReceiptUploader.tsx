@@ -95,7 +95,6 @@ export function ReceiptUploader({ onImagesReady }: ReceiptUploaderProps) {
         type="file"
         multiple
         accept="image/*"
-        capture="environment"
         onChange={handleFileChange}
         className="hidden"
         aria-label="領収書画像を選択"

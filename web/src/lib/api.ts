@@ -97,8 +97,8 @@ export async function getReport(adminKey: string, fiscalYear?: string): Promise<
 }
 
 /** 会計報告シートを作成（管理者用） */
-export async function generateReportSheet(adminKey: string, fiscalYear: string): Promise<{ message: string; sheetUrl: string; pdfUrl?: string }> {
-  return callApi<{ message: string; sheetUrl: string; pdfUrl?: string }>('generateReportSheet', { adminKey, fiscalYear });
+export async function generateReportSheet(adminKey: string, fiscalYear: string): Promise<{ message: string; sheetUrl: string; pdfBase64?: string }> {
+  return callApi<{ message: string; sheetUrl: string; pdfBase64?: string }>('generateReportSheet', { adminKey, fiscalYear });
 }
 
 // ===================================

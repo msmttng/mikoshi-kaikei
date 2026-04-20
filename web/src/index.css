@@ -1,0 +1,219 @@
+/* ===================================
+   神輿会 経費精算アプリ — グローバルスタイル
+   Tailwind v4 + カスタムテーマ
+   =================================== */
+
+/* --- Google Fonts（@import は先頭に配置必須） --- */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;900&display=swap');
+
+@import "tailwindcss";
+
+/* --- CSS 変数（テーマカラー） --- */
+@theme {
+  --color-matsuri-900: #4A0404;
+  --color-matsuri-800: #7F0000;
+  --color-matsuri-700: #B71C1C;
+  --color-matsuri-600: #C62828;
+  --color-matsuri-500: #D32F2F;
+  --color-matsuri-400: #E53935;
+  --color-matsuri-300: #EF5350;
+  --color-matsuri-200: #EF9A9A;
+  --color-matsuri-100: #FFCDD2;
+  --color-matsuri-50: #FFEBEE;
+
+  --color-washi: #FFF8E1;
+  --color-washi-dark: #FFF3D0;
+
+  --color-chochin: #FF6F00;
+  --color-chochin-light: #FFB300;
+
+  --color-gold: #D4A017;
+  --color-gold-light: #F5D060;
+
+  --color-settled: #2E7D32;
+  --color-unsettled: #C62828;
+
+  --font-sans: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
+}
+
+/* --- リセットとベース --- */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, var(--color-washi) 0%, #FFFEF8 50%, var(--color-washi-dark) 100%);
+  min-height: 100dvh;
+  color: #1a1a1a;
+}
+
+#root {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- ボタンのリップルエフェクト --- */
+.btn-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.4) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.btn-ripple:active::after {
+  opacity: 1;
+  transition: opacity 0s;
+}
+
+/* --- カードスタイル --- */
+.card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(183, 28, 28, 0.08);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* --- フォーム入力のスタイル --- */
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #e0d6c8;
+  border-radius: 12px;
+  font-size: 16px; /* iOS のズーム防止 */
+  font-family: var(--font-sans);
+  background: rgba(255, 255, 255, 0.9);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+  color: #1a1a1a;
+}
+
+.form-input:focus {
+  border-color: var(--color-matsuri-500);
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.12);
+}
+
+.form-input::placeholder {
+  color: #b0a898;
+}
+
+/* --- セレクトボックス --- */
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+/* --- トースト通知 --- */
+.toast-enter {
+  animation: toastSlideIn 0.35s cubic-bezier(0.21, 1.02, 0.73, 1);
+}
+
+.toast-exit {
+  animation: toastSlideOut 0.3s ease-in forwards;
+}
+
+@keyframes toastSlideIn {
+  from {
+    transform: translateY(100%) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes toastSlideOut {
+  to {
+    transform: translateY(100%) scale(0.95);
+    opacity: 0;
+  }
+}
+
+/* --- ページ遷移 --- */
+.page-enter {
+  animation: pageSlideIn 0.3s ease-out;
+}
+
+@keyframes pageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- スピナー --- */
+.spinner {
+  border: 3px solid rgba(183, 28, 28, 0.15);
+  border-top-color: var(--color-matsuri-600);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- ステータスバッジ --- */
+.badge-unsettled {
+  background: linear-gradient(135deg, #FFCDD2, #EF9A9A);
+  color: var(--color-unsettled);
+  border: 1px solid rgba(198, 40, 40, 0.2);
+}
+
+.badge-settled {
+  background: linear-gradient(135deg, #C8E6C9, #A5D6A7);
+  color: var(--color-settled);
+  border: 1px solid rgba(46, 125, 50, 0.2);
+}
+
+/* --- ボトムナビゲーション --- */
+.bottom-nav {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(183, 28, 28, 0.08);
+  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.05);
+}
+
+/* --- iOS セーフエリア --- */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  .page-content {
+    padding-bottom: calc(80px + env(safe-area-inset-bottom));
+  }
+}
+
+/* --- 金額入力のカンマ表示ヘルパー --- */
+.amount-display {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}

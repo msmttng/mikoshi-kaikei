@@ -33,21 +33,28 @@ export function BottomNav() {
             <button
               key={item.path}
               onClick={() => navigate(item.path)}
-              className={`flex-1 flex flex-col items-center gap-0.5 py-2.5 transition-colors
-                ${isActive
-                  ? 'text-matsuri-700'
-                  : 'text-stone-400 hover:text-stone-600'
-                }`}
+              style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: 2,
+                paddingTop: '0.6rem',
+                paddingBottom: '0.6rem',
+                color: isActive ? '#1E3A5F' : '#94A3B8',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                transition: 'color 0.15s',
+                position: 'relative',
+              }}
             >
-              <span className={`text-xl transition-transform ${isActive ? 'scale-110' : ''}`}>
+              <span style={{ fontSize: '1.25rem', transform: isActive ? 'scale(1.12)' : 'scale(1)', transition: 'transform 0.15s' }}>
                 {item.icon}
               </span>
-              <span className={`text-[10px] font-semibold ${isActive ? 'text-matsuri-700' : ''}`}>
-                {item.label}
-              </span>
-              {/* アクティブインジケーター */}
+              <span style={{ fontSize: '0.62rem', fontWeight: isActive ? 700 : 500 }}>{item.label}</span>
               {isActive && (
-                <div className="absolute bottom-1 w-8 h-0.5 rounded-full bg-matsuri-600" />
+                <div style={{ position: 'absolute', bottom: 2, width: 28, height: 2.5, borderRadius: 4, background: '#3B72B4' }} />
               )}
             </button>
           );

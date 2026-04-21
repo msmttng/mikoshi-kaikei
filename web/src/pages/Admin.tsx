@@ -293,10 +293,13 @@ export function Admin() {
             <button
               type="submit"
               disabled={!keyInput.trim() || loading}
-              className="w-full py-3 rounded-2xl font-bold text-white
-                bg-gradient-to-r from-stone-700 to-stone-800 shadow-lg
-                disabled:opacity-40 disabled:cursor-not-allowed
-                active:scale-[0.97] transition-all flex items-center justify-center gap-2"
+              style={{
+                width: '100%', padding: '0.9rem', borderRadius: 12, fontWeight: 700,
+                color: 'white', background: !keyInput.trim() || loading ? '#9BB8D8' : 'linear-gradient(135deg, #1E3A5F, #3B72B4)',
+                border: 'none', cursor: !keyInput.trim() || loading ? 'not-allowed' : 'pointer',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+                boxShadow: '0 4px 16px rgba(30,58,95,0.2)',
+              }}
             >
               {loading ? (
                 <>
@@ -319,49 +322,58 @@ export function Admin() {
   return (
     <div className="page-enter flex-1 flex flex-col">
       {/* ヘッダー */}
-      <header className="px-5 pt-6 pb-4 bg-gradient-to-r from-stone-800 to-stone-700">
-        <div className="flex items-center justify-between">
+      <header style={{
+        background: 'linear-gradient(135deg, #1E3A5F 0%, #263C61 100%)',
+        borderBottom: '3px solid #3B72B4',
+        padding: '1rem 1.25rem 0',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
           <div>
-            <h1 className="text-lg font-bold text-white flex items-center gap-2">
+            <h1 style={{ fontSize: '1rem', fontWeight: 700, color: '#E0EAFF', display: 'flex', alignItems: 'center', gap: 6 }}>
               <span>⚙️</span> 管理者画面
             </h1>
-            <p className="text-xs text-stone-300 mt-0.5">経費精算の管理・会計報告</p>
+            <p style={{ fontSize: '0.65rem', color: '#7FA8D4', marginTop: 1 }}>経費精算の管理・会計報告</p>
           </div>
           <button
             onClick={handleLogout}
-            className="text-xs text-stone-400 px-3 py-1.5 rounded-lg
-              bg-white/10 active:bg-white/20 transition-colors"
+            style={{ fontSize: '0.7rem', color: '#B8D0EB', padding: '0.3rem 0.75rem', borderRadius: 8, background: 'rgba(255,255,255,0.12)', border: 'none', cursor: 'pointer' }}
           >
             ログアウト
           </button>
         </div>
 
         {/* タブ */}
-        <div className="flex mt-4 gap-1 bg-stone-900/30 rounded-xl p-1">
+        <div style={{ display: 'flex', gap: 2, background: 'rgba(0,0,0,0.2)', borderRadius: '10px 10px 0 0', padding: '0.3rem 0.3rem 0' }}>
           <button
             onClick={() => setActiveTab('unsettled')}
-            className={`flex-1 text-xs font-bold py-2 rounded-lg transition-all
-              ${activeTab === 'unsettled'
-                ? 'bg-white text-stone-800 shadow-sm'
-                : 'text-stone-400'}`}
+            style={{
+              flex: 1, fontSize: '0.7rem', fontWeight: 700, padding: '0.5rem 0.25rem',
+              borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
+              background: activeTab === 'unsettled' ? 'white' : 'transparent',
+              color: activeTab === 'unsettled' ? '#1E3A5F' : 'rgba(255,255,255,0.55)',
+            }}
           >
             📋 未精算一覧 {items.length > 0 && `(${items.length})`}
           </button>
           <button
             onClick={() => setActiveTab('report')}
-            className={`flex-1 text-xs font-bold py-2 rounded-lg transition-all
-              ${activeTab === 'report'
-                ? 'bg-white text-stone-800 shadow-sm'
-                : 'text-stone-400'}`}
+            style={{
+              flex: 1, fontSize: '0.7rem', fontWeight: 700, padding: '0.5rem 0.25rem',
+              borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
+              background: activeTab === 'report' ? 'white' : 'transparent',
+              color: activeTab === 'report' ? '#1E3A5F' : 'rgba(255,255,255,0.55)',
+            }}
           >
             📊 会計サマリー
           </button>
           <button
             onClick={() => setActiveTab('masters')}
-            className={`flex-1 text-xs font-bold py-2 rounded-lg transition-all
-              ${activeTab === 'masters'
-                ? 'bg-white text-stone-800 shadow-sm'
-                : 'text-stone-400'}`}
+            style={{
+              flex: 1, fontSize: '0.7rem', fontWeight: 700, padding: '0.5rem 0.25rem',
+              borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
+              background: activeTab === 'masters' ? 'white' : 'transparent',
+              color: activeTab === 'masters' ? '#1E3A5F' : 'rgba(255,255,255,0.55)',
+            }}
           >
             ⚙️ マスター管理
           </button>

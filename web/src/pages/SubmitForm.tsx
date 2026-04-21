@@ -228,25 +228,26 @@ export function SubmitForm({ type }: SubmitFormProps) {
   return (
     <div className="page-enter flex-1 flex flex-col">
       {/* ヘッダー */}
-      <header className={`px-5 pt-6 pb-4 flex items-center gap-3
-        ${isExpense
-          ? 'bg-gradient-to-r from-matsuri-700 to-matsuri-600'
-          : 'bg-gradient-to-r from-chochin to-amber-600'
-        }`}
-      >
+      <header style={{
+        background: 'linear-gradient(135deg, #1E3A5F 0%, #263C61 100%)',
+        borderBottom: '3px solid #3B72B4',
+        padding: '0.9rem 1.1rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem',
+      }}>
         <button
           onClick={() => navigate('/')}
-          className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center 
-            text-white text-lg active:bg-white/30 transition-colors"
+          style={{ width: 34, height: 34, borderRadius: '50%', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}
           aria-label="戻る"
         >
           ‹
         </button>
         <div>
-          <h1 className="text-lg font-bold text-white">
+          <h1 style={{ fontSize: '1rem', fontWeight: 700, color: '#E0EAFF' }}>
             {isExpense ? '📷 支出を登録' : '💴 収入を登録'}
           </h1>
-          <p className="text-xs text-white/70">
+          <p style={{ fontSize: '0.68rem', color: '#7FA8D4', marginTop: 1 }}>
             {isExpense ? '領収書を撮影して経費申請' : '寄付・会費などの入金を記録'}
           </p>
         </div>
@@ -261,7 +262,7 @@ export function SubmitForm({ type }: SubmitFormProps) {
               onImagesReady={handleImagesReady}
             />
           ) : (
-            <div className="relative rounded-2xl overflow-hidden border-2 border-matsuri-100 shadow-sm bg-white">
+            <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', border: '2px solid #D8E3F0', background: 'white' }}>
               <img
                 src={currentPreview}
                 alt="領収書プレビュー"
@@ -442,14 +443,23 @@ export function SubmitForm({ type }: SubmitFormProps) {
           <button
             type="submit"
             disabled={submitting || ocrRunning}
-            className={`w-full py-4 rounded-2xl font-bold text-white text-base
-              shadow-lg transition-all active:scale-[0.97]
-              flex items-center justify-center gap-2
-              ${isExpense
-                ? 'bg-gradient-to-r from-matsuri-600 to-matsuri-700 shadow-matsuri-200 hover:from-matsuri-700 hover:to-matsuri-800'
-                : 'bg-gradient-to-r from-chochin to-amber-600 shadow-amber-100 hover:from-amber-700 hover:to-amber-800'
-              }
-              disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100`}
+            style={{
+              width: '100%',
+              padding: '1rem',
+              borderRadius: 14,
+              fontWeight: 700,
+              color: 'white',
+              fontSize: '1rem',
+              background: submitting || ocrRunning ? '#9BB8D8' : 'linear-gradient(135deg, #1E3A5F, #3B72B4)',
+              border: 'none',
+              cursor: submitting || ocrRunning ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 8,
+              boxShadow: '0 4px 16px rgba(30,58,95,0.25)',
+              transition: 'all 0.15s',
+            }}
           >
             {submitting ? (
               <>

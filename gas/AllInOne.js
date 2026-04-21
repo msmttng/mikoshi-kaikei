@@ -30,8 +30,14 @@ function doPost(e) {
       case 'getUnsettled':
         result = getUnsettled(payload);
         break;
+      case 'getSettled':
+        result = getSettled(payload);
+        break;
       case 'markSettled':
         result = markSettled(payload);
+        break;
+      case 'revertToUnsettled':
+        result = revertToUnsettled(payload);
         break;
       case 'ocr':
         result = runOcr(payload);
@@ -646,6 +652,93 @@ function getUnsettled(payload) {
   });
 
   return results;
+}
+
+/**
+ * 精算済み一覧を取得（管理者用）
+ * @param {Object} payload - { adminKey, fiscalYear? }
+ */
+function getSettled(payload) {
+  validateAdminKey(payload.adminKey);
+
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('台帳');
+  if (!sheet) throw new Error('「台帳」シートが見つかりません');
+
+  var data = sheet.getDataRange().getValues();
+  var results = [];
+  var fiscalYear = String(payload.fiscalYear || '').trim();
+
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    if (String(row[11]).trim() !== '精算済') continue;
+
+    // 年度フィルタ（任意）
+    if (fiscalYear) {
+      var rowDateRaw = row[3];
+      var rowYear = rowDateRaw instanceof Date
+        ? String(rowDateRaw.getFullYear())
+        : String(rowDateRaw).substring(0, 4);
+      if (rowYear !== fiscalYear) continue;
+    }
+
+    results.push({
+      id: String(row[0]),
+      registeredAt: String(row[1]),
+      type: String(row[2]),
+      date: String(row[3]),
+      submitter: String(row[4]),
+      category: String(row[5]),
+      amount: Number(row[6]),
+      quantity: String(row[7] || ''),
+      description: String(row[8]),
+      payee: String(row[9]),
+      receiptUrl: String(row[10]),
+      status: String(row[11]),
+      settledDate: String(row[12]),
+      note: String(row[13]),
+      ocrConfidence: String(row[14])
+    });
+  }
+
+  // 精算日の新しい順でソート
+  results.sort(function(a, b) { return b.settledDate.localeCompare(a.settledDate); });
+
+  return results;
+}
+
+/**
+ * 精算済みを未精算に戻す（管理者用）
+ * @param {Object} payload - { adminKey, ids: string[] }
+ */
+function revertToUnsettled(payload) {
+  validateAdminKey(payload.adminKey);
+
+  if (!payload.ids || !Array.isArray(payload.ids) || payload.ids.length === 0) {
+    throw new Error('対象のIDが指定されていません');
+  }
+
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('台帳');
+  if (!sheet) throw new Error('「台帳」シートが見つかりません');
+
+  var data = sheet.getDataRange().getValues();
+  var count = 0;
+  var idSet = {};
+  for (var j = 0; j < payload.ids.length; j++) {
+    idSet[payload.ids[j]] = true;
+  }
+
+  for (var i = 1; i < data.length; i++) {
+    var rowId = String(data[i][0]).trim();
+    if (idSet[rowId]) {
+      sheet.getRange(i + 1, 12).setValue('未精算'); // L列: 支払状況
+      sheet.getRange(i + 1, 13).setValue('');       // M列: 精算日をクリア
+      count++;
+    }
+  }
+
+  return { count: count };
 }
 
 /**

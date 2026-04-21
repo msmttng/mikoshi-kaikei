@@ -5,7 +5,7 @@
 // 機能: 未精算一覧 + 一括精算 + 会計サマリー + スプレッドシートリンク
 
 import { useState, useEffect, useCallback } from 'react';
-import { getUnsettled, markSettled, getReport, deleteEntry, updateEntry, generateReportSheet } from '../lib/api';
+import { getUnsettled, getSettled, markSettled, revertToUnsettled, getReport, deleteEntry, updateEntry, generateReportSheet } from '../lib/api';
 import { getAdminKey, saveAdminKey, getCachedMasters } from '../lib/storage';
 import { Spinner } from '../components/Spinner';
 import { Toast } from '../components/Toast';
@@ -22,7 +22,7 @@ const formatDateStr = (dStr: string) => {
 // スプレッドシート URL
 const SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1Ar-HSbG_5dVPJEforaEBfc0jy1Ip2A202QH_RMPexSA/edit';
 
-type Tab = 'unsettled' | 'report' | 'masters';
+type Tab = 'unsettled' | 'settled' | 'report' | 'masters';
 
 export function Admin() {
   // --- 認証 ---
@@ -43,8 +43,13 @@ export function Admin() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editData, setEditData] = useState<Partial<LedgerEntry>>({});
 
-
-  // --- 会計サマリータブ ---
+  // --- 精算済みタブ ---
+  const [settledItems, setSettledItems] = useState<LedgerEntry[]>([]);
+  const [settledLoading, setSettledLoading] = useState(false);
+  const [settledSelectedIds, setSettledSelectedIds] = useState<Set<string>>(new Set());
+  const [settledEditingId, setSettledEditingId] = useState<string | null>(null);
+  const [settledEditData, setSettledEditData] = useState<Partial<LedgerEntry>>({});
+  const [settledYear, setSettledYear] = useState(() => new Date().getFullYear().toString());
   const [report, setReport] = useState<AccountingReport | null>(null);
   const [reportLoading, setReportLoading] = useState(false);
   const [reportYear, setReportYear] = useState(() =>
@@ -99,6 +104,16 @@ export function Admin() {
       .finally(() => setLoading(false));
   }, [adminKey]);
 
+  // 精算済み一覧を取得
+  const fetchSettled = useCallback(() => {
+    if (!adminKey) return;
+    setSettledLoading(true);
+    getSettled(adminKey, settledYear)
+      .then(setSettledItems)
+      .catch(() => setSettledItems([]))
+      .finally(() => setSettledLoading(false));
+  }, [adminKey, settledYear]);
+
   // 会計レポートを取得
   const fetchReport = useCallback(() => {
     if (!adminKey) return;
@@ -123,6 +138,13 @@ export function Admin() {
     }
   }, [authenticated, activeTab, fetchReport]);
 
+  // 精算済みタブ表示時に自動取得
+  useEffect(() => {
+    if (authenticated && activeTab === 'settled') {
+      fetchSettled();
+    }
+  }, [authenticated, activeTab, fetchSettled]);
+
   // 年度変更時に自動リフレッシュ
   useEffect(() => {
     if (authenticated && activeTab === 'report') {
@@ -130,6 +152,14 @@ export function Admin() {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportYear]);
+
+  // 精算済み年度変更時に自動取得
+  useEffect(() => {
+    if (authenticated && activeTab === 'settled') {
+      fetchSettled();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settledYear]);
 
   // チェックボックス操作
   const toggleId = (id: string) => {
@@ -255,6 +285,77 @@ export function Admin() {
     }
   };
 
+  // 精算済み → 未精算に戻す
+  const handleRevert = async () => {
+    if (settledSelectedIds.size === 0) return;
+    if (!confirm(`${settledSelectedIds.size}件を未精算に戻しますか？`)) return;
+    setProcessing(true);
+    try {
+      const result = await revertToUnsettled(Array.from(settledSelectedIds), adminKey);
+      setToast({ message: `${result.count}件を未精算に戻しました`, type: 'success' });
+      setSettledSelectedIds(new Set());
+      fetchSettled();
+      fetchItems();
+    } catch (err) {
+      setToast({ message: err instanceof Error ? err.message : '戻し処理に失敗', type: 'error' });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  // 精算済みデータの削除
+  const handleSettledDelete = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm('このデータを完全に削除しますか？元に戻せません。')) return;
+    setProcessing(true);
+    try {
+      await deleteEntry(id, adminKey);
+      setToast({ message: '削除しました', type: 'success' });
+      fetchSettled();
+    } catch (err) {
+      setToast({ message: err instanceof Error ? err.message : '削除失敗', type: 'error' });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  // 精算済みデータの編集開始
+  const startSettledEdit = (item: LedgerEntry, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSettledEditingId(item.id);
+    setSettledEditData({ ...item });
+  };
+
+  const cancelSettledEdit = () => {
+    setSettledEditingId(null);
+    setSettledEditData({});
+  };
+
+  const saveSettledEdit = async () => {
+    if (!settledEditingId) return;
+    setProcessing(true);
+    try {
+      await updateEntry({
+        id: settledEditingId,
+        adminKey,
+        date: settledEditData.date,
+        submitter: settledEditData.submitter,
+        category: settledEditData.category,
+        amount: Number(settledEditData.amount),
+        quantity: settledEditData.quantity,
+        description: settledEditData.description,
+        payee: settledEditData.payee,
+        note: settledEditData.note,
+      });
+      setToast({ message: '更新しました', type: 'success' });
+      setSettledEditingId(null);
+      fetchSettled();
+    } catch (err) {
+      setToast({ message: err instanceof Error ? err.message : '更新失敗', type: 'error' });
+      setProcessing(false);
+    }
+  };
+
   // ログアウト
   const handleLogout = () => {
     setAuthenticated(false);
@@ -355,35 +456,46 @@ export function Admin() {
           <button
             onClick={() => setActiveTab('unsettled')}
             style={{
-              flex: 1, fontSize: '0.7rem', fontWeight: 700, padding: '0.5rem 0.25rem',
+              flex: 1, fontSize: '0.65rem', fontWeight: 700, padding: '0.5rem 0.1rem',
               borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
               background: activeTab === 'unsettled' ? 'white' : 'transparent',
               color: activeTab === 'unsettled' ? '#1E3A5F' : 'rgba(255,255,255,0.55)',
             }}
           >
-            📋 未精算一覧 {items.length > 0 && `(${items.length})`}
+            📋 未精算 {items.length > 0 && `(${items.length})`}
+          </button>
+          <button
+            onClick={() => setActiveTab('settled')}
+            style={{
+              flex: 1, fontSize: '0.65rem', fontWeight: 700, padding: '0.5rem 0.1rem',
+              borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
+              background: activeTab === 'settled' ? 'white' : 'transparent',
+              color: activeTab === 'settled' ? '#1E3A5F' : 'rgba(255,255,255,0.55)',
+            }}
+          >
+            ✅ 精算済み
           </button>
           <button
             onClick={() => setActiveTab('report')}
             style={{
-              flex: 1, fontSize: '0.7rem', fontWeight: 700, padding: '0.5rem 0.25rem',
+              flex: 1, fontSize: '0.65rem', fontWeight: 700, padding: '0.5rem 0.1rem',
               borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
               background: activeTab === 'report' ? 'white' : 'transparent',
               color: activeTab === 'report' ? '#1E3A5F' : 'rgba(255,255,255,0.55)',
             }}
           >
-            📊 会計サマリー
+            📊 会計
           </button>
           <button
             onClick={() => setActiveTab('masters')}
             style={{
-              flex: 1, fontSize: '0.7rem', fontWeight: 700, padding: '0.5rem 0.25rem',
+              flex: 1, fontSize: '0.65rem', fontWeight: 700, padding: '0.5rem 0.1rem',
               borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
               background: activeTab === 'masters' ? 'white' : 'transparent',
               color: activeTab === 'masters' ? '#1E3A5F' : 'rgba(255,255,255,0.55)',
             }}
           >
-            ⚙️ マスター管理
+            ⚙️ マスター
           </button>
         </div>
       </header>
@@ -536,6 +648,108 @@ export function Admin() {
                       </div>
                     </div>
                   </div>
+                  )
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ===== 精算済みタブ ===== */}
+      {activeTab === 'settled' && (
+        <div className="flex-1 flex flex-col">
+          {/* 年度フィルター + アクションバー */}
+          <div className="px-5 py-3 flex items-center gap-2 border-b border-stone-100">
+            <select
+              value={settledYear}
+              onChange={(e) => setSettledYear(e.target.value)}
+              className="form-input form-select text-xs py-1.5 w-24"
+            >
+              {Array.from({ length: 5 }, (_, i) => {
+                const y = new Date().getFullYear() - i;
+                return <option key={y} value={y.toString()}>{y}年</option>;
+              })}
+            </select>
+            <button onClick={fetchSettled}
+              style={{ fontSize: '0.7rem', color: 'white', padding: '0.35rem 0.75rem', borderRadius: 8, background: 'linear-gradient(135deg, #1E3A5F, #3B72B4)', border: 'none', cursor: 'pointer' }}>
+              🔄
+            </button>
+            <div className="flex-1 text-xs text-stone-400">
+              {settledSelectedIds.size > 0 ? `${settledSelectedIds.size}件 選択中` : `${settledItems.length}件`}
+            </div>
+            {settledSelectedIds.size > 0 && (
+              <button onClick={handleRevert}
+                disabled={processing}
+                className="text-xs font-bold text-white px-3 py-1.5 rounded-lg active:scale-95 transition-all disabled:opacity-40"
+                style={{ background: 'linear-gradient(135deg, #B08030, #E0A030)' }}>
+                ↩ 未精算に戻す
+              </button>
+            )}
+          </div>
+
+          {/* 一覧 */}
+          <div className="px-5 flex-1 pb-4">
+            {settledLoading && (
+              <div className="flex items-center justify-center py-12"><Spinner size="lg" /></div>
+            )}
+            {!settledLoading && settledItems.length === 0 && (
+              <div className="card p-6 text-center mt-4">
+                <p className="text-stone-500 text-sm">{settledYear}年の精算済みデータはありません</p>
+              </div>
+            )}
+            {!settledLoading && settledItems.length > 0 && (
+              <div className="flex flex-col gap-2 mt-3">
+                {settledItems.map((item) => (
+                  settledEditingId === item.id ? (
+                    <div key={item.id} className="card px-4 py-4 flex flex-col gap-3 shadow-md bg-stone-50 border border-matsuri-200">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="font-bold text-stone-700 text-sm">📝 データの編集</span>
+                        <div className="flex gap-2 text-xs">
+                          <button onClick={cancelSettledEdit} className="px-3 py-1.5 bg-stone-200 text-stone-600 rounded-lg font-bold active:scale-95 transition-all">キャンセル</button>
+                          <button onClick={saveSettledEdit} disabled={processing} className="px-3 py-1.5 bg-gradient-to-r from-matsuri-600 to-matsuri-700 text-white rounded-lg font-bold shadow-sm disabled:opacity-50 active:scale-95 transition-all">保存</button>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-3 text-xs">
+                        <div className="flex flex-col gap-1"><label className="text-stone-500 font-medium">日付</label><input type="date" value={settledEditData.date || ''} onChange={e => setSettledEditData({...settledEditData, date: e.target.value})} className="form-input text-xs py-1.5 px-2" /></div>
+                        <div className="flex flex-col gap-1"><label className="text-stone-500 font-medium">提出者</label><input type="text" value={settledEditData.submitter || ''} onChange={e => setSettledEditData({...settledEditData, submitter: e.target.value})} className="form-input text-xs py-1.5 px-2" /></div>
+                        <div className="flex flex-col gap-1"><label className="text-stone-500 font-medium">事業区分</label><input type="text" value={settledEditData.category || ''} onChange={e => setSettledEditData({...settledEditData, category: e.target.value})} className="form-input text-xs py-1.5 px-2" /></div>
+                        <div className="flex flex-col gap-1"><label className="text-stone-500 font-medium">金額</label><input type="number" value={settledEditData.amount || 0} onChange={e => setSettledEditData({...settledEditData, amount: Number(e.target.value)})} className="form-input text-xs py-1.5 px-2" /></div>
+                        <div className="flex flex-col gap-1"><label className="text-stone-500 font-medium">数量</label><input type="text" value={settledEditData.quantity || ''} onChange={e => setSettledEditData({...settledEditData, quantity: e.target.value})} className="form-input text-xs py-1.5 px-2" /></div>
+                        <div className="flex flex-col gap-1"><label className="text-stone-500 font-medium">支払先</label><input type="text" value={settledEditData.payee || ''} onChange={e => setSettledEditData({...settledEditData, payee: e.target.value})} className="form-input text-xs py-1.5 px-2" /></div>
+                        <div className="col-span-2 flex flex-col gap-1"><label className="text-stone-500 font-medium">但し書き</label><input type="text" value={settledEditData.description || ''} onChange={e => setSettledEditData({...settledEditData, description: e.target.value})} className="form-input text-xs py-1.5 px-2" /></div>
+                        <div className="col-span-2 flex flex-col gap-1"><label className="text-stone-500 font-medium">備考</label><input type="text" value={settledEditData.note || ''} onChange={e => setSettledEditData({...settledEditData, note: e.target.value})} className="form-input text-xs py-1.5 px-2" /></div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div key={item.id}
+                      onClick={() => setSettledSelectedIds(prev => { const s = new Set(prev); s.has(item.id) ? s.delete(item.id) : s.add(item.id); return s; })}
+                      className={`card px-4 py-3 flex items-center gap-3 cursor-pointer transition-all active:scale-[0.99]
+                        ${settledSelectedIds.has(item.id) ? 'ring-2 ring-amber-400 bg-amber-50/50' : ''}`}>
+                      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors flex-shrink-0
+                        ${settledSelectedIds.has(item.id) ? 'bg-amber-500 border-amber-500' : 'border-stone-300'}`}>
+                        {settledSelectedIds.has(item.id) && <span className="text-white text-xs font-bold">✓</span>}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full whitespace-nowrap
+                            ${item.type === '支出' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>{item.type}</span>
+                          <span className="text-[10px] text-stone-400 whitespace-nowrap">{formatDateStr(item.date)}</span>
+                          {item.settledDate && <span className="text-[10px] text-green-600 whitespace-nowrap">精算:{item.settledDate.substring(0,10)}</span>}
+                        </div>
+                        <div className="text-sm font-bold text-stone-700 truncate">{item.submitter}</div>
+                        <div className="text-[11px] text-stone-500 mt-0.5">{item.category}{item.description && ` — ${item.description}`}</div>
+                      </div>
+                      <div className="flex flex-col items-end justify-between self-stretch flex-shrink-0 ml-2">
+                        <div className={`text-sm font-bold amount-display ${item.type === '支出' ? 'text-matsuri-600' : 'text-green-700'}`}>
+                          {formatAmount(item.amount)}
+                        </div>
+                        <div className="flex gap-2 mt-auto pt-2" onClick={e => e.stopPropagation()}>
+                          <button onClick={(e) => startSettledEdit(item, e)} className="p-1.5 bg-stone-100 text-stone-600 rounded-lg hover:bg-stone-200 active:scale-95 transition-all shadow-sm">✏️</button>
+                          <button onClick={(e) => handleSettledDelete(item.id, e)} className="p-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 active:scale-95 transition-all shadow-sm">🗑️</button>
+                        </div>
+                      </div>
+                    </div>
                   )
                 ))}
               </div>

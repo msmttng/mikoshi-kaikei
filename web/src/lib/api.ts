@@ -61,9 +61,19 @@ export async function getUnsettled(adminKey: string): Promise<LedgerEntry[]> {
   return callApi<LedgerEntry[]>('getUnsettled', { adminKey });
 }
 
+/** 精算済み一覧を取得（管理者用）*/
+export async function getSettled(adminKey: string, fiscalYear?: string): Promise<LedgerEntry[]> {
+  return callApi<LedgerEntry[]>('getSettled', { adminKey, fiscalYear: fiscalYear || '' });
+}
+
 /** 指定IDを精算済に更新（管理者用） */
 export async function markSettled(ids: string[], adminKey: string): Promise<{ count: number }> {
   return callApi<{ count: number }>('markSettled', { ids, adminKey });
+}
+
+/** 精算済みを未精算へ戻す（管理者用） */
+export async function revertToUnsettled(ids: string[], adminKey: string): Promise<{ count: number }> {
+  return callApi<{ count: number }>('revertToUnsettled', { ids, adminKey });
 }
 
 /** 指定IDのデータを削除（管理者用） */

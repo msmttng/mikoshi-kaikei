@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>経費精算 デザイン提案 Vol.2 — 6・10ベース</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;700&family=BIZ+UDPGothic&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Noto Sans JP', sans-serif; background: #E8ECF0; padding: 2rem 1.5rem; }
+
+.page-title { font-family: 'Inter', sans-serif; font-size: 1.4rem; font-weight: 800; text-align: center; color: #1A1E2E; margin-bottom: 0.4rem; }
+.page-subtitle { text-align: center; color: #64748B; font-size: 0.85rem; margin-bottom: 0.3rem; }
+.page-badge { display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2.5rem; }
+.page-badge span { background: white; color: #475569; font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; border: 1px solid #CBD5E1; }
+
+.section-title { font-family: 'Inter', sans-serif; font-size: 0.8rem; font-weight: 700; color: #94A3B8; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem; padding-left: 4px; border-left: 3px solid #CBD5E1; padding-left: 8px; }
+
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.8rem; max-width: 1400px; margin: 0 auto; }
+
+.card-wrap { border-radius: 18px; overflow: hidden; box-shadow: 0 4px 32px rgba(0,0,0,0.1); position: relative; transition: transform 0.2s, box-shadow 0.2s; cursor: default; }
+.card-wrap:hover { transform: translateY(-4px); box-shadow: 0 12px 48px rgba(0,0,0,0.15); }
+.card-label {
+  position: absolute; top: 10px; left: 10px;
+  background: rgba(15,23,42,0.6); color: white;
+  font-size: 0.62rem; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+  letter-spacing: 0.04em; z-index: 10; backdrop-filter: blur(6px);
+}
+
+/* ---- SHARED MINI COMPONENTS ---- */
+.mc-icon { width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.mc-chevron { margin-left: auto; color: currentColor; opacity: 0.4; font-size: 0.8rem; }
+
+/* =================================================
+   DESIGNS 1-10 — INDIGO WASH variants (base: #6)
+   ================================================= */
+
+/* V1: Indigo + Slate — cool professional */
+.v1 { background: #F8F9FC; font-family: 'Inter', sans-serif; }
+.v1-hd { background: linear-gradient(135deg, #1E3A5F 0%, #263C61 100%); padding: 1.4rem; border-bottom: 3px solid #3B72B4; }
+.v1-hd h2 { font-size: 0.95rem; color: #E0EAFF; font-weight: 700; }
+.v1-hd p { font-size: 0.65rem; color: #7FA8D4; margin-top: 2px; }
+.v1-bd { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.v1-amt { background: #E8F0FE; border-radius: 10px; padding: 0.75rem 1rem; border-left: 4px solid #3B72B4; }
+.v1-amt p { font-size: 0.62rem; color: #3B72B4; font-weight: 600; }
+.v1-amt h3 { font-size: 1.35rem; font-weight: 800; color: #1E3A5F; letter-spacing: -0.02em; }
+.v1-row { background: white; border: 1px solid #D8E3F0; border-radius: 10px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v1-row .mc-icon { border-radius: 8px; background: #E8F0FE; }
+.v1-row h3 { font-size: 0.82rem; color: #1E3A5F; font-weight: 600; }
+.v1-row p { font-size: 0.67rem; color: #5A7FA8; }
+.v1-btn { margin: 0 1.1rem 1.1rem; background: #1E3A5F; color: white; border: none; border-radius: 10px; padding: 0.65rem; font-size: 0.78rem; font-weight: 700; width: calc(100% - 2.2rem); text-align: center; }
+
+/* V2: Indigo + Warm White — editorial */
+.v2 { background: #FAFAF8; font-family: 'Noto Serif JP', serif; }
+.v2-hd { background: #F0F4FF; padding: 1.4rem; border-bottom: 1px solid #C7D5EE; }
+.v2-hd h2 { font-size: 0.95rem; color: #1E3A5F; font-weight: 700; }
+.v2-hd p { font-size: 0.65rem; color: #5A7FA8; margin-top: 3px; }
+.v2-bd { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.7rem; }
+.v2-amt { text-align: center; padding: 1rem 0; border-bottom: 1px solid #DDE6F5; }
+.v2-amt p { font-size: 0.62rem; color: #5A7FA8; letter-spacing: 0.08em; }
+.v2-amt h3 { font-size: 1.5rem; font-weight: 700; color: #1E3A5F; }
+.v2-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.8rem; border-bottom: 1px solid #EEF2F9; }
+.v2-row .mc-icon { border-radius: 6px; background: #E8F0FE; border: 1px solid #C7D5EE; }
+.v2-row h3 { font-size: 0.82rem; color: #1E3A5F; font-weight: 700; }
+.v2-row p { font-size: 0.67rem; color: #5A7FA8; }
+.v2-btn { margin: 0.6rem 1.1rem 1.1rem; background: #E8F0FE; color: #1E3A5F; border: 1px solid #C7D5EE; border-radius: 6px; padding: 0.65rem; font-size: 0.78rem; font-weight: 700; width: calc(100% - 2.2rem); text-align: center; letter-spacing: 0.06em; }
+
+/* V3: Navy + Gold accent */
+.v3 { background: #FAFAF7; font-family: 'Inter', sans-serif; }
+.v3-hd { background: linear-gradient(160deg, #0D2137 0%, #1B3A5C 100%); padding: 1.4rem; border-bottom: 3px solid #C9A84C; }
+.v3-hd h2 { font-size: 0.95rem; color: #FFF8E1; font-weight: 700; }
+.v3-hd p { font-size: 0.65rem; color: #C9A84C; margin-top: 2px; }
+.v3-bd { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.v3-amt { background: white; border: 1px solid #E8DFC0; border-radius: 10px; padding: 0.75rem 1rem; border-top: 3px solid #C9A84C; }
+.v3-amt p { font-size: 0.62rem; color: #A0845A; font-weight: 600; }
+.v3-amt h3 { font-size: 1.35rem; font-weight: 800; color: #0D2137; }
+.v3-row { background: white; border: 1px solid #E2D9C0; border-radius: 10px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v3-row .mc-icon { border-radius: 8px; background: linear-gradient(135deg, #C9A84C, #A0845A); }
+.v3-row h3 { font-size: 0.82rem; color: #0D2137; font-weight: 600; }
+.v3-row p { font-size: 0.67rem; color: #8A7050; }
+.v3-btn { margin: 0 1.1rem 1.1rem; background: linear-gradient(135deg, #C9A84C, #A0845A); color: white; border: none; border-radius: 10px; padding: 0.65rem; font-size: 0.78rem; font-weight: 700; width: calc(100% - 2.2rem); text-align: center; }
+
+/* V4: Steel Blue + Light */
+.v4 { background: #F5F7FA; font-family: 'Inter', sans-serif; }
+.v4-hd { background: #2C5282; padding: 1.4rem; }
+.v4-hd h2 { font-size: 0.95rem; color: #BEE3F8; font-weight: 600; letter-spacing: 0.02em; }
+.v4-hd p { font-size: 0.65rem; color: #90CDF4; margin-top: 2px; }
+.v4-bd { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.7rem; }
+.v4-amt { background: #EBF8FF; border: 1px solid #BEE3F8; border-radius: 12px; padding: 0.75rem 1rem; }
+.v4-amt p { font-size: 0.62rem; color: #3182CE; font-weight: 500; }
+.v4-amt h3 { font-size: 1.35rem; font-weight: 700; color: #2C5282; }
+.v4-row { background: white; border: 1px solid #E2EAF4; border-radius: 12px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 1px 4px rgba(44,82,130,0.06); }
+.v4-row .mc-icon { border-radius: 10px; background: linear-gradient(135deg, #63B3ED, #3182CE); }
+.v4-row h3 { font-size: 0.82rem; color: #2C5282; font-weight: 600; }
+.v4-row p { font-size: 0.67rem; color: #5A87B8; }
+.v4-btn { margin: 0 1.1rem 1.1rem; background: #3182CE; color: white; border: none; border-radius: 12px; padding: 0.65rem; font-size: 0.78rem; font-weight: 600; width: calc(100% - 2.2rem); text-align: center; }
+
+/* V5: Indigo split-panel */
+.v5 { background: white; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; }
+.v5-hd { display: grid; grid-template-columns: 3px 1fr; }
+.v5-hd-bar { background: linear-gradient(180deg, #3B5BDB 0%, #1E3A8A 100%); }
+.v5-hd-content { background: white; padding: 1.2rem; border-bottom: 1px solid #E8EDF8; }
+.v5-hd-content h2 { font-size: 0.95rem; color: #1E3A8A; font-weight: 800; }
+.v5-hd-content p { font-size: 0.65rem; color: #4361EE; margin-top: 2px; }
+.v5-bd { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.7rem; }
+.v5-amt { display: grid; grid-template-columns: 3px 1fr; border-radius: 0 10px 10px 0; overflow: hidden; }
+.v5-amt-bar { background: #4361EE; }
+.v5-amt-content { background: #EEF2FF; padding: 0.75rem 0.9rem; }
+.v5-amt-content p { font-size: 0.62rem; color: #4361EE; font-weight: 600; }
+.v5-amt-content h3 { font-size: 1.35rem; font-weight: 800; color: #1E3A8A; letter-spacing: -0.02em; }
+.v5-row { border: 1px solid #E8EDF8; border-radius: 10px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v5-row .mc-icon { border-radius: 8px; background: #EEF2FF; border: 1px solid #C5D0F0; }
+.v5-row h3 { font-size: 0.82rem; color: #1E3A8A; font-weight: 600; }
+.v5-row p { font-size: 0.67rem; color: #4361EE; }
+.v5-btn { margin: 0 1.1rem 1.1rem; background: #3B5BDB; color: white; border: none; border-radius: 10px; padding: 0.65rem; font-size: 0.78rem; font-weight: 700; width: calc(100% - 2.2rem); text-align: center; }
+
+/* V6: Prussian Blue + Pearl */
+.v6 { background: #F7F9FC; font-family: 'Noto Sans JP', sans-serif; }
+.v6-hd { background: #003153; padding: 1.4rem; position: relative; overflow: hidden; }
+.v6-hd::after { content: '仲羽田'; position: absolute; right: -8px; top: -4px; font-size: 3.5rem; font-weight: 700; color: rgba(255,255,255,0.04); pointer-events: none; }
+.v6-hd h2 { font-size: 0.95rem; color: #C8D8E8; font-weight: 500; letter-spacing: 0.06em; }
+.v6-hd p { font-size: 0.65rem; color: #6A9ABE; margin-top: 2px; }
+.v6-bd { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.v6-amt { background: white; border: 1px solid #D0DCE8; border-radius: 8px; padding: 0.75rem 1rem; display: flex; justify-content: space-between; align-items: center; }
+.v6-amt-l p { font-size: 0.62rem; color: #4A7FA8; }
+.v6-amt-l h3 { font-size: 1.35rem; font-weight: 700; color: #003153; }
+.v6-amt-r { font-size: 1.5rem; opacity: 0.12; }
+.v6-row { background: white; border: 1px solid #D0DCE8; border-radius: 8px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v6-row .mc-icon { border-radius: 8px; background: #E8F0F8; }
+.v6-row h3 { font-size: 0.82rem; color: #003153; font-weight: 600; }
+.v6-row p { font-size: 0.67rem; color: #4A7FA8; }
+.v6-btn { margin: 0 1.1rem 1.1rem; background: #003153; color: #C8D8E8; border: none; border-radius: 8px; padding: 0.65rem; font-size: 0.78rem; font-weight: 600; width: calc(100% - 2.2rem); text-align: center; letter-spacing: 0.08em; }
+
+/* V7: Blueprint Light */
+.v7 { background: #F0F4FA; font-family: 'Inter', sans-serif; }
+.v7-hd { background: white; padding: 1.2rem 1.4rem; border-bottom: 2px solid #1B3A7A; }
+.v7-hd h2 { font-size: 0.95rem; color: #0F1F4A; font-weight: 700; }
+.v7-hd p { font-size: 0.65rem; color: #1B3A7A; margin-top: 2px; }
+.v7-bd { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.v7-amt { background: #1B3A7A; border-radius: 12px; padding: 0.75rem 1rem; color: white; }
+.v7-amt p { font-size: 0.62rem; color: rgba(255,255,255,0.7); font-weight: 500; }
+.v7-amt h3 { font-size: 1.35rem; font-weight: 800; color: white; letter-spacing: -0.02em; }
+.v7-row { background: white; border: none; border-radius: 12px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 2px 10px rgba(27,58,122,0.08); }
+.v7-row .mc-icon { border-radius: 8px; background: #E8EEFA; }
+.v7-row h3 { font-size: 0.82rem; color: #0F1F4A; font-weight: 600; }
+.v7-row p { font-size: 0.67rem; color: #1B3A7A; }
+.v7-btn { margin: 0 1.1rem 1.1rem; background: white; color: #1B3A7A; border: 2px solid #1B3A7A; border-radius: 12px; padding: 0.65rem; font-size: 0.78rem; font-weight: 700; width: calc(100% - 2.2rem); text-align: center; }
+
+/* V8: Midnight Isle */
+.v8 { background: #F4F6FB; font-family: 'Inter', sans-serif; }
+.v8-hd { background: linear-gradient(135deg, #16213E 0%, #0F3460 100%); padding: 1.4rem; border-bottom: 2px solid #533483; }
+.v8-hd h2 { font-size: 0.95rem; color: #A8D8EA; font-weight: 600; }
+.v8-hd p { font-size: 0.65rem; color: #7B96B2; margin-top: 2px; }
+.v8-bd { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.v8-amt { background: linear-gradient(135deg, #E8EEF8, #EDE8F8); border: 1px solid #C8D0E8; border-radius: 12px; padding: 0.75rem 1rem; }
+.v8-amt p { font-size: 0.62rem; color: #533483; font-weight: 600; }
+.v8-amt h3 { font-size: 1.35rem; font-weight: 700; color: #16213E; }
+.v8-row { background: white; border: 1px solid #DDE3F0; border-radius: 12px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v8-row .mc-icon { border-radius: 8px; background: linear-gradient(135deg, #533483, #0F3460); }
+.v8-row h3 { font-size: 0.82rem; color: #16213E; font-weight: 600; }
+.v8-row p { font-size: 0.67rem; color: #533483; }
+.v8-btn { margin: 0 1.1rem 1.1rem; background: linear-gradient(135deg, #533483, #0F3460); color: white; border: none; border-radius: 12px; padding: 0.65rem; font-size: 0.78rem; font-weight: 600; width: calc(100% - 2.2rem); text-align: center; }
+
+/* V9: Cobalt Stripe */
+.v9 { background: white; font-family: 'Inter', sans-serif; }
+.v9-hd { display: flex; align-items: stretch; min-height: 80px; }
+.v9-stripe { width: 6px; background: repeating-linear-gradient(180deg, #1740B0 0px, #1740B0 8px, #3B6FD8 8px, #3B6FD8 16px); flex-shrink: 0; }
+.v9-hd-content { flex: 1; padding: 1.2rem; background: #F0F4FF; border-bottom: 1px solid #D0DBFF; }
+.v9-hd-content h2 { font-size: 0.95rem; color: #1740B0; font-weight: 700; }
+.v9-hd-content p { font-size: 0.65rem; color: #3B6FD8; margin-top: 2px; }
+.v9-bd { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.7rem; }
+.v9-amt { border: 1px solid #D0DBFF; border-radius: 8px; padding: 0.75rem 1rem; background: #F0F4FF; }
+.v9-amt p { font-size: 0.62rem; color: #3B6FD8; font-weight: 600; }
+.v9-amt h3 { font-size: 1.35rem; font-weight: 800; color: #1740B0; letter-spacing: -0.02em; }
+.v9-row { border: 1px solid #E8EDFF; border-radius: 8px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v9-row .mc-icon { border-radius: 6px; background: #E4ECFF; }
+.v9-row h3 { font-size: 0.82rem; color: #1740B0; font-weight: 600; }
+.v9-row p { font-size: 0.67rem; color: #3B6FD8; }
+.v9-btn { margin: 0 1.1rem 1.1rem; background: #1740B0; color: white; border: none; border-radius: 8px; padding: 0.65rem; font-size: 0.78rem; font-weight: 700; width: calc(100% - 2.2rem); text-align: center; }
+
+/* V10: Watercolor Blue */
+.v10 { font-family: 'Noto Serif JP', serif; }
+.v10-inner { background: linear-gradient(180deg, #EAF2FF 0%, #F8FBFF 40%, #FFFFFF 100%); }
+.v10-hd { padding: 1.4rem; border-bottom: 1px solid #B8D4F0; }
+.v10-hd h2 { font-size: 0.95rem; color: #1E3A5F; font-weight: 700; }
+.v10-hd p { font-size: 0.65rem; color: #4A86C8; margin-top: 2px; }
+.v10-bd { padding: 1.1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.v10-amt { text-align: center; padding: 0.8rem 0.5rem; background: white; border-radius: 14px; border: 1px solid #C8DCEF; box-shadow: 0 2px 12px rgba(30,58,95,0.07); }
+.v10-amt p { font-size: 0.62rem; color: #4A86C8; letter-spacing: 0.06em; }
+.v10-amt h3 { font-size: 1.4rem; font-weight: 700; color: #1E3A5F; }
+.v10-row { background: white; border: 1px solid #D0E4F5; border-radius: 14px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 2px 8px rgba(30,58,95,0.05); }
+.v10-row .mc-icon { border-radius: 10px; background: linear-gradient(135deg, #A8CBE8, #5A9BD4); }
+.v10-row h3 { font-size: 0.82rem; color: #1E3A5F; font-weight: 700; }
+.v10-row p { font-size: 0.67rem; color: #4A86C8; }
+.v10-btn { margin: 0 1.1rem 1.1rem; background: linear-gradient(135deg, #5A9BD4, #1E5FA0); color: white; border: none; border-radius: 14px; padding: 0.65rem; font-size: 0.78rem; font-weight: 700; width: calc(100% - 2.2rem); text-align: center; }
+
+/* =================================================
+   DESIGNS 11-20 — ADMIN CLEAN variants (base: #10)
+   ================================================= */
+
+/* V11: Slate Government */
+.v11 { background: #F8FAFC; font-family: 'Inter', sans-serif; }
+.v11-hd { background: #1E293B; padding: 1.4rem; border-bottom: 4px solid #38BDF8; }
+.v11-hd h2 { font-size: 0.95rem; color: #CBD5E1; font-weight: 600; letter-spacing: 0.05em; }
+.v11-hd p { font-size: 0.65rem; color: #38BDF8; margin-top: 2px; }
+.v11-bd { padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
+.v11-kv { display: flex; justify-content: space-between; align-items: baseline; background: white; border: 1px solid #E2E8F0; border-radius: 6px; padding: 0.65rem 0.85rem; }
+.v11-kv .k { font-size: 0.68rem; color: #64748B; }
+.v11-kv .v { font-size: 1rem; font-weight: 700; color: #1E293B; }
+.v11-row { background: white; border: 1px solid #E2E8F0; border-left: 3px solid #38BDF8; border-radius: 0 6px 6px 0; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v11-row .mc-icon { border-radius: 4px; background: #F0F9FF; }
+.v11-row h3 { font-size: 0.82rem; color: #1E293B; font-weight: 600; }
+.v11-row p { font-size: 0.67rem; color: #64748B; }
+.v11-btn { margin: 0.5rem 1rem 1rem; background: #38BDF8; color: #1E293B; border: none; border-radius: 6px; padding: 0.65rem; font-size: 0.78rem; font-weight: 700; width: calc(100% - 2rem); text-align: center; }
+
+/* V12: Monochrome Typographic */
+.v12 { background: white; font-family: 'Inter', sans-serif; }
+.v12-hd { background: #111827; padding: 1.4rem; }
+.v12-hd h2 { font-size: 0.95rem; color: white; font-weight: 800; letter-spacing: -0.02em; }
+.v12-hd p { font-size: 0.65rem; color: #9CA3AF; margin-top: 2px; }
+.v12-bd { padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.v12-kv { border-bottom: 1px solid #F3F4F6; padding: 0.6rem 0; display: flex; justify-content: space-between; }
+.v12-kv .k { font-size: 0.68rem; color: #6B7280; }
+.v12-kv .v { font-size: 1rem; font-weight: 800; color: #111827; letter-spacing: -0.02em; }
+.v12-row { padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; border: 2px solid #111827; border-radius: 4px; }
+.v12-row .mc-icon { border-radius: 4px; background: #111827; }
+.v12-row h3 { font-size: 0.82rem; color: #111827; font-weight: 700; }
+.v12-row p { font-size: 0.67rem; color: #6B7280; }
+.v12-btn { margin: 0.5rem 1rem 1rem; background: #111827; color: white; border: none; border-radius: 4px; padding: 0.65rem; font-size: 0.78rem; font-weight: 800; width: calc(100% - 2rem); text-align: center; letter-spacing: 0.04em; }
+
+/* V13: Cool Gray Official */
+.v13 { background: #F9FAFB; font-family: 'Noto Sans JP', sans-serif; }
+.v13-hd { background: linear-gradient(135deg, #374151 0%, #4B5563 100%); padding: 1.4rem; }
+.v13-hd h2 { font-size: 0.95rem; color: #E5E7EB; font-weight: 500; letter-spacing: 0.06em; }
+.v13-hd p { font-size: 0.65rem; color: #9CA3AF; margin-top: 2px; }
+.v13-bd { padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
+.v13-kv { background: white; border: 1px solid #E5E7EB; border-radius: 6px; padding: 0.65rem 0.85rem; display: flex; align-items: center; justify-content: space-between; }
+.v13-kv .k { font-size: 0.68rem; color: #6B7280; }
+.v13-kv .v { font-size: 1rem; font-weight: 700; color: #111827; }
+.v13-row { background: white; border: 1px solid #E5E7EB; border-radius: 6px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v13-row .mc-icon { border-radius: 6px; background: #F3F4F6; border: 1px solid #E5E7EB; }
+.v13-row h3 { font-size: 0.82rem; color: #111827; font-weight: 600; }
+.v13-row p { font-size: 0.67rem; color: #6B7280; }
+.v13-btn { margin: 0.5rem 1rem 1rem; background: #374151; color: white; border: none; border-radius: 6px; padding: 0.65rem; font-size: 0.78rem; font-weight: 600; width: calc(100% - 2rem); text-align: center; }
+
+/* V14: Data Dashboard */
+.v14 { background: #F0F2F5; font-family: 'Inter', sans-serif; }
+.v14-hd { background: #1F2D3D; padding: 1.4rem; border-left: 4px solid #00C9A7; }
+.v14-hd h2 { font-size: 0.95rem; color: #CDD5DF; font-weight: 600; }
+.v14-hd p { font-size: 0.65rem; color: #00C9A7; margin-top: 2px; }
+.v14-bd { padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
+.v14-stat { background: white; border: 1px solid #DAE0E8; border-radius: 8px; padding: 0.75rem 0.9rem; display: flex; align-items: center; justify-content: space-between; }
+.v14-stat-l p { font-size: 0.62rem; color: #64748B; }
+.v14-stat-l h3 { font-size: 1.25rem; font-weight: 700; color: #1F2D3D; }
+.v14-stat-r { width: 36px; height: 36px; border-radius: 50%; background: #E8FBF6; border: 2px solid #00C9A7; display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+.v14-row { background: white; border: 1px solid #DAE0E8; border-radius: 8px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v14-row .mc-icon { border-radius: 8px; background: linear-gradient(135deg, #00C9A7, #009D82); }
+.v14-row h3 { font-size: 0.82rem; color: #1F2D3D; font-weight: 600; }
+.v14-row p { font-size: 0.67rem; color: #64748B; }
+.v14-btn { margin: 0.5rem 1rem 1rem; background: #00C9A7; color: #1F2D3D; border: none; border-radius: 8px; padding: 0.65rem; font-size: 0.78rem; font-weight: 700; width: calc(100% - 2rem); text-align: center; }
+
+/* V15: Navy + Blush accent */
+.v15 { background: #FAFBFF; font-family: 'Inter', sans-serif; }
+.v15-hd { background: #24385B; padding: 1.4rem; border-right: 4px solid #F472B6; }
+.v15-hd h2 { font-size: 0.95rem; color: #D4E0F0; font-weight: 600; }
+.v15-hd p { font-size: 0.65rem; color: #F9A8D4; margin-top: 2px; }
+.v15-bd { padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
+.v15-kv { background: white; border: 1px solid #E8EDF5; border-radius: 10px; padding: 0.75rem 1rem; border-right: 4px solid #F472B6; }
+.v15-kv p { font-size: 0.62rem; color: #EC4899; font-weight: 600; }
+.v15-kv h3 { font-size: 1.35rem; font-weight: 700; color: #24385B; }
+.v15-row { background: white; border: 1px solid #E8EDF5; border-radius: 10px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v15-row .mc-icon { border-radius: 8px; background: #FDF2F8; border: 1px solid #FBCFE8; }
+.v15-row h3 { font-size: 0.82rem; color: #24385B; font-weight: 600; }
+.v15-row p { font-size: 0.67rem; color: #EC4899; }
+.v15-btn { margin: 0.5rem 1rem 1rem; background: #24385B; color: white; border: none; border-radius: 10px; padding: 0.65rem; font-size: 0.78rem; font-weight: 600; width: calc(100% - 2rem); text-align: center; }
+
+/* V16: Soft Linen + Navy */
+.v16 { background: #F9F6F1; font-family: 'Noto Serif JP', serif; }
+.v16-hd { background: #2B3A55; padding: 1.4rem; border-bottom: 2px solid #CEB08A; }
+.v16-hd h2 { font-size: 0.95rem; color: #EDE8DF; font-weight: 700; letter-spacing: 0.05em; }
+.v16-hd p { font-size: 0.65rem; color: #CEB08A; margin-top: 2px; }
+.v16-bd { padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
+.v16-kv { background: white; border: 1px solid #DFD8CE; border-radius: 6px; padding: 0.75rem 1rem; }
+.v16-kv p { font-size: 0.62rem; color: #8B7355; font-weight: 400; letter-spacing: 0.06em; }
+.v16-kv h3 { font-size: 1.35rem; font-weight: 700; color: #2B3A55; }
+.v16-row { background: white; border: 1px solid #DFD8CE; border-radius: 6px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v16-row .mc-icon { border-radius: 6px; background: #F5F0E8; border: 1px solid #E0D5C5; }
+.v16-row h3 { font-size: 0.82rem; color: #2B3A55; font-weight: 700; }
+.v16-row p { font-size: 0.67rem; color: #8B7355; }
+.v16-btn { margin: 0.5rem 1rem 1rem; background: #2B3A55; color: #EDE8DF; border: none; border-radius: 6px; padding: 0.65rem; font-size: 0.78rem; font-weight: 700; width: calc(100% - 2rem); text-align: center; letter-spacing: 0.06em; }
+
+/* V17: Finance Bold */
+.v17 { background: #FFFFFF; font-family: 'Inter', sans-serif; }
+.v17-hd { background: #0A1628; padding: 1.4rem; }
+.v17-hd h2 { font-size: 0.95rem; color: #A8BEDC; font-weight: 600; }
+.v17-hd-badge { display: inline-block; background: #1ABC9C; color: white; font-size: 0.55rem; font-weight: 800; padding: 2px 6px; border-radius: 4px; margin-left: 6px; letter-spacing: 0.08em; vertical-align: middle; }
+.v17-hd p { font-size: 0.65rem; color: #4A6D9E; margin-top: 2px; }
+.v17-bd { padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.v17-kv { display: grid; grid-template-columns: 1fr 1px 1fr; gap: 0.5rem; background: #F0F4FA; border-radius: 10px; padding: 0.75rem; }
+.v17-kv-item { text-align: center; }
+.v17-kv-item p { font-size: 0.58rem; color: #4A6D9E; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+.v17-kv-item h4 { font-size: 0.95rem; font-weight: 800; color: #0A1628; }
+.v17-kv-divider { background: #CBD5E1; }
+.v17-row { border: 1px solid #E5EAF2; border-radius: 10px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v17-row .mc-icon { border-radius: 8px; background: #1ABC9C; }
+.v17-row h3 { font-size: 0.82rem; color: #0A1628; font-weight: 600; }
+.v17-row p { font-size: 0.67rem; color: #4A6D9E; }
+.v17-btn { margin: 0.5rem 1rem 1rem; background: #1ABC9C; color: white; border: none; border-radius: 10px; padding: 0.65rem; font-size: 0.78rem; font-weight: 700; width: calc(100% - 2rem); text-align: center; }
+
+/* V18: Formal Report */
+.v18 { background: #F7F8FA; font-family: 'Noto Sans JP', sans-serif; }
+.v18-hd { background: white; padding: 1.2rem 1.4rem; border-bottom: 3px double #2C3E50; }
+.v18-hd h2 { font-size: 0.95rem; color: #2C3E50; font-weight: 700; letter-spacing: 0.08em; }
+.v18-hd p { font-size: 0.65rem; color: #7F8C8D; margin-top: 3px; }
+.v18-bd { padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.v18-table { background: white; border: 1px solid #BDC3C7; border-radius: 4px; overflow: hidden; }
+.v18-tr { display: flex; align-items: center; padding: 0.6rem 0.85rem; border-bottom: 1px solid #ECF0F1; }
+.v18-tr:last-child { border-bottom: none; background: #F8F9FA; }
+.v18-tr .k { font-size: 0.68rem; color: #7F8C8D; flex: 1; }
+.v18-tr .v { font-size: 0.82rem; font-weight: 700; color: #2C3E50; }
+.v18-row { background: white; border: 1px solid #BDC3C7; border-radius: 4px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v18-row .mc-icon { border-radius: 4px; background: #ECF0F1; border: 1px solid #BDC3C7; }
+.v18-row h3 { font-size: 0.82rem; color: #2C3E50; font-weight: 600; }
+.v18-row p { font-size: 0.67rem; color: #7F8C8D; }
+.v18-btn { margin: 0.5rem 1rem 1rem; background: #2C3E50; color: white; border: none; border-radius: 4px; padding: 0.65rem; font-size: 0.78rem; font-weight: 600; width: calc(100% - 2rem); text-align: center; letter-spacing: 0.08em; }
+
+/* V19: Oceanic Admin */
+.v19 { background: #EFF6FF; font-family: 'Inter', sans-serif; }
+.v19-hd { background: linear-gradient(135deg, #0369A1 0%, #0284C7 100%); padding: 1.4rem; }
+.v19-hd h2 { font-size: 0.95rem; color: #E0F2FE; font-weight: 600; }
+.v19-hd p { font-size: 0.65rem; color: #BAE6FD; margin-top: 2px; }
+.v19-bd { padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
+.v19-kv { background: white; border: 1px solid #BAE6FD; border-radius: 10px; padding: 0.75rem 1rem; box-shadow: 0 2px 10px rgba(3,105,161,0.08); }
+.v19-kv p { font-size: 0.62rem; color: #0284C7; font-weight: 500; }
+.v19-kv h3 { font-size: 1.35rem; font-weight: 700; color: #0369A1; }
+.v19-row { background: white; border: 1px solid #BAE6FD; border-radius: 10px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 1px 6px rgba(3,105,161,0.06); }
+.v19-row .mc-icon { border-radius: 8px; background: linear-gradient(135deg, #7DD3FC, #38BDF8); }
+.v19-row h3 { font-size: 0.82rem; color: #0369A1; font-weight: 600; }
+.v19-row p { font-size: 0.67rem; color: #0284C7; }
+.v19-btn { margin: 0.5rem 1rem 1rem; background: #0369A1; color: white; border: none; border-radius: 10px; padding: 0.65rem; font-size: 0.78rem; font-weight: 600; width: calc(100% - 2rem); text-align: center; }
+
+/* V20: Classic Navy + Cream */
+.v20 { background: #FEFDF8; font-family: 'Noto Serif JP', serif; }
+.v20-hd { display: grid; grid-template-columns: 1fr; background: white; border-bottom: 2px solid #D4C5A0; }
+.v20-top-bar { background: #1A2744; height: 6px; }
+.v20-hd-content { padding: 1.2rem 1.4rem; }
+.v20-hd-content h2 { font-size: 0.95rem; color: #1A2744; font-weight: 700; letter-spacing: 0.06em; }
+.v20-hd-content p { font-size: 0.65rem; color: #8B7355; margin-top: 3px; }
+.v20-bd { padding: 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
+.v20-kv { background: #F9F5E8; border: 1px solid #E0D5B5; border-radius: 4px; padding: 0.75rem 1rem; }
+.v20-kv p { font-size: 0.62rem; color: #8B7355; letter-spacing: 0.08em; }
+.v20-kv h3 { font-size: 1.35rem; font-weight: 700; color: #1A2744; }
+.v20-row { background: white; border: 1px solid #E0D5B5; border-radius: 4px; padding: 0.85rem; display: flex; align-items: center; gap: 0.75rem; }
+.v20-row .mc-icon { border-radius: 4px; background: #F0EAD5; border: 1px solid #D4C5A0; }
+.v20-row h3 { font-size: 0.82rem; color: #1A2744; font-weight: 700; }
+.v20-row p { font-size: 0.67rem; color: #8B7355; }
+.v20-btn { margin: 0.5rem 1rem 1rem; background: #1A2744; color: #F9F5E8; border: 1px solid #D4C5A0; border-radius: 4px; padding: 0.65rem; font-size: 0.78rem; font-weight: 700; width: calc(100% - 2rem); text-align: center; letter-spacing: 0.1em; }
+</style>
+</head>
+<body>
+
+<h1 class="page-title">🎨 デザイン提案 Vol.2 — 全20バリエーション</h1>
+<p class="page-subtitle">デザイン6「Indigo Wash」・10「Administrative Clean」をベースにしたライトデザイン集</p>
+<div class="page-badge">
+  <span>🔷 1～10: Indigo Wash ベース</span>
+  <span>⬜ 11～20: Administrative ベース</span>
+</div>
+
+<div class="grid">
+
+  <!-- V1 -->
+  <div class="card-wrap">
+    <div class="card-label">1. Indigo Slate Pro</div>
+    <div class="v1">
+      <div class="v1-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Indigo Slate — クールプロフェッショナル</p></div>
+      <div class="v1-bd">
+        <div class="v1-amt"><p>前年度繰越金</p><h3>¥1,211,366</h3></div>
+        <div class="v1-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v1-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v1-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V2 -->
+  <div class="card-wrap">
+    <div class="card-label">2. Indigo Editorial</div>
+    <div class="v2">
+      <div class="v2-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Indigo Editorial — 和風エディトリアル</p></div>
+      <div class="v2-bd">
+        <div class="v2-amt"><p>前　年　度　繰　越　金</p><h3>¥1,211,366</h3></div>
+        <div class="v2-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v2-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v2-btn">新　規　登　録</div>
+    </div>
+  </div>
+
+  <!-- V3 -->
+  <div class="card-wrap">
+    <div class="card-label">3. Navy × Gold</div>
+    <div class="v3">
+      <div class="v3-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Navy × Gold — 伝統と格式</p></div>
+      <div class="v3-bd">
+        <div class="v3-amt"><p>前年度繰越金</p><h3>¥1,211,366</h3></div>
+        <div class="v3-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v3-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v3-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V4 -->
+  <div class="card-wrap">
+    <div class="card-label">4. Steel Blue</div>
+    <div class="v4">
+      <div class="v4-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Steel Blue — スチール & スカイ</p></div>
+      <div class="v4-bd">
+        <div class="v4-amt"><p>前年度繰越金</p><h3>¥1,211,366</h3></div>
+        <div class="v4-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v4-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v4-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V5 -->
+  <div class="card-wrap">
+    <div class="card-label">5. Split Panel Indigo</div>
+    <div class="v5">
+      <div class="v5-hd">
+        <div class="v5-hd-bar"></div>
+        <div class="v5-hd-content"><h2>🏮 仲羽田青年会 経費精算</h2><p>Split Panel — サイドストライプ</p></div>
+      </div>
+      <div class="v5-bd">
+        <div class="v5-amt"><div class="v5-amt-bar"></div><div class="v5-amt-content"><p>前年度繰越金</p><h3>¥1,211,366</h3></div></div>
+        <div class="v5-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v5-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v5-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V6 -->
+  <div class="card-wrap">
+    <div class="card-label">6. Prussian Blue</div>
+    <div class="v6">
+      <div class="v6-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Prussian Blue — プロイセン海軍</p></div>
+      <div class="v6-bd">
+        <div class="v6-amt"><div class="v6-amt-l"><p>前年度繰越金</p><h3>¥1,211,366</h3></div><div class="v6-amt-r">⚓</div></div>
+        <div class="v6-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v6-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v6-btn">新　規　登　録</div>
+    </div>
+  </div>
+
+  <!-- V7 -->
+  <div class="card-wrap">
+    <div class="card-label">7. Blueprint Light</div>
+    <div class="v7">
+      <div class="v7-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Blueprint Light — 白地+濃紺</p></div>
+      <div class="v7-bd">
+        <div class="v7-amt"><p>前年度繰越金</p><h3>¥1,211,366</h3></div>
+        <div class="v7-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v7-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v7-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V8 -->
+  <div class="card-wrap">
+    <div class="card-label">8. Midnight Isle</div>
+    <div class="v8">
+      <div class="v8-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Midnight Isle — ミッドナイト × パープル</p></div>
+      <div class="v8-bd">
+        <div class="v8-amt"><p>前年度繰越金</p><h3>¥1,211,366</h3></div>
+        <div class="v8-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v8-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v8-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V9 -->
+  <div class="card-wrap">
+    <div class="card-label">9. Cobalt Stripe</div>
+    <div class="v9">
+      <div class="v9-hd">
+        <div class="v9-stripe"></div>
+        <div class="v9-hd-content"><h2>🏮 仲羽田青年会 経費精算</h2><p>Cobalt Stripe — ストライプアクセント</p></div>
+      </div>
+      <div class="v9-bd">
+        <div class="v9-amt"><p>前年度繰越金</p><h3>¥1,211,366</h3></div>
+        <div class="v9-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v9-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v9-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V10 -->
+  <div class="card-wrap">
+    <div class="card-label">10. Watercolor Blue</div>
+    <div class="v10 v10-inner">
+      <div class="v10-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Watercolor Blue — 水彩の空</p></div>
+      <div class="v10-bd">
+        <div class="v10-amt"><p>前年度繰越金</p><h3>¥1,211,366</h3></div>
+        <div class="v10-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v10-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v10-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V11 -->
+  <div class="card-wrap">
+    <div class="card-label">11. Slate + Cyan</div>
+    <div class="v11">
+      <div class="v11-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Slate Government — スレート + シアン</p></div>
+      <div class="v11-bd">
+        <div class="v11-kv"><span class="k">前年度繰越金</span><span class="v">¥1,211,366</span></div>
+        <div class="v11-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v11-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v11-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V12 -->
+  <div class="card-wrap">
+    <div class="card-label">12. Monochrome Bold</div>
+    <div class="v12">
+      <div class="v12-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Monochrome Typography — 白 × 黒</p></div>
+      <div class="v12-bd">
+        <div class="v12-kv"><span class="k">前年度繰越金</span><span class="v">¥1,211,366</span></div>
+        <div class="v12-kv"><span class="k">今年度収入</span><span class="v">¥0</span></div>
+        <div class="v12-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v12-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v12-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V13 -->
+  <div class="card-wrap">
+    <div class="card-label">13. Cool Gray</div>
+    <div class="v13">
+      <div class="v13-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Cool Gray Official — 行政グレー</p></div>
+      <div class="v13-bd">
+        <div class="v13-kv"><span class="k">前年度繰越金</span><span class="v">¥1,211,366</span></div>
+        <div class="v13-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v13-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v13-btn">新規登録</div>
+    </div>
+  </div>
+
+  <!-- V14 -->
+  <div class="card-wrap">
+    <div class="card-label">14. Data Dashboard</div>
+    <div class="v14">
+      <div class="v14-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Data Dashboard — 管理 × エメラルド</p></div>
+      <div class="v14-bd">
+        <div class="v14-stat"><div class="v14-stat-l"><p>前年度繰越金</p><h3>¥1,211,366</h3></div><div class="v14-stat-r">💹</div></div>
+        <div class="v14-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v14-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v14-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V15 -->
+  <div class="card-wrap">
+    <div class="card-label">15. Navy + Blush</div>
+    <div class="v15">
+      <div class="v15-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Navy + Blush — ネイビー × 桜ピンク</p></div>
+      <div class="v15-bd">
+        <div class="v15-kv"><p>前年度繰越金</p><h3>¥1,211,366</h3></div>
+        <div class="v15-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v15-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v15-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V16 -->
+  <div class="card-wrap">
+    <div class="card-label">16. Soft Linen</div>
+    <div class="v16">
+      <div class="v16-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Soft Linen — リネン × ネイビー</p></div>
+      <div class="v16-bd">
+        <div class="v16-kv"><p>前年度繰越金</p><h3>¥1,211,366</h3></div>
+        <div class="v16-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v16-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v16-btn">新 規 登 録</div>
+    </div>
+  </div>
+
+  <!-- V17 -->
+  <div class="card-wrap">
+    <div class="card-label">17. Finance Bold</div>
+    <div class="v17">
+      <div class="v17-hd"><h2>🏮 仲羽田青年会 経費精算 <span class="v17-hd-badge">LIVE</span></h2><p>Finance Bold — 金融ダッシュボード</p></div>
+      <div class="v17-bd">
+        <div class="v17-kv">
+          <div class="v17-kv-item"><p>前年度繰越</p><h4>¥1,211,366</h4></div>
+          <div class="v17-kv-divider"></div>
+          <div class="v17-kv-item"><p>今年度支出</p><h4>¥0</h4></div>
+        </div>
+        <div class="v17-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v17-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v17-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V18 -->
+  <div class="card-wrap">
+    <div class="card-label">18. Formal Report</div>
+    <div class="v18">
+      <div class="v18-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Formal Report — 正式書類スタイル</p></div>
+      <div class="v18-bd">
+        <div class="v18-table">
+          <div class="v18-tr"><span class="k">前年度繰越金</span><span class="v">¥1,211,366</span></div>
+          <div class="v18-tr"><span class="k">今年度収入合計</span><span class="v">¥0</span></div>
+          <div class="v18-tr"><span class="k">今年度支出合計</span><span class="v">¥0</span></div>
+          <div class="v18-tr"><span class="k">次年度繰越（見込）</span><span class="v">¥1,211,366</span></div>
+        </div>
+        <div class="v18-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v18-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v18-btn">新　規　登　録</div>
+    </div>
+  </div>
+
+  <!-- V19 -->
+  <div class="card-wrap">
+    <div class="card-label">19. Oceanic Admin</div>
+    <div class="v19">
+      <div class="v19-hd"><h2>🏮 仲羽田青年会 経費精算</h2><p>Oceanic Admin — 海蒼クリーン</p></div>
+      <div class="v19-bd">
+        <div class="v19-kv"><p>前年度繰越金</p><h3>¥1,211,366</h3></div>
+        <div class="v19-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v19-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v19-btn">新規登録 →</div>
+    </div>
+  </div>
+
+  <!-- V20 -->
+  <div class="card-wrap">
+    <div class="card-label">20. Classic Navy Cream</div>
+    <div class="v20">
+      <div class="v20-hd">
+        <div class="v20-top-bar"></div>
+        <div class="v20-hd-content"><h2>🏮 仲羽田青年会 経費精算</h2><p>Classic Navy + Cream — 格式と温もり</p></div>
+      </div>
+      <div class="v20-bd">
+        <div class="v20-kv"><p>前　年　度　繰　越　金</p><h3>¥1,211,366</h3></div>
+        <div class="v20-row"><div class="mc-icon">💸</div><div><h3>支出を登録</h3><p>領収書を撮影して経費申請</p></div><span class="mc-chevron">›</span></div>
+        <div class="v20-row"><div class="mc-icon">💰</div><div><h3>収入を登録</h3><p>奉納・会費などの入金を記録</p></div><span class="mc-chevron">›</span></div>
+      </div>
+      <div class="v20-btn">新　規　登　録</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

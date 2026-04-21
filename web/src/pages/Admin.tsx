@@ -123,6 +123,14 @@ export function Admin() {
     }
   }, [authenticated, activeTab, fetchReport]);
 
+  // 年度変更時に自動リフレッシュ
+  useEffect(() => {
+    if (authenticated && activeTab === 'report') {
+      fetchReport();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reportYear]);
+
   // チェックボックス操作
   const toggleId = (id: string) => {
     setSelectedIds((prev) => {
@@ -541,7 +549,7 @@ export function Admin() {
         <div className="flex-1 px-5 py-5">
           {/* 年度選択 */}
           <div className="flex items-center gap-3 mb-5">
-            <label className="text-sm font-bold text-stone-600">年度:</label>
+            <label className="text-sm font-bold" style={{ color: '#1E3A5F' }}>年度:</label>
             <select
               value={reportYear}
               onChange={(e) => setReportYear(e.target.value)}
@@ -553,9 +561,8 @@ export function Admin() {
               })}
             </select>
             <button onClick={fetchReport}
-              className="text-xs font-medium text-white px-3 py-1.5 rounded-lg
-                bg-stone-700 active:bg-stone-800 transition-colors">
-              更新
+              style={{ fontSize: '0.75rem', fontWeight: 700, color: 'white', padding: '0.4rem 1rem', borderRadius: 8, background: 'linear-gradient(135deg, #1E3A5F, #3B72B4)', border: 'none', cursor: 'pointer' }}>
+              {reportLoading ? '取得中...' : '🔄 更新'}
             </button>
           </div>
 

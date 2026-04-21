@@ -901,7 +901,7 @@ function getAccountingReport(payload) {
   var expenseTotal = 0;
 
   // 年度フィルタ（指定があれば）
-  var fiscalYear = payload.fiscalYear || '';
+  var fiscalYear = String(payload.fiscalYear || '').trim();
 
   // ヘッダー行をスキップ
   // 列順: A:ID(0), B:登録日時(1), C:種別(2), D:日付(3), E:提出者(4), F:事業区分(5),
@@ -909,17 +909,28 @@ function getAccountingReport(payload) {
   //       L:支払状況(11), M:精算日(12), N:備考(13), O:OCR信頼度(14)
   for (var i = 1; i < data.length; i++) {
     var row = data[i];
-    var rowType = String(row[2]).trim();  // 種別
-    var rowDate = String(row[3]);         // 日付
+    var rowType = String(row[2]).trim();     // 種別
+    var rowDateRaw = row[3];                 // 日付（Dateオブジェクトまたは文字列）
     var rowCategory = String(row[5]).trim(); // 事業区分
-    var rowAmount = Number(row[6]);       // 金額
+    var rowAmount = Number(row[6]);          // 金額
 
-    // 年度フィルタ（YYYY 形式で前方一致）
-    if (fiscalYear && !rowDate.startsWith(fiscalYear)) {
+    // ★ 日付を YYYY 形式に正規化（Spreadsheetの日付はDateオブジェクトで返る場合がある）
+    var rowYear = '';
+    if (rowDateRaw instanceof Date) {
+      rowYear = String(rowDateRaw.getFullYear());
+    } else {
+      var dateStr = String(rowDateRaw).trim();
+      // "2026/04/21" または "2026-04-21" いずれも最初の4文字が年
+      rowYear = dateStr.substring(0, 4);
+    }
+
+    // 年度フィルタ
+    if (fiscalYear && rowYear !== fiscalYear) {
       continue;
     }
 
-    if (isNaN(rowAmount) || rowAmount <= 0) continue;
+    if (!rowType || isNaN(rowAmount) || rowAmount <= 0) continue;
+    if (!rowCategory) continue;
 
     if (rowType === '収入') {
       incomeTotal += rowAmount;
@@ -941,7 +952,7 @@ function getAccountingReport(payload) {
     nextCarryover: nextCarryover,
     incomeByCategory: incomeByCategory,
     expenseByCategory: expenseByCategory,
-    grandTotal: carryoverBalance + incomeTotal  // 前年度繰越 + 今年度収入
+    grandTotal: carryoverBalance + incomeTotal
   };
 }
 

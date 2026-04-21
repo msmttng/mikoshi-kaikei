@@ -950,7 +950,7 @@ function getAccountingReport(payload) {
  * @param {Object} payload - { adminKey: string, fiscalYear: string }
  */
 function generateReportSheet(payload) {
-  verifyAdmin(payload.adminKey);
+  validateAdminKey(payload.adminKey);
   
   var fiscalYear = payload.fiscalYear;
   if (!fiscalYear) {

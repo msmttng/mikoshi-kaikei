@@ -51,33 +51,38 @@ export function Home() {
 
   return (
     <div className="page-enter flex-1 flex flex-col">
-      {/* ヘッダー */}
-      <header className="px-5 pt-8 pb-4">
-        <div className="flex items-center gap-3 mb-1">
+      {/* ヘッダー（Indigo Slate Pro） */}
+      <header style={{
+        background: 'linear-gradient(135deg, #1E3A5F 0%, #263C61 100%)',
+        borderBottom: '3px solid #3B72B4',
+        padding: '1.25rem 1.25rem 1rem'
+      }}>
+        <div className="flex items-center gap-3">
           <span className="text-3xl">🏮</span>
           <div>
-            <h1 className="text-xl font-bold text-matsuri-800 tracking-tight">
+            <h1 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#E0EAFF', letterSpacing: '-0.01em' }}>
               仲羽田青年会 経費精算サイト
             </h1>
+            <p style={{ fontSize: '0.68rem', color: '#7FA8D4', marginTop: '1px' }}>Nakabata Seinenkai</p>
           </div>
         </div>
       </header>
 
       {/* 繰越金カード */}
       {masters.carryoverBalance > 0 && (
-        <div className="px-5 mb-4">
-          <div className="card px-5 py-4 bg-gradient-to-r from-stone-50 to-white
-            border border-stone-200/60">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-[11px] font-semibold text-stone-400 uppercase tracking-wider">
-                  前年度繰越金
-                </p>
-                <p className="text-2xl font-bold text-stone-800 amount-display mt-0.5">
-                  {formatAmount(masters.carryoverBalance)}
-                </p>
-              </div>
-            </div>
+        <div className="px-5 mb-4 mt-4">
+          <div style={{
+            background: '#E8F0FE',
+            borderRadius: '12px',
+            borderLeft: '4px solid #3B72B4',
+            padding: '0.85rem 1.1rem'
+          }}>
+            <p style={{ fontSize: '0.65rem', fontWeight: 600, color: '#3B72B4', letterSpacing: '0.06em' }}>
+              前年度繰越金
+            </p>
+            <p className="amount-display" style={{ fontSize: '1.5rem', fontWeight: 800, color: '#1E3A5F', marginTop: '2px', letterSpacing: '-0.02em' }}>
+              {formatAmount(masters.carryoverBalance)}
+            </p>
           </div>
         </div>
       )}
@@ -87,45 +92,39 @@ export function Home() {
         {/* 支出登録ボタン */}
         <button
           onClick={() => navigate('/expense')}
-          className="btn-ripple card w-full p-5 flex items-center gap-4 
-            active:scale-[0.98] transition-transform"
+          className="btn-ripple w-full flex items-center gap-4 active:scale-[0.98] transition-transform"
+          style={{ background: 'white', border: '1px solid #D8E3F0', borderRadius: '12px', padding: '1rem', boxShadow: '0 2px 10px rgba(30,58,95,0.06)' }}
         >
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-matsuri-500 to-matsuri-700 
-            flex items-center justify-center shadow-md shadow-matsuri-200">
-            <span className="text-2xl">📷</span>
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #3B72B4, #1E3A5F)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <span className="text-xl">📷</span>
           </div>
           <div className="text-left flex-1">
-            <div className="text-base font-bold text-stone-800">支出を登録</div>
-            <div className="text-xs text-stone-500 mt-0.5">
-              領収書を撮影して経費申請
-            </div>
+            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#1E3A5F' }}>支出を登録</div>
+            <div style={{ fontSize: '0.72rem', color: '#5A7FA8', marginTop: '2px' }}>領収書を撮影して経費申請</div>
           </div>
-          <span className="text-stone-300 text-lg">›</span>
+          <span style={{ color: '#B8D0EB', fontSize: '1.1rem' }}>›</span>
         </button>
 
         {/* 収入登録ボタン */}
         <button
           onClick={() => navigate('/income')}
-          className="btn-ripple card w-full p-5 flex items-center gap-4 
-            active:scale-[0.98] transition-transform"
+          className="btn-ripple w-full flex items-center gap-4 active:scale-[0.98] transition-transform"
+          style={{ background: 'white', border: '1px solid #D8E3F0', borderRadius: '12px', padding: '1rem', boxShadow: '0 2px 10px rgba(30,58,95,0.06)' }}
         >
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-chochin to-chochin-light 
-            flex items-center justify-center shadow-md shadow-amber-100">
-            <span className="text-2xl">💴</span>
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: 'linear-gradient(135deg, #5A90CC, #3B72B4)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <span className="text-xl">💴</span>
           </div>
           <div className="text-left flex-1">
-            <div className="text-base font-bold text-stone-800">収入を登録</div>
-            <div className="text-xs text-stone-500 mt-0.5">
-              奉納・会費などの入金を記録
-            </div>
+            <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#1E3A5F' }}>収入を登録</div>
+            <div style={{ fontSize: '0.72rem', color: '#5A7FA8', marginTop: '2px' }}>奉納・会費などの入金を記録</div>
           </div>
-          <span className="text-stone-300 text-lg">›</span>
+          <span style={{ color: '#B8D0EB', fontSize: '1.1rem' }}>›</span>
         </button>
       </div>
 
       {/* 最近の提出 */}
       <div className="px-5 mt-6 flex-1">
-        <h2 className="text-sm font-bold text-stone-600 mb-3 flex items-center gap-1.5">
+        <h2 className="text-sm font-bold mb-3 flex items-center gap-1.5" style={{ color: '#3B72B4' }}>
           <span>📝</span> 最近の提出
         </h2>
 

@@ -1,10 +1,180 @@
 /* ===================================
-   神輿会 経費精算アプリ — グローバルスタイル
-   Tailwind v4 + カスタムテーマ
+   仲羽田青年会 経費精算アプリ
+   Design: Indigo Slate Pro (v2)
    =================================== */
 
-/* --- Google Fonts（@import は先頭に配置必須） --- */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;900&display=swap');
+/* --- Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
+
+@import "tailwindcss";
+
+/* --- CSS 変数（テーマカラー）--- */
+@theme {
+  /* Indigo Slate アクセントカラー */
+  --color-matsuri-900: #0D1B2E;
+  --color-matsuri-800: #1E3A5F;
+  --color-matsuri-700: #263C61;
+  --color-matsuri-600: #2E5585;
+  --color-matsuri-500: #3B72B4;
+  --color-matsuri-400: #5A90CC;
+  --color-matsuri-300: #7FA8D4;
+  --color-matsuri-200: #B8D0EB;
+  --color-matsuri-100: #D8E8F5;
+  --color-matsuri-50:  #EEF4FB;
+
+  /* 背景 */
+  --color-washi:      #F8F9FC;
+  --color-washi-dark: #F0F3F8;
+
+  /* ナビorボタン補色 */
+  --color-chochin:       #3B72B4;
+  --color-chochin-light: #5A90CC;
+
+  --color-gold:       #3B72B4;
+  --color-gold-light: #7FA8D4;
+
+  --color-settled:   #1E6B3A;
+  --color-unsettled: #B43B3B;
+
+  --font-sans: 'Inter', 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+}
+
+/* --- リセット --- */
+* { -webkit-tap-highlight-color: transparent; }
+
+html {
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-washi);
+  min-height: 100dvh;
+  color: #1a2233;
+}
+
+#root {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- カードスタイル --- */
+.card {
+  background: #FFFFFF;
+  border: 1px solid #D8E3F0;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(30, 58, 95, 0.06), 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* --- フォーム入力 --- */
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid #C8D8EC;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: var(--font-sans);
+  background: #FFFFFF;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+  color: #1a2233;
+}
+
+.form-input:focus {
+  border-color: var(--color-matsuri-500);
+  box-shadow: 0 0 0 3px rgba(59, 114, 180, 0.14);
+}
+
+.form-input::placeholder { color: #8BA8C8; }
+
+/* --- セレクトボックス --- */
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+/* --- ボタンリップル --- */
+.btn-ripple { position: relative; overflow: hidden; }
+.btn-ripple::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.35) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.btn-ripple:active::after { opacity: 1; transition: opacity 0s; }
+
+/* --- トースト通知 --- */
+.toast-enter { animation: toastSlideIn 0.35s cubic-bezier(0.21, 1.02, 0.73, 1); }
+.toast-exit  { animation: toastSlideOut 0.3s ease-in forwards; }
+
+@keyframes toastSlideIn {
+  from { transform: translateY(100%) scale(0.95); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes toastSlideOut {
+  to { transform: translateY(100%) scale(0.95); opacity: 0; }
+}
+
+/* --- ページ遷移 --- */
+.page-enter { animation: pageSlideIn 0.28s ease-out; }
+@keyframes pageSlideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* --- スピナー --- */
+.spinner {
+  border: 3px solid rgba(59, 114, 180, 0.15);
+  border-top-color: var(--color-matsuri-500);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- ステータスバッジ --- */
+.badge-unsettled {
+  background: #FEE8E8;
+  color: #B43B3B;
+  border: 1px solid rgba(180,59,59,0.2);
+}
+.badge-settled {
+  background: #E6F4EC;
+  color: #1E6B3A;
+  border: 1px solid rgba(30,107,58,0.2);
+}
+
+/* --- ボトムナビゲーション --- */
+.bottom-nav {
+  background: rgba(255,255,255,0.96);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid #D8E3F0;
+  box-shadow: 0 -2px 16px rgba(30,58,95,0.06);
+}
+
+/* --- iOS セーフエリア --- */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
+  .page-content { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+}
+
+/* --- 金額表示 --- */
+.amount-display {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum';
+}
+
 
 @import "tailwindcss";
 

@@ -45,6 +45,8 @@ export default defineConfig({
       workbox: {
         // オフライン時はシェルのみキャッシュ
         globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
+        // user_manual.html はSPAのリダイレクト対象外にする
+        navigateFallbackDenylist: [/^\/mikoshi-kaikei\/user_manual\.html/],
         runtimeCaching: [
           {
             // Google Fonts のキャッシュ

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>仲羽田青年会 経費精算</title>
+    <script type="text/javascript">
+      // Github Pages SPA Hack (保存とリダイレクト)
+      // アクセスされたパスを sessionStorage に保存し、ベース URL にリダイレクトする
+      var l = window.location;
+      var repoName = '/mikoshi-kaikei';
+      
+      // /mikoshi-kaikei/expense のようなパスから /mikoshi-kaikei を除く
+      var path = l.pathname.replace(repoName, '');
+      
+      // 保存するリダイレクト先 (例: /mikoshi-kaikei/expense)
+      sessionStorage.redirect = repoName + path + l.search + l.hash;
+      
+      // ルートにリダイレクト
+      window.location.replace(repoName + '/');
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

@@ -95,3 +95,32 @@ export const DEFAULT_MASTERS: MasterData = {
   ],
   carryoverBalance: 0,
 };
+
+// ===================================
+// オフラインキュー保存
+// ===================================
+import type { SubmitPayload } from './types';
+
+const OFFLINE_QUEUE_KEY = 'mikoshi_offline_queue';
+
+export function getOfflineQueue(): SubmitPayload[] {
+  try {
+    const raw = localStorage.getItem(OFFLINE_QUEUE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveToOfflineQueue(payload: SubmitPayload) {
+  const queue = getOfflineQueue();
+  queue.push(payload);
+  localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queue));
+}
+
+export function clearOfflineQueue() {
+  localStorage.removeItem(OFFLINE_QUEUE_KEY);
+}
+export function setOfflineQueue(queue: SubmitPayload[]) {
+  localStorage.setItem(OFFLINE_QUEUE_KEY, JSON.stringify(queue));
+}

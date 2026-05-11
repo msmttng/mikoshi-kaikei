@@ -5,9 +5,11 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getMyHistory, getMasters } from '../lib/api';
-import { getSubmitter, getCachedMasters, saveMasters, DEFAULT_MASTERS } from '../lib/storage';
-import type { LedgerEntry, MasterData } from '../lib/types';
+import { getMyHistory, getMasters, submitEntry } from '../lib/api';
+import { getSubmitter, getCachedMasters, saveMasters, DEFAULT_MASTERS, getOfflineQueue, setOfflineQueue } from '../lib/storage';
+import { Spinner } from '../components/Spinner';
+import { Toast } from '../components/Toast';
+import type { LedgerEntry, MasterData, SubmitPayload } from '../lib/types';
 
 const formatDateStr = (dStr: string) => {
   const d = new Date(dStr);
@@ -22,6 +24,10 @@ export function Home() {
   const [masters, setMasters] = useState<MasterData>(
     getCachedMasters() || DEFAULT_MASTERS
   );
+  const [offlineQueue, setOfflineQueueState] = useState<SubmitPayload[]>(getOfflineQueue());
+  const [syncing, setSyncing] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  
   const submitter = getSubmitter();
 
   // マスタデータ取得（繰越金を含む）
@@ -49,6 +55,38 @@ export function Home() {
 
   const hasSetup = masters.submitters.length > 0;
 
+  const handleSyncOfflineQueue = async () => {
+    if (!navigator.onLine) {
+      setToast({ message: 'オフラインです。電波の良いところで再試行してください。', type: 'error' });
+      return;
+    }
+    
+    setSyncing(true);
+    let successCount = 0;
+    const remainingQueue = [...offlineQueue];
+    
+    try {
+      for (let i = 0; i < offlineQueue.length; i++) {
+        await submitEntry(offlineQueue[i]);
+        successCount++;
+        remainingQueue.shift(); // 成功したものを先頭から取り除く
+      }
+      setToast({ message: `${successCount}件のデータを送信しました！`, type: 'success' });
+    } catch (err) {
+      setToast({ message: `送信中にエラーが発生しました（${successCount}件成功）`, type: 'error' });
+    } finally {
+      setOfflineQueueState(remainingQueue);
+      setOfflineQueue(remainingQueue);
+      setSyncing(false);
+      // 送信成功したら履歴をリロード
+      if (submitter) {
+        getMyHistory(submitter)
+          .then((items) => setRecentItems(items.slice(0, 5)))
+          .catch(() => {});
+      }
+    }
+  };
+
   return (
     <div className="page-enter flex-1 flex flex-col">
       {/* ヘッダー（Indigo Slate Pro） */}
@@ -67,6 +105,29 @@ export function Home() {
           </div>
         </div>
       </header>
+
+      {/* オフライン未送信キューのバナー */}
+      {offlineQueue.length > 0 && (
+        <div className="px-5 mt-4">
+          <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-4 shadow-sm flex flex-col gap-3">
+            <div className="flex items-center gap-2 text-amber-800 font-bold text-sm">
+              <span>⚠️</span>
+              <span>未送信のデータが {offlineQueue.length} 件あります</span>
+            </div>
+            <p className="text-xs text-amber-700 leading-snug">
+              電波の悪い場所で登録されたデータです。<br/>
+              通信環境の良い場所で送信ボタンを押してください。
+            </p>
+            <button
+              onClick={handleSyncOfflineQueue}
+              disabled={syncing}
+              className="w-full py-2.5 bg-amber-500 text-white rounded-lg font-bold text-sm shadow-md active:scale-95 transition-transform flex items-center justify-center gap-2"
+            >
+              {syncing ? <Spinner size="sm" /> : '📤 今すぐ送信する'}
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* 繰越金カード */}
       {masters.carryoverBalance > 0 && (
@@ -192,6 +253,14 @@ export function Home() {
 
       {/* フッター余白（BottomNav 分） */}
       <div className="h-20" />
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

@@ -43,7 +43,8 @@ export interface SubmitPayload {
 /** 管理画面からの更新用ペイロード */
 export interface EntryUpdatePayload {
   id: string;
-  adminKey: string;
+  adminKey?: string;
+  submitter_auth?: string; // 提出者本人が更新する場合の認証用
   date?: string;
   submitter?: string;
   category?: string;

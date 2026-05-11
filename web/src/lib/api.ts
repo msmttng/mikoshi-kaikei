@@ -76,14 +76,19 @@ export async function revertToUnsettled(ids: string[], adminKey: string): Promis
   return callApi<{ count: number }>('revertToUnsettled', { ids, adminKey });
 }
 
-/** 指定IDのデータを削除（管理者用） */
-export async function deleteEntry(id: string, adminKey: string): Promise<{ success: boolean }> {
-  return callApi<{ success: boolean }>('deleteEntry', { id, adminKey });
-}
-
-/** 指定IDのデータを更新（管理者用） */
+/** 指定IDのデータを更新（管理者または本人用） */
 export async function updateEntry(payload: import('./types').EntryUpdatePayload): Promise<{ success: boolean }> {
   return callApi<{ success: boolean }>('updateEntry', payload as unknown as Record<string, unknown>);
+}
+
+/** 指定IDのデータを削除（管理者または本人用） */
+export async function deleteEntry(id: string, adminKey?: string, submitter?: string): Promise<{ success: boolean }> {
+  return callApi<{ success: boolean }>('deleteEntry', { id, adminKey, submitter });
+}
+
+/** 精算済みデータを過去台帳へアーカイブ（管理者用） */
+export async function archiveSettled(adminKey: string, fiscalYear?: string): Promise<{ count: number; message: string }> {
+  return callApi<{ count: number; message: string }>('archiveSettled', { adminKey, fiscalYear });
 }
 
 /** マスターリストの更新（管理者用） */

@@ -5,7 +5,7 @@
 // 機能: 未精算一覧 + 一括精算 + 会計サマリー + スプレッドシートリンク
 
 import { useState, useEffect, useCallback } from 'react';
-import { getUnsettled, getSettled, markSettled, revertToUnsettled, getReport, deleteEntry, updateEntry, generateReportSheet } from '../lib/api';
+import { getUnsettled, getSettled, markSettled, revertToUnsettled, getReport, deleteEntry, updateEntry, generateReportSheet, archiveSettled } from '../lib/api';
 import { getAdminKey, saveAdminKey, getCachedMasters } from '../lib/storage';
 import { Spinner } from '../components/Spinner';
 import { Toast } from '../components/Toast';
@@ -314,6 +314,23 @@ export function Admin() {
       fetchSettled();
     } catch (err) {
       setToast({ message: err instanceof Error ? err.message : '削除失敗', type: 'error' });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  // アーカイブ処理
+  const handleArchive = async () => {
+    if (!adminKey) return;
+    if (!window.confirm(`${settledYear ? settledYear + '年度の' : '全ての'}精算済みデータを過去台帳へ移動（アーカイブ）しますか？\n（※現在の台帳からは削除されます）`)) return;
+    
+    setProcessing(true);
+    try {
+      const res = await archiveSettled(adminKey, settledYear);
+      setToast({ message: res.message, type: 'success' });
+      fetchSettled();
+    } catch (err) {
+      setToast({ message: err instanceof Error ? err.message : 'アーカイブ失敗', type: 'error' });
     } finally {
       setProcessing(false);
     }
@@ -678,12 +695,19 @@ export function Admin() {
             <div className="flex-1 text-xs text-stone-400">
               {settledSelectedIds.size > 0 ? `${settledSelectedIds.size}件 選択中` : `${settledItems.length}件`}
             </div>
-            {settledSelectedIds.size > 0 && (
+            {settledSelectedIds.size > 0 ? (
               <button onClick={handleRevert}
                 disabled={processing}
                 className="text-xs font-bold text-white px-3 py-1.5 rounded-lg active:scale-95 transition-all disabled:opacity-40"
                 style={{ background: 'linear-gradient(135deg, #B08030, #E0A030)' }}>
                 ↩ 未精算に戻す
+              </button>
+            ) : (
+              <button onClick={handleArchive}
+                disabled={processing || settledItems.length === 0}
+                className="text-xs font-bold text-white px-3 py-1.5 rounded-lg active:scale-95 transition-all disabled:opacity-40"
+                style={{ background: 'linear-gradient(135deg, #4b5563, #6b7280)' }}>
+                📥 アーカイブ
               </button>
             )}
           </div>

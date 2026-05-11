@@ -4,10 +4,11 @@
 // 自分の提出履歴一覧（最新順）
 // 各行に支払状況バッジ、行タップで詳細モーダル
 
-import { useState, useEffect } from 'react';
-import { getMyHistory } from '../lib/api';
+import { useState, useEffect, useCallback } from 'react';
+import { getMyHistory, deleteEntry, updateEntry } from '../lib/api';
 import { getSubmitter, getCachedMasters, DEFAULT_MASTERS } from '../lib/storage';
 import { Spinner } from '../components/Spinner';
+import { Toast } from '../components/Toast';
 import type { LedgerEntry } from '../lib/types';
 
 const formatDateStr = (dStr: string) => {
@@ -22,10 +23,15 @@ export function History() {
   const [selectedSubmitter, setSelectedSubmitter] = useState(getSubmitter());
   const [selectedItem, setSelectedItem] = useState<LedgerEntry | null>(null);
 
+  const [editingItem, setEditingItem] = useState<LedgerEntry | null>(null);
+  const [editData, setEditData] = useState<Partial<LedgerEntry>>({});
+  const [processing, setProcessing] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+
   const masters = getCachedMasters() || DEFAULT_MASTERS;
 
   // 履歴を取得
-  useEffect(() => {
+  const fetchHistory = useCallback(() => {
     if (!selectedSubmitter) {
       setLoading(false);
       return;
@@ -36,6 +42,45 @@ export function History() {
       .catch(() => setItems([]))
       .finally(() => setLoading(false));
   }, [selectedSubmitter]);
+
+  useEffect(() => {
+    fetchHistory();
+  }, [fetchHistory]);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('このデータを完全に削除しますか？')) return;
+    setProcessing(true);
+    try {
+      await deleteEntry(id, undefined, selectedSubmitter);
+      setToast({ message: '削除しました', type: 'success' });
+      setSelectedItem(null);
+      fetchHistory();
+    } catch (err) {
+      setToast({ message: err instanceof Error ? err.message : '削除失敗', type: 'error' });
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!selectedItem) return;
+    setProcessing(true);
+    try {
+      await updateEntry({
+        id: selectedItem.id,
+        submitter_auth: selectedSubmitter,
+        ...editData
+      });
+      setToast({ message: '修正を保存しました', type: 'success' });
+      setEditingItem(null);
+      setSelectedItem(null);
+      fetchHistory();
+    } catch (err) {
+      setToast({ message: err instanceof Error ? err.message : '保存失敗', type: 'error' });
+    } finally {
+      setProcessing(false);
+    }
+  };
 
   const formatAmount = (n: number) => `¥${n.toLocaleString()}`;
 
@@ -137,7 +182,7 @@ export function History() {
       {selectedItem && (
         <div
           className="fixed inset-0 z-50 bg-black/40 flex items-end justify-center"
-          onClick={() => setSelectedItem(null)}
+          onClick={() => { setSelectedItem(null); setEditingItem(null); }}
         >
           <div
             className="w-full max-w-[480px] bg-white rounded-t-3xl px-5 pt-6 pb-8 
@@ -146,9 +191,11 @@ export function History() {
           >
             {/* モーダルヘッダー */}
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-stone-800">詳細</h3>
+              <h3 className="text-lg font-bold text-stone-800">
+                {editingItem ? '内容を修正' : '詳細'}
+              </h3>
               <button
-                onClick={() => setSelectedItem(null)}
+                onClick={() => { setSelectedItem(null); setEditingItem(null); }}
                 className="w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center 
                   text-stone-500 text-sm active:bg-stone-200"
               >
@@ -157,51 +204,114 @@ export function History() {
             </div>
 
             {/* 詳細内容 */}
-            <div className="space-y-3">
-              <DetailRow label="種別" value={selectedItem.type} />
-              <DetailRow label="日付" value={selectedItem.date} />
-              <DetailRow label="事業区分" value={selectedItem.category} />
-              <DetailRow
-                label="金額"
-                value={formatAmount(selectedItem.amount)}
-                className={selectedItem.type === '支出' ? 'text-matsuri-600 font-bold' : 'text-green-700 font-bold'}
-              />
-              {selectedItem.quantity && (
-                <DetailRow label="数量" value={selectedItem.quantity} />
-              )}
-              {selectedItem.description && (
-                <DetailRow label="但し書き" value={selectedItem.description} />
-              )}
-              {selectedItem.payee && (
-                <DetailRow label="支払先" value={selectedItem.payee} />
-              )}
-              <DetailRow label="状態" value={selectedItem.status} />
-              {selectedItem.note && (
-                <DetailRow label="備考" value={selectedItem.note} />
-              )}
+            {editingItem ? (
+              <div className="space-y-3">
+                <input type="date" className="form-input text-sm p-2 w-full"
+                  value={editData.date || ''} onChange={e => setEditData({...editData, date: e.target.value})} />
+                
+                <select className="form-input text-sm p-2 w-full"
+                  value={editData.category || ''} onChange={e => setEditData({...editData, category: e.target.value})}>
+                  <option value="">事業区分</option>
+                  {(selectedItem.type === '支出' ? masters.expenseCategories : masters.incomeCategories)?.map(c => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
 
-              {/* 領収書画像 */}
-              {selectedItem.receiptUrl && (
-                <div className="pt-2">
-                  <p className="text-xs font-semibold text-stone-500 mb-2">領収書</p>
-                  <a
-                    href={selectedItem.receiptUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block card p-3 text-center text-sm text-matsuri-600 font-medium
-                      active:bg-matsuri-50 transition-colors"
-                  >
-                    📄 領収書画像を開く
-                  </a>
+                <input type="number" className="form-input text-sm p-2 w-full" placeholder="金額"
+                  value={editData.amount || ''} onChange={e => setEditData({...editData, amount: Number(e.target.value)})} />
+                
+                <input type="text" className="form-input text-sm p-2 w-full" placeholder="数量"
+                  value={editData.quantity || ''} onChange={e => setEditData({...editData, quantity: e.target.value})} />
+                
+                <input type="text" className="form-input text-sm p-2 w-full" placeholder="但し書き"
+                  value={editData.description || ''} onChange={e => setEditData({...editData, description: e.target.value})} />
+                
+                <input type="text" className="form-input text-sm p-2 w-full" placeholder="支払先"
+                  value={editData.payee || ''} onChange={e => setEditData({...editData, payee: e.target.value})} />
+                
+                <textarea className="form-input text-sm p-2 w-full" placeholder="備考" rows={2}
+                  value={editData.note || ''} onChange={e => setEditData({...editData, note: e.target.value})} />
+
+                <div className="flex gap-2 pt-2">
+                  <button onClick={() => setEditingItem(null)} disabled={processing}
+                    className="flex-1 py-2 bg-stone-100 rounded-lg text-sm font-bold">
+                    キャンセル
+                  </button>
+                  <button onClick={handleUpdate} disabled={processing}
+                    className="flex-1 py-2 bg-matsuri-600 text-white rounded-lg text-sm font-bold">
+                    保存する
+                  </button>
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <DetailRow label="種別" value={selectedItem.type} />
+                <DetailRow label="日付" value={selectedItem.date} />
+                <DetailRow label="事業区分" value={selectedItem.category} />
+                <DetailRow
+                  label="金額"
+                  value={formatAmount(selectedItem.amount)}
+                  className={selectedItem.type === '支出' ? 'text-matsuri-600 font-bold' : 'text-green-700 font-bold'}
+                />
+                {selectedItem.quantity && (
+                  <DetailRow label="数量" value={selectedItem.quantity} />
+                )}
+                {selectedItem.description && (
+                  <DetailRow label="但し書き" value={selectedItem.description} />
+                )}
+                {selectedItem.payee && (
+                  <DetailRow label="支払先" value={selectedItem.payee} />
+                )}
+                <DetailRow label="状態" value={selectedItem.status} />
+                {selectedItem.note && (
+                  <DetailRow label="備考" value={selectedItem.note} />
+                )}
+
+                {/* 領収書画像 */}
+                {selectedItem.receiptUrl && (
+                  <div className="pt-2">
+                    <p className="text-xs font-semibold text-stone-500 mb-2">領収書</p>
+                    <a
+                      href={selectedItem.receiptUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block card p-3 text-center text-sm text-matsuri-600 font-medium
+                        active:bg-matsuri-50 transition-colors"
+                    >
+                      📄 領収書画像を開く
+                    </a>
+                  </div>
+                )}
+
+                {/* アクションボタン (未精算の場合のみ) */}
+                {selectedItem.status === '未精算' && (
+                  <div className="flex gap-3 pt-4 border-t border-stone-100">
+                    <button onClick={() => { setEditingItem(selectedItem); setEditData({...selectedItem}); }}
+                      className="flex-1 py-2 bg-stone-100 text-stone-700 rounded-xl text-sm font-bold active:scale-95 transition-all">
+                      ✏️ 修正する
+                    </button>
+                    <button onClick={() => handleDelete(selectedItem.id)} disabled={processing}
+                      className="flex-1 py-2 bg-red-50 text-red-600 rounded-xl text-sm font-bold active:scale-95 transition-all disabled:opacity-50">
+                      🗑️ 削除する
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
 
       {/* BottomNav 用の余白 */}
       <div className="h-20" />
+
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
     </div>
   );
 }

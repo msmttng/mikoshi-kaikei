@@ -60,6 +60,9 @@ function doPost(e) {
       case 'updateCarryoverBalance':
         result = updateCarryoverBalance(payload);
         break;
+      case 'archiveSettled':
+        result = archiveSettled(payload);
+        break;
       default:
         throw new Error('不明なアクション: ' + action);
     }
@@ -151,6 +154,7 @@ function getMasters() {
     }
 
     // セクション内のデータ行
+    // B列に値がある場合（更新後の正規フォーマット）
     if (!label && value) {
       if (currentSection === 'submitters') submitters.push(value);
       else if (currentSection === 'expenseCategories') {
@@ -162,37 +166,24 @@ function getMasters() {
       else if (currentSection === 'descriptions') descriptions.push(value);
       else if (currentSection === 'payees') payees.push(value);
     }
-    // B列が空でA列に値がある場合
+    // A列に値があってB列が空の場合（旧フォーマット互換: updateMasterList修正前のデータ）
+    // ただしセクションヘッダー行自体は除外済み（上のif-continueで処理済み）
     if (label && !value && currentSection) {
-      if (currentSection === 'submitters') submitters.push(label);
-      else if (currentSection === 'expenseCategories') expenseCategories.push(label);
-      else if (currentSection === 'incomeCategories') incomeCategories.push(label);
-      else if (currentSection === 'descriptions') descriptions.push(label);
-      else if (currentSection === 'payees') payees.push(label);
-    }
-  }
-
-  // --- 過去データ（台帳）から自動抽出してリストを拡張 ---
-  var ledgerSheet = ss.getSheetByName('台帳');
-  if (ledgerSheet) {
-    var ledgerData = ledgerSheet.getDataRange().getValues();
-    // 1行目のヘッダーをスキップ
-    for (var j = 1; j < ledgerData.length; j++) {
-      var rowDesc = String(ledgerData[j][8] || '').trim(); // I列: 但し書き
-      var rowPayee = String(ledgerData[j][9] || '').trim(); // J列: 支払先
-
-      if (rowDesc && descriptions.indexOf(rowDesc) === -1) {
-        descriptions.push(rowDesc);
-      }
-      if (rowPayee && payees.indexOf(rowPayee) === -1) {
-        payees.push(rowPayee);
+      // セクションヘッダーでないことを確認（二重カウント防止）
+      var isHeader = ['提出者リスト', '支出区分リスト', '収入区分リスト', '但し書きリスト', '支払先リスト', '前年度繰越金', '管理者メール'].indexOf(label) !== -1;
+      if (!isHeader) {
+        if (currentSection === 'submitters') submitters.push(label);
+        else if (currentSection === 'expenseCategories') expenseCategories.push(label);
+        else if (currentSection === 'incomeCategories') incomeCategories.push(label);
+        else if (currentSection === 'descriptions') descriptions.push(label);
+        else if (currentSection === 'payees') payees.push(label);
       }
     }
   }
 
-  // 見やすくするためにソート（五十音順）
-  descriptions.sort(function(a, b) { return a.localeCompare(b, 'ja'); });
-  payees.sort(function(a, b) { return a.localeCompare(b, 'ja'); });
+  // 注意: 台帳からの自動Pull（過去登録データから但し書き・支払先を自動追加）は
+  // マスターの削除が反映されない問題の原因となるため廃止しました。
+  // 但し書き・支払先の候補は「設定」シートのみから読み取ります。
 
   return {
     submitters: submitters,
@@ -491,6 +482,14 @@ function submitEntry(payload) {
     payload.ocrConfidence || '手入力'
   ]);
 
+  // --- マスター自動学習 ---
+  try {
+    if (payload.description) learnMasterIfNew(payload.description, '但し書きリスト');
+    if (payload.payee) learnMasterIfNew(payload.payee, '支払先リスト');
+  } catch (learnErr) {
+    console.error('マスター学習エラー: ' + learnErr.message);
+  }
+
   // --- 管理者通知 ---
   try {
     notifyAdmin({
@@ -509,6 +508,49 @@ function submitEntry(payload) {
   }
 
   return { id: id };
+}
+
+/**
+ * マスター自動学習
+ */
+function learnMasterIfNew(value, sectionName) {
+  var valStr = String(value).trim();
+  if (!valStr) return;
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('設定');
+  if (!sheet) return;
+  
+  var data = sheet.getDataRange().getValues();
+  var sectionStartRow = -1;
+  var nextSectionRow = -1;
+  var sectionHeaders = ['提出者リスト', '支出区分リスト', '収入区分リスト', '但し書きリスト', '支払先リスト', '前年度繰越金', '管理者メール'];
+  
+  for (var i = 0; i < data.length; i++) {
+    var label = String(data[i][0]).trim();
+    if (label === sectionName) {
+      sectionStartRow = i + 1;
+    } else if (sectionStartRow !== -1 && sectionHeaders.indexOf(label) !== -1) {
+      nextSectionRow = i + 1;
+      break;
+    }
+  }
+  
+  if (sectionStartRow === -1) return; // セクションがなければ何もしない
+  if (nextSectionRow === -1) nextSectionRow = sheet.getLastRow() + 1;
+  
+  // 既に存在するかチェック
+  for (var j = sectionStartRow; j < nextSectionRow - 1; j++) {
+    var cellA = String(data[j][0]).trim();
+    var cellB = String(data[j][1]).trim();
+    if (cellB === valStr || (!cellB && cellA === valStr)) {
+      return; // 既に存在
+    }
+  }
+  
+  // 存在しない場合、セクションの末尾（nextSectionRow の直前）に挿入
+  sheet.insertRowBefore(nextSectionRow);
+  sheet.getRange(nextSectionRow, 1, 1, 2).setValues([['', valStr]]);
 }
 
 /**
@@ -790,13 +832,22 @@ function validateAdminKey(key) {
 }
 
 /**
- * 指定IDの行を削除（管理者用）
+ * 指定IDの行を削除（管理者または本人未精算用）
  */
 function deleteEntry(payload) {
-  validateAdminKey(payload.adminKey);
+  var isAdmin = false;
+  try {
+    validateAdminKey(payload.adminKey);
+    isAdmin = true;
+  } catch (e) {
+    // 認証失敗時は isAdmin = false のまま
+  }
 
   if (!payload.id) {
     throw new Error('削除対象のIDが指定されていません');
+  }
+  if (!isAdmin && !payload.submitter) {
+    throw new Error('権限がありません。管理者キーまたは提出者名が必要です');
   }
 
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -808,6 +859,12 @@ function deleteEntry(payload) {
   for (var i = 1; i < data.length; i++) {
     var rowId = String(data[i][0]).trim();
     if (rowId === payload.id) {
+      if (!isAdmin) {
+        var rowSubmitter = String(data[i][4]).trim();
+        var rowStatus = String(data[i][11]).trim();
+        if (rowSubmitter !== payload.submitter) throw new Error('自分のデータ以外は削除できません');
+        if (rowStatus !== '未精算') throw new Error('精算済みのデータは削除できません');
+      }
       sheet.deleteRow(i + 1); // deleteRow は1-indexed
       return { success: true };
     }
@@ -817,16 +874,25 @@ function deleteEntry(payload) {
 }
 
 /**
- * 指定IDの行を更新（全項目対応、管理者用）
+ * 指定IDの行を更新（全項目対応、管理者または本人未精算用）
  * 列のインデックス: 
  * D:日付(4列目), E:提出者(5列目), F:事業区分(6列目), G:金額(7列目), 
  * H:数量(8列目), I:但し書き(9列目), J:支払先(10列目), N:備考(14列目)
  */
 function updateEntry(payload) {
-  validateAdminKey(payload.adminKey);
+  var isAdmin = false;
+  try {
+    validateAdminKey(payload.adminKey);
+    isAdmin = true;
+  } catch (e) {
+    // 認証失敗時は isAdmin = false
+  }
 
   if (!payload.id) {
     throw new Error('更新対象のIDが指定されていません');
+  }
+  if (!isAdmin && !payload.submitter_auth) {
+    throw new Error('権限がありません');
   }
 
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -839,6 +905,14 @@ function updateEntry(payload) {
     var rowId = String(data[i][0]).trim();
     if (rowId === payload.id) {
       var rowNum = i + 1;
+      
+      if (!isAdmin) {
+        var rowSubmitter = String(data[i][4]).trim();
+        var rowStatus = String(data[i][11]).trim();
+        if (rowSubmitter !== payload.submitter_auth) throw new Error('自分のデータ以外は更新できません');
+        if (rowStatus !== '未精算') throw new Error('精算済みのデータは更新できません');
+      }
+
       // 変更リクエストが存在する項目のみ上書きする
       if (payload.date !== undefined) sheet.getRange(rowNum, 4).setValue(payload.date);
       if (payload.submitter !== undefined) sheet.getRange(rowNum, 5).setValue(payload.submitter);
@@ -849,6 +923,12 @@ function updateEntry(payload) {
       if (payload.payee !== undefined) sheet.getRange(rowNum, 10).setValue(payload.payee);
       if (payload.note !== undefined) sheet.getRange(rowNum, 14).setValue(payload.note);
       
+      // マスター自動学習（更新時も）
+      try {
+        if (payload.description) learnMasterIfNew(payload.description, '但し書きリスト');
+        if (payload.payee) learnMasterIfNew(payload.payee, '支払先リスト');
+      } catch (e) {}
+
       return { success: true };
     }
   }
@@ -906,11 +986,12 @@ function updateMasterList(payload) {
     sheet.deleteRows(sectionStartRow + 1, linesToDelete);
   }
 
-  // 要素を追加
+  // 要素を追加（B列に書き込む: A列=空, B列=値）
+  // getMasters はA列が空でB列に値がある行をデータ行として読み取るため、この形式で統一
   if (payload.items.length > 0) {
     var insertData = [];
     for (var j = 0; j < payload.items.length; j++) {
-      insertData.push([payload.items[j], '']);
+      insertData.push(['', payload.items[j]]);
     }
     sheet.insertRowsAfter(sectionStartRow, insertData.length);
     sheet.getRange(sectionStartRow + 1, 1, insertData.length, 2).setValues(insertData);
@@ -1540,5 +1621,60 @@ function forceAuth() {
   // ③ スプレッドシート の権限を強制取得
   SpreadsheetApp.getActiveSpreadsheet();
 
-  console.log("すべての権限承認が正常に完了しました！");
+}
+
+/**
+ * 精算済みデータを過去台帳へアーカイブする
+ */
+function archiveSettled(payload) {
+  validateAdminKey(payload.adminKey);
+  var targetYear = payload.fiscalYear || '';
+  
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ledger = ss.getSheetByName('台帳');
+  if (!ledger) throw new Error('「台帳」シートが見つかりません');
+  
+  var data = ledger.getDataRange().getValues();
+  if (data.length <= 1) return { count: 0, message: 'アーカイブするデータがありません' };
+  
+  var headers = data[0];
+  var rowsToArchive = [];
+  var rowsToKeep = [headers];
+  
+  for (var i = 1; i < data.length; i++) {
+    var row = data[i];
+    var status = String(row[11]).trim();
+    var dateVal = row[3];
+    var year = dateVal instanceof Date ? String(dateVal.getFullYear()) : String(dateVal).substring(0, 4);
+    
+    if (status === '精算済' && (!targetYear || year === targetYear)) {
+      rowsToArchive.push(row);
+    } else {
+      rowsToKeep.push(row);
+    }
+  }
+  
+  if (rowsToArchive.length === 0) return { count: 0, message: 'アーカイブ条件に合致するデータがありません' };
+  
+  // アーカイブ先シートの決定
+  var archiveSheetName = targetYear ? '過去台帳_' + targetYear : '過去台帳';
+  var archiveSheet = ss.getSheetByName(archiveSheetName);
+  if (!archiveSheet) {
+    archiveSheet = ss.insertSheet(archiveSheetName);
+    archiveSheet.appendRow(headers);
+    // スタイル等の設定（省略可）
+    var headerRange = archiveSheet.getRange(1, 1, 1, headers.length);
+    headerRange.setFontWeight('bold');
+    headerRange.setBackground('#c9382a');
+    headerRange.setFontColor('#ffffff');
+  }
+  
+  // アーカイブ先に追記
+  archiveSheet.getRange(archiveSheet.getLastRow() + 1, 1, rowsToArchive.length, headers.length).setValues(rowsToArchive);
+  
+  // 台帳をクリアして保持する行だけで上書き
+  ledger.clearContents();
+  ledger.getRange(1, 1, rowsToKeep.length, headers.length).setValues(rowsToKeep);
+  
+  return { count: rowsToArchive.length, message: rowsToArchive.length + ' 件をアーカイブしました' };
 }

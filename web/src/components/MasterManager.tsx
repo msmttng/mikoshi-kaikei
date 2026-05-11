@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getMasters, updateMasterList, updateCarryoverBalance } from '../lib/api';
 import type { MasterData } from '../lib/types';
+import { saveMasters } from '../lib/storage';
 import { Spinner } from './Spinner';
 import { Toast } from './Toast';
 
@@ -34,6 +35,7 @@ export function MasterManager({ adminKey }: Props) {
     try {
       const data = await getMasters();
       setMasters(data);
+      saveMasters(data); // localStorageキャッシュも更新（フォーム画面のキャッシュズレ防止）
     } catch (err) {
       setToast({ message: 'マスターデータの取得に失敗しました', type: 'error' });
     } finally {
@@ -100,6 +102,7 @@ export function MasterManager({ adminKey }: Props) {
         await updateMasterList(sectionName, localItems, adminKey);
         setToast({ message: `${TAB_CONFIG[activeTab].label}リストを更新しました`, type: 'success' });
       }
+      // GAS更新後にマスターデータを再取得 → StateとlocalStorageキャッシュを両方更新
       await fetchMasters();
     } catch (err) {
       setToast({ message: '更新に失敗しました', type: 'error' });

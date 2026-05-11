@@ -1,7 +1,7 @@
 // ===================================
 // アプリのルーティング定義
 // ===================================
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { SubmitExpense } from './pages/SubmitExpense';
 import { SubmitIncome } from './pages/SubmitIncome';
@@ -10,11 +10,10 @@ import { Admin } from './pages/Admin';
 import { BottomNav } from './components/BottomNav';
 import { IosInstallPrompt } from './components/IosInstallPrompt';
 
-// GitHub Pages は SPA のパスルーティングに対応しないため
-// HashRouter を使用（例: /#/expense）
+// GitHub Pages 用のルーティング (History API 利用)
 function App() {
   return (
-    <HashRouter>
+    <BrowserRouter basename="/mikoshi-kaikei">
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/expense" element={<SubmitExpense />} />
@@ -24,7 +23,7 @@ function App() {
       </Routes>
       <BottomNav />
       <IosInstallPrompt />
-    </HashRouter>
+    </BrowserRouter>
   );
 }
 

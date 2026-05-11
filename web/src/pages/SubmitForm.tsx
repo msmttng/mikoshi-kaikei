@@ -178,7 +178,7 @@ export function SubmitForm({ type }: SubmitFormProps) {
         ocrConfidence = map[ocrResult.confidence] || '手入力';
       }
 
-      await submitEntry({
+      const payloadData = {
         type,
         date,
         submitter,
@@ -191,17 +191,35 @@ export function SubmitForm({ type }: SubmitFormProps) {
         imageBase64: imageBase64 || undefined,
         imageMimeType: imageMimeType || undefined,
         ocrConfidence,
-      });
+      };
 
-      if (pendingImages.length > 0) {
-        // 次の画像を処理
-        const next = pendingImages[0];
-        setPendingImages(prev => prev.slice(1));
-        setToast({ message: `登録しました！残り ${pendingImages.length} 枚です`, type: 'success' });
-        await processImage(next.base64, next.mimeType, next.previewUrl);
+      if (!navigator.onLine) {
+        // オフライン時はキューに保存して擬似的に成功扱いにする
+        const { saveToOfflineQueue } = await import('../lib/storage');
+        saveToOfflineQueue(payloadData);
+        if (pendingImages.length > 0) {
+          const next = pendingImages[0];
+          setPendingImages(prev => prev.slice(1));
+          setToast({ message: `オフライン一時保存完了！残り ${pendingImages.length} 枚です`, type: 'success' });
+          await processImage(next.base64, next.mimeType, next.previewUrl);
+        } else {
+          setToast({ message: 'オフラインのため一時保存しました。通信環境の良い場所で再送してください。', type: 'success' });
+          setTimeout(() => navigate('/'), 2000);
+        }
       } else {
-        setToast({ message: '全て登録しました！', type: 'success' });
-        setTimeout(() => navigate('/'), 1500);
+        // オンライン時は通常通り送信
+        await submitEntry(payloadData);
+
+        if (pendingImages.length > 0) {
+          // 次の画像を処理
+          const next = pendingImages[0];
+          setPendingImages(prev => prev.slice(1));
+          setToast({ message: `登録しました！残り ${pendingImages.length} 枚です`, type: 'success' });
+          await processImage(next.base64, next.mimeType, next.previewUrl);
+        } else {
+          setToast({ message: '全て登録しました！', type: 'success' });
+          setTimeout(() => navigate('/'), 1500);
+        }
       }
     } catch (err) {
       const msg = err instanceof Error ? err.message : '送信に失敗しました';

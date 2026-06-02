@@ -90,11 +90,27 @@ export function History() {
       <header style={{
         background: '#FFFFFF',
         borderBottom: '2px solid #E5E9E8',
-        padding: '1.1rem 1.25rem'
+        padding: '0.9rem 1.1rem',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '0.75rem'
       }}>
-        <h1 style={{ fontSize: '1rem', fontWeight: 800, color: '#1F2937', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span>📋</span> 提出履歴
-        </h1>
+        <div style={{ width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1F2937', flexShrink: 0 }}>
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M26 80c0-16 10-38 24-38s24 22 24 38c0 8-8 10-24 10S26 88 26 80z" fill="currentColor"/>
+            <path d="M32 36c4-6 12-8 18-2s14-4 18 2c-4 6-12 8-18 2s-14 4-18-2z" fill="currentColor" opacity="0.85"/>
+            <circle cx="50" cy="42" r="5" fill="#C5A059"/>
+            <path d="M34 44c10 2 22 2 32 0M50 42c-8 8-12 18-16 20M50 42c8 8 12 18 16 20" stroke="#C5A059" stroke-width="4" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h1 style={{ fontSize: '1rem', fontWeight: 800, color: '#1F2937' }}>
+            提出履歴
+          </h1>
+          <p style={{ fontSize: '0.68rem', color: '#6B7280', marginTop: 1, fontWeight: 500 }}>
+            自分の提出した精算データの一覧
+          </p>
+        </div>
       </header>
 
       {/* 提出者フィルタ */}

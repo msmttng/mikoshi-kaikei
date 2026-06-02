@@ -1,43 +1,43 @@
 /* ===================================
    仲羽田青年会 経費精算アプリ
-   Design: 陽 (YOU) — 高コントラスト・高視認性テーマ
+   Design: 蒼 (AO) — モダン・ティール＆ゴールドテーマ
    =================================== */
 
-/* --- Google Fonts (高視認性 UDフォント BIZ UDPGothic を追加) --- */
-@import url('https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
+/* --- Google Fonts (モダン・スタイリッシュな Outfit と Noto Sans JP をインポート) --- */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700;900&family=Inter:wght@400;500;600;700;800&display=swap');
 
 @import "tailwindcss";
 
-/* --- CSS 変数（陽テーマカラー）--- */
+/* --- CSS 変数（蒼テーマカラー）--- */
 @theme {
-  /* matsuriカラーを高視認性オレンジ・濃紺システムに統合 */
-  --color-matsuri-900: #0D47A1; /* 濃紺（深青） */
-  --color-matsuri-800: #1565C0;
-  --color-matsuri-700: #1976D2;
-  --color-matsuri-600: #1E88E5;
-  --color-matsuri-500: #E65100; /* 陽光オレンジ（朱） */
-  --color-matsuri-400: #F57C00;
-  --color-matsuri-300: #FF9800;
-  --color-matsuri-200: #FFB74D;
-  --color-matsuri-100: #FFE082;
-  --color-matsuri-50:  #FFF3E0; /* 薄オレンジ */
+  /* matsuriカラーをティール・ゴールドシステムに統合 */
+  --color-matsuri-900: #004D4E; /* 極深ティール */
+  --color-matsuri-800: #005B5C; /* 深御納戸（メイン・ティール） */
+  --color-matsuri-700: #007A7C;
+  --color-matsuri-600: #008B8D;
+  --color-matsuri-500: #009B9D;
+  --color-matsuri-400: #C5A059; /* 金砂（上品なマットゴールド） */
+  --color-matsuri-300: #D4AF37; /* 輝金 */
+  --color-matsuri-200: #E6C887;
+  --color-matsuri-100: #F3E5C8;
+  --color-matsuri-50:  #FAF2E4; /* 極薄ゴールド */
 
-  /* 背景は視認性を極限まで高める純白 */
+  /* 背景は白磁をベースにした上品なソフトグリーンホワイト */
   --color-washi:      #FFFFFF;
-  --color-washi-dark: #F8F9FA;
+  --color-washi-dark: #F4F7F6; /* 白磁 */
 
   /* ナビorボタン補色 */
-  --color-chochin:       #E65100;
-  --color-chochin-light: #FF9800;
+  --color-chochin:       #005B5C;
+  --color-chochin-light: #007A7C;
 
-  --color-gold:       #0D47A1;
-  --color-gold-light: #1565C0;
+  --color-gold:       #C5A059;
+  --color-gold-light: #D4AF37;
 
-  --color-settled:   #1B5E20; /* 濃い緑 */
-  --color-unsettled: #B71C1C; /* 濃い赤 */
+  --color-settled:   #1E6B3A; /* 濃い緑 */
+  --color-unsettled: #B43B3B; /* 濃い赤 */
 
-  /* BIZ UDPGothic (ユニバーサルデザインフォント) を最優先に */
-  --font-sans: 'BIZ UDPGothic', 'Noto Sans JP', 'Inter', 'Hiragino Sans', 'Meiryo', sans-serif;
+  /* Outfit と Noto Sans JP をメインに */
+  --font-sans: 'Outfit', 'Noto Sans JP', 'Inter', 'Hiragino Sans', 'Meiryo', sans-serif;
 }
 
 /* --- リセット --- */
@@ -54,7 +54,7 @@ body {
   margin: 0;
   background: var(--color-washi-dark);
   min-height: 100dvh;
-  color: #0A192F;
+  color: #1F2937;
 }
 
 #root {
@@ -64,44 +64,45 @@ body {
   display: flex;
   flex-direction: column;
   background: var(--color-washi);
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0 35px rgba(0, 91, 92, 0.05);
 }
 
-/* --- カードスタイル (高コントラスト・太ボーダー) --- */
+/* --- カードスタイル (ふんわりシャドウ・滑らか角丸) --- */
 .card {
   background: #FFFFFF;
-  border: 2px solid #CBD5E1; /* ボーダーを太くくっきりと */
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1px solid #E5E9E8; /* 細く柔らかい枠線 */
+  border-radius: 16px; /* 角丸を少し大きめでモダンに */
+  box-shadow: 0 8px 30px rgba(0, 91, 92, 0.04), 0 2px 8px rgba(0, 0, 0, 0.01);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 /* --- フォーム入力 --- */
 .form-input {
   width: 100%;
   padding: 12px 16px;
-  border: 2px solid #CBD5E1; /* 2pxでくっきり */
-  border-radius: 10px;
+  border: 1.5px solid #E5E9E8;
+  border-radius: 12px;
   font-size: 16px;
   font-family: var(--font-sans);
   background: #FFFFFF;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   outline: none;
-  color: #0A192F;
+  color: #1F2937;
 }
 
 .form-input:focus {
-  border-color: var(--color-matsuri-500); /* 陽光オレンジ */
-  box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.18);
+  border-color: var(--color-matsuri-800); /* ティール */
+  box-shadow: 0 0 0 3px rgba(0, 91, 92, 0.12);
 }
 
 .form-input::placeholder {
-  color: #64748B;
+  color: #9CA3AF;
 }
 
 /* --- セレクトボックス --- */
 .form-select {
   appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23334155' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 12px center;
   background-repeat: no-repeat;
   background-size: 20px;
@@ -153,8 +154,8 @@ body {
 
 /* --- スピナー --- */
 .spinner {
-  border: 3px solid rgba(230, 81, 0, 0.15);
-  border-top-color: var(--color-matsuri-500);
+  border: 3px solid rgba(0, 91, 92, 0.15);
+  border-top-color: var(--color-matsuri-800);
   border-radius: 50%;
   width: 24px;
   height: 24px;
@@ -164,25 +165,26 @@ body {
   to { transform: rotate(360deg); }
 }
 
-/* --- ステータスバッジ (高コントラスト境界線) --- */
+/* --- ステータスバッジ (蒼テーマ用マイルド仕様) --- */
 .badge-unsettled {
   background: #FFF5F5;
   color: var(--color-unsettled);
-  border: 2px solid var(--color-unsettled);
-  font-weight: 700;
+  border: 1px solid rgba(180, 59, 59, 0.2);
+  font-weight: 600;
 }
 .badge-settled {
   background: #F0FDF4;
   color: var(--color-settled);
-  border: 2px solid var(--color-settled);
-  font-weight: 700;
+  border: 1px solid rgba(30, 107, 58, 0.2);
+  font-weight: 600;
 }
 
 /* --- ボトムナビゲーション --- */
 .bottom-nav {
-  background: #FFFFFF;
-  border-top: 2px solid #CBD5E1;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(16px);
+  border-top: 1px solid #E5E9E8;
+  box-shadow: 0 -2px 16px rgba(0, 91, 92, 0.03);
 }
 
 /* --- iOS セーフエリア --- */

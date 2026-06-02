@@ -131,7 +131,7 @@ export function Home() {
 
 
       {/* メインアクションボタン */}
-      <div className="px-5 flex flex-col gap-3">
+      <div className="px-5 flex flex-col gap-3 mt-6">
         {/* 支出登録ボタン */}
         <button
           onClick={() => navigate('/expense')}

@@ -1,212 +1,46 @@
 /* ===================================
    仲羽田青年会 経費精算アプリ
-   Design: Indigo Slate Pro (v2)
+   Design: 陽 (YOU) — 高コントラスト・高視認性テーマ
    =================================== */
 
-/* --- Google Fonts --- */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
+/* --- Google Fonts (高視認性 UDフォント BIZ UDPGothic を追加) --- */
+@import url('https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
 
 @import "tailwindcss";
 
-/* --- CSS 変数（テーマカラー）--- */
+/* --- CSS 変数（陽テーマカラー）--- */
 @theme {
-  /* Indigo Slate アクセントカラー */
-  --color-matsuri-900: #0D1B2E;
-  --color-matsuri-800: #1E3A5F;
-  --color-matsuri-700: #263C61;
-  --color-matsuri-600: #2E5585;
-  --color-matsuri-500: #3B72B4;
-  --color-matsuri-400: #5A90CC;
-  --color-matsuri-300: #7FA8D4;
-  --color-matsuri-200: #B8D0EB;
-  --color-matsuri-100: #D8E8F5;
-  --color-matsuri-50:  #EEF4FB;
+  /* matsuriカラーを高視認性オレンジ・濃紺システムに統合 */
+  --color-matsuri-900: #0D47A1; /* 濃紺（深青） */
+  --color-matsuri-800: #1565C0;
+  --color-matsuri-700: #1976D2;
+  --color-matsuri-600: #1E88E5;
+  --color-matsuri-500: #E65100; /* 陽光オレンジ（朱） */
+  --color-matsuri-400: #F57C00;
+  --color-matsuri-300: #FF9800;
+  --color-matsuri-200: #FFB74D;
+  --color-matsuri-100: #FFE082;
+  --color-matsuri-50:  #FFF3E0; /* 薄オレンジ */
 
-  /* 背景 */
-  --color-washi:      #F8F9FC;
-  --color-washi-dark: #F0F3F8;
+  /* 背景は視認性を極限まで高める純白 */
+  --color-washi:      #FFFFFF;
+  --color-washi-dark: #F8F9FA;
 
   /* ナビorボタン補色 */
-  --color-chochin:       #3B72B4;
-  --color-chochin-light: #5A90CC;
+  --color-chochin:       #E65100;
+  --color-chochin-light: #FF9800;
 
-  --color-gold:       #3B72B4;
-  --color-gold-light: #7FA8D4;
+  --color-gold:       #0D47A1;
+  --color-gold-light: #1565C0;
 
-  --color-settled:   #1E6B3A;
-  --color-unsettled: #B43B3B;
+  --color-settled:   #1B5E20; /* 濃い緑 */
+  --color-unsettled: #B71C1C; /* 濃い赤 */
 
-  --font-sans: 'Inter', 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+  /* BIZ UDPGothic (ユニバーサルデザインフォント) を最優先に */
+  --font-sans: 'BIZ UDPGothic', 'Noto Sans JP', 'Inter', 'Hiragino Sans', 'Meiryo', sans-serif;
 }
 
 /* --- リセット --- */
-* { -webkit-tap-highlight-color: transparent; }
-
-html {
-  font-family: var(--font-sans);
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  background: var(--color-washi);
-  min-height: 100dvh;
-  color: #1a2233;
-}
-
-#root {
-  max-width: 480px;
-  margin: 0 auto;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
-}
-
-/* --- カードスタイル --- */
-.card {
-  background: #FFFFFF;
-  border: 1px solid #D8E3F0;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(30, 58, 95, 0.06), 0 1px 3px rgba(0,0,0,0.04);
-}
-
-/* --- フォーム入力 --- */
-.form-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1.5px solid #C8D8EC;
-  border-radius: 10px;
-  font-size: 16px;
-  font-family: var(--font-sans);
-  background: #FFFFFF;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  outline: none;
-  color: #1a2233;
-}
-
-.form-input:focus {
-  border-color: var(--color-matsuri-500);
-  box-shadow: 0 0 0 3px rgba(59, 114, 180, 0.14);
-}
-
-.form-input::placeholder { color: #8BA8C8; }
-
-/* --- セレクトボックス --- */
-.form-select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 12px center;
-  background-repeat: no-repeat;
-  background-size: 20px;
-  padding-right: 40px;
-}
-
-/* --- ボタンリップル --- */
-.btn-ripple { position: relative; overflow: hidden; }
-.btn-ripple::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at var(--ripple-x, 50%) var(--ripple-y, 50%), rgba(255,255,255,0.35) 0%, transparent 70%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-.btn-ripple:active::after { opacity: 1; transition: opacity 0s; }
-
-/* --- トースト通知 --- */
-.toast-enter { animation: toastSlideIn 0.35s cubic-bezier(0.21, 1.02, 0.73, 1); }
-.toast-exit  { animation: toastSlideOut 0.3s ease-in forwards; }
-
-@keyframes toastSlideIn {
-  from { transform: translateY(100%) scale(0.95); opacity: 0; }
-  to   { transform: translateY(0) scale(1); opacity: 1; }
-}
-@keyframes toastSlideOut {
-  to { transform: translateY(100%) scale(0.95); opacity: 0; }
-}
-
-/* --- ページ遷移 --- */
-.page-enter { animation: pageSlideIn 0.28s ease-out; }
-@keyframes pageSlideIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* --- スピナー --- */
-.spinner {
-  border: 3px solid rgba(59, 114, 180, 0.15);
-  border-top-color: var(--color-matsuri-500);
-  border-radius: 50%;
-  width: 24px;
-  height: 24px;
-  animation: spin 0.7s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* --- ステータスバッジ --- */
-.badge-unsettled {
-  background: #FEE8E8;
-  color: #B43B3B;
-  border: 1px solid rgba(180,59,59,0.2);
-}
-.badge-settled {
-  background: #E6F4EC;
-  color: #1E6B3A;
-  border: 1px solid rgba(30,107,58,0.2);
-}
-
-/* --- ボトムナビゲーション --- */
-.bottom-nav {
-  background: rgba(255,255,255,0.96);
-  backdrop-filter: blur(16px);
-  border-top: 1px solid #D8E3F0;
-  box-shadow: 0 -2px 16px rgba(30,58,95,0.06);
-}
-
-/* --- iOS セーフエリア --- */
-@supports (padding-bottom: env(safe-area-inset-bottom)) {
-  .bottom-nav { padding-bottom: env(safe-area-inset-bottom); }
-  .page-content { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
-}
-
-/* --- 金額表示 --- */
-.amount-display {
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: 'tnum';
-}
-
-
-@import "tailwindcss";
-
-/* --- CSS 変数（テーマカラー） --- */
-@theme {
-  --color-matsuri-900: #4A0404;
-  --color-matsuri-800: #7F0000;
-  --color-matsuri-700: #B71C1C;
-  --color-matsuri-600: #C62828;
-  --color-matsuri-500: #D32F2F;
-  --color-matsuri-400: #E53935;
-  --color-matsuri-300: #EF5350;
-  --color-matsuri-200: #EF9A9A;
-  --color-matsuri-100: #FFCDD2;
-  --color-matsuri-50: #FFEBEE;
-
-  --color-washi: #FFF8E1;
-  --color-washi-dark: #FFF3D0;
-
-  --color-chochin: #FF6F00;
-  --color-chochin-light: #FFB300;
-
-  --color-gold: #D4A017;
-  --color-gold-light: #F5D060;
-
-  --color-settled: #2E7D32;
-  --color-unsettled: #C62828;
-
-  --font-sans: 'Noto Sans JP', 'Hiragino Sans', 'Meiryo', sans-serif;
-}
-
-/* --- リセットとベース --- */
 * {
   -webkit-tap-highlight-color: transparent;
 }
@@ -218,9 +52,9 @@ html {
 
 body {
   margin: 0;
-  background: linear-gradient(180deg, var(--color-washi) 0%, #FFFEF8 50%, var(--color-washi-dark) 100%);
+  background: var(--color-washi-dark);
   min-height: 100dvh;
-  color: #1a1a1a;
+  color: #0A192F;
 }
 
 #root {
@@ -229,14 +63,56 @@ body {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  background: var(--color-washi);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.05);
 }
 
-/* --- ボタンのリップルエフェクト --- */
+/* --- カードスタイル (高コントラスト・太ボーダー) --- */
+.card {
+  background: #FFFFFF;
+  border: 2px solid #CBD5E1; /* ボーダーを太くくっきりと */
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* --- フォーム入力 --- */
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #CBD5E1; /* 2pxでくっきり */
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: var(--font-sans);
+  background: #FFFFFF;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+  color: #0A192F;
+}
+
+.form-input:focus {
+  border-color: var(--color-matsuri-500); /* 陽光オレンジ */
+  box-shadow: 0 0 0 3px rgba(230, 81, 0, 0.18);
+}
+
+.form-input::placeholder {
+  color: #64748B;
+}
+
+/* --- セレクトボックス --- */
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23334155' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 12px center;
+  background-repeat: no-repeat;
+  background-size: 20px;
+  padding-right: 40px;
+}
+
+/* --- ボタンリップル --- */
 .btn-ripple {
   position: relative;
   overflow: hidden;
 }
-
 .btn-ripple::after {
   content: '';
   position: absolute;
@@ -245,130 +121,68 @@ body {
   opacity: 0;
   transition: opacity 0.4s ease;
 }
-
 .btn-ripple:active::after {
   opacity: 1;
   transition: opacity 0s;
-}
-
-/* --- カードスタイル --- */
-.card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(183, 28, 28, 0.08);
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0,0,0,0.04);
-}
-
-/* --- フォーム入力のスタイル --- */
-.form-input {
-  width: 100%;
-  padding: 12px 16px;
-  border: 1.5px solid #e0d6c8;
-  border-radius: 12px;
-  font-size: 16px; /* iOS のズーム防止 */
-  font-family: var(--font-sans);
-  background: rgba(255, 255, 255, 0.9);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  outline: none;
-  color: #1a1a1a;
-}
-
-.form-input:focus {
-  border-color: var(--color-matsuri-500);
-  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.12);
-}
-
-.form-input::placeholder {
-  color: #b0a898;
-}
-
-/* --- セレクトボックス --- */
-.form-select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-  background-position: right 12px center;
-  background-repeat: no-repeat;
-  background-size: 20px;
-  padding-right: 40px;
 }
 
 /* --- トースト通知 --- */
 .toast-enter {
   animation: toastSlideIn 0.35s cubic-bezier(0.21, 1.02, 0.73, 1);
 }
-
-.toast-exit {
+.toast-exit  {
   animation: toastSlideOut 0.3s ease-in forwards;
 }
 
 @keyframes toastSlideIn {
-  from {
-    transform: translateY(100%) scale(0.95);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
+  from { transform: translateY(100%) scale(0.95); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
 }
-
 @keyframes toastSlideOut {
-  to {
-    transform: translateY(100%) scale(0.95);
-    opacity: 0;
-  }
+  to { transform: translateY(100%) scale(0.95); opacity: 0; }
 }
 
 /* --- ページ遷移 --- */
 .page-enter {
-  animation: pageSlideIn 0.3s ease-out;
+  animation: pageSlideIn 0.28s ease-out;
 }
-
 @keyframes pageSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* --- スピナー --- */
 .spinner {
-  border: 3px solid rgba(183, 28, 28, 0.15);
-  border-top-color: var(--color-matsuri-600);
+  border: 3px solid rgba(230, 81, 0, 0.15);
+  border-top-color: var(--color-matsuri-500);
   border-radius: 50%;
   width: 24px;
   height: 24px;
   animation: spin 0.7s linear infinite;
 }
-
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-/* --- ステータスバッジ --- */
+/* --- ステータスバッジ (高コントラスト境界線) --- */
 .badge-unsettled {
-  background: linear-gradient(135deg, #FFCDD2, #EF9A9A);
+  background: #FFF5F5;
   color: var(--color-unsettled);
-  border: 1px solid rgba(198, 40, 40, 0.2);
+  border: 2px solid var(--color-unsettled);
+  font-weight: 700;
 }
-
 .badge-settled {
-  background: linear-gradient(135deg, #C8E6C9, #A5D6A7);
+  background: #F0FDF4;
   color: var(--color-settled);
-  border: 1px solid rgba(46, 125, 50, 0.2);
+  border: 2px solid var(--color-settled);
+  font-weight: 700;
 }
 
 /* --- ボトムナビゲーション --- */
 .bottom-nav {
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(16px);
-  border-top: 1px solid rgba(183, 28, 28, 0.08);
-  box-shadow: 0 -2px 16px rgba(0, 0, 0, 0.05);
+  background: #FFFFFF;
+  border-top: 2px solid #CBD5E1;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
 }
 
 /* --- iOS セーフエリア --- */
@@ -376,13 +190,12 @@ body {
   .bottom-nav {
     padding-bottom: env(safe-area-inset-bottom);
   }
-  
   .page-content {
     padding-bottom: calc(80px + env(safe-area-inset-bottom));
   }
 }
 
-/* --- 金額入力のカンマ表示ヘルパー --- */
+/* --- 金額表示 --- */
 .amount-display {
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';

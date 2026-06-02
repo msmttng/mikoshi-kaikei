@@ -421,10 +421,10 @@ export function Admin() {
               disabled={!keyInput.trim() || loading}
               style={{
                 width: '100%', padding: '0.9rem', borderRadius: 12, fontWeight: 700,
-                color: 'white', background: !keyInput.trim() || loading ? '#9BB8D8' : 'linear-gradient(135deg, #1E3A5F, #3B72B4)',
+                color: 'white', background: !keyInput.trim() || loading ? 'var(--color-matsuri-200)' : 'linear-gradient(135deg, var(--color-matsuri-900), var(--color-matsuri-500))',
                 border: 'none', cursor: !keyInput.trim() || loading ? 'not-allowed' : 'pointer',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
-                boxShadow: '0 4px 16px rgba(30,58,95,0.2)',
+                boxShadow: '0 4px 16px rgba(13,71,161,0.2)',
               }}
             >
               {loading ? (
@@ -447,22 +447,22 @@ export function Admin() {
   // ==============================
   return (
     <div className="page-enter flex-1 flex flex-col">
-      {/* ヘッダー */}
+      {/* ヘッダー（陽） */}
       <header style={{
-        background: 'linear-gradient(135deg, #1E3A5F 0%, #263C61 100%)',
-        borderBottom: '3px solid #3B72B4',
+        background: 'linear-gradient(135deg, var(--color-matsuri-900) 0%, var(--color-matsuri-800) 100%)',
+        borderBottom: '3px solid var(--color-matsuri-500)',
         padding: '1rem 1.25rem 0',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
           <div>
-            <h1 style={{ fontSize: '1rem', fontWeight: 700, color: '#E0EAFF', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <h1 style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: 6 }}>
               <span>⚙️</span> 管理者画面
             </h1>
-            <p style={{ fontSize: '0.65rem', color: '#7FA8D4', marginTop: 1 }}>経費精算の管理・会計報告</p>
+            <p style={{ fontSize: '0.65rem', color: 'var(--color-matsuri-100)', marginTop: 1 }}>経費精算の管理・会計報告</p>
           </div>
           <button
             onClick={handleLogout}
-            style={{ fontSize: '0.7rem', color: '#B8D0EB', padding: '0.3rem 0.75rem', borderRadius: 8, background: 'rgba(255,255,255,0.12)', border: 'none', cursor: 'pointer' }}
+            style={{ fontSize: '0.7rem', color: 'var(--color-matsuri-200)', padding: '0.3rem 0.75rem', borderRadius: 8, background: 'rgba(255,255,255,0.12)', border: 'none', cursor: 'pointer' }}
           >
             ログアウト
           </button>
@@ -476,7 +476,7 @@ export function Admin() {
               flex: 1, fontSize: '0.65rem', fontWeight: 700, padding: '0.5rem 0.1rem',
               borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
               background: activeTab === 'unsettled' ? 'white' : 'transparent',
-              color: activeTab === 'unsettled' ? '#1E3A5F' : 'rgba(255,255,255,0.55)',
+              color: activeTab === 'unsettled' ? 'var(--color-matsuri-900)' : 'rgba(255,255,255,0.55)',
             }}
           >
             📋 未精算 {items.length > 0 && `(${items.length})`}
@@ -487,7 +487,7 @@ export function Admin() {
               flex: 1, fontSize: '0.65rem', fontWeight: 700, padding: '0.5rem 0.1rem',
               borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
               background: activeTab === 'settled' ? 'white' : 'transparent',
-              color: activeTab === 'settled' ? '#1E3A5F' : 'rgba(255,255,255,0.55)',
+              color: activeTab === 'settled' ? 'var(--color-matsuri-900)' : 'rgba(255,255,255,0.55)',
             }}
           >
             ✅ 精算済み
@@ -498,7 +498,7 @@ export function Admin() {
               flex: 1, fontSize: '0.65rem', fontWeight: 700, padding: '0.5rem 0.1rem',
               borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
               background: activeTab === 'report' ? 'white' : 'transparent',
-              color: activeTab === 'report' ? '#1E3A5F' : 'rgba(255,255,255,0.55)',
+              color: activeTab === 'report' ? 'var(--color-matsuri-900)' : 'rgba(255,255,255,0.55)',
             }}
           >
             📊 会計
@@ -509,7 +509,7 @@ export function Admin() {
               flex: 1, fontSize: '0.65rem', fontWeight: 700, padding: '0.5rem 0.1rem',
               borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
               background: activeTab === 'masters' ? 'white' : 'transparent',
-              color: activeTab === 'masters' ? '#1E3A5F' : 'rgba(255,255,255,0.55)',
+              color: activeTab === 'masters' ? 'var(--color-matsuri-900)' : 'rgba(255,255,255,0.55)',
             }}
           >
             ⚙️ マスター

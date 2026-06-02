@@ -41,7 +41,7 @@ export function BottomNav() {
                 gap: 2,
                 paddingTop: '0.6rem',
                 paddingBottom: '0.6rem',
-                color: isActive ? '#1E3A5F' : '#94A3B8',
+                color: isActive ? 'var(--color-matsuri-900)' : '#94A3B8',
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
@@ -54,7 +54,7 @@ export function BottomNav() {
               </span>
               <span style={{ fontSize: '0.62rem', fontWeight: isActive ? 700 : 500 }}>{item.label}</span>
               {isActive && (
-                <div style={{ position: 'absolute', bottom: 2, width: 28, height: 2.5, borderRadius: 4, background: '#3B72B4' }} />
+                <div style={{ position: 'absolute', bottom: 2, width: 28, height: 3, borderRadius: 4, background: 'var(--color-matsuri-500)' }} />
               )}
             </button>
           );

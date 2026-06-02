@@ -245,10 +245,10 @@ export function SubmitForm({ type }: SubmitFormProps) {
 
   return (
     <div className="page-enter flex-1 flex flex-col">
-      {/* ヘッダー */}
+      {/* ヘッダー（陽） */}
       <header style={{
-        background: 'linear-gradient(135deg, #1E3A5F 0%, #263C61 100%)',
-        borderBottom: '3px solid #3B72B4',
+        background: 'linear-gradient(135deg, var(--color-matsuri-900) 0%, var(--color-matsuri-800) 100%)',
+        borderBottom: '3px solid var(--color-matsuri-500)',
         padding: '0.9rem 1.1rem',
         display: 'flex',
         alignItems: 'center',
@@ -262,10 +262,10 @@ export function SubmitForm({ type }: SubmitFormProps) {
           ‹
         </button>
         <div>
-          <h1 style={{ fontSize: '1rem', fontWeight: 700, color: '#E0EAFF' }}>
+          <h1 style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF' }}>
             {isExpense ? '📷 支出を登録' : '💴 収入を登録'}
           </h1>
-          <p style={{ fontSize: '0.68rem', color: '#7FA8D4', marginTop: 1 }}>
+          <p style={{ fontSize: '0.68rem', color: 'var(--color-matsuri-100)', marginTop: 1 }}>
             {isExpense ? '領収書を撮影して経費申請' : '寄付・会費などの入金を記録'}
           </p>
         </div>
@@ -468,14 +468,14 @@ export function SubmitForm({ type }: SubmitFormProps) {
               fontWeight: 700,
               color: 'white',
               fontSize: '1rem',
-              background: submitting || ocrRunning ? '#9BB8D8' : 'linear-gradient(135deg, #1E3A5F, #3B72B4)',
+              background: submitting || ocrRunning ? 'var(--color-matsuri-200)' : 'linear-gradient(135deg, var(--color-matsuri-900), var(--color-matsuri-500))',
               border: 'none',
               cursor: submitting || ocrRunning ? 'not-allowed' : 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: 8,
-              boxShadow: '0 4px 16px rgba(30,58,95,0.25)',
+              boxShadow: '0 4px 16px rgba(13,71,161,0.25)',
               transition: 'all 0.15s',
             }}
           >

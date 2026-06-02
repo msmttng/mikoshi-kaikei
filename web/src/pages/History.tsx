@@ -86,13 +86,13 @@ export function History() {
 
   return (
     <div className="page-enter flex-1 flex flex-col">
-      {/* ヘッダー */}
+      {/* ヘッダー（陽） */}
       <header style={{
-        background: 'linear-gradient(135deg, #1E3A5F 0%, #263C61 100%)',
-        borderBottom: '3px solid #3B72B4',
+        background: 'linear-gradient(135deg, var(--color-matsuri-900) 0%, var(--color-matsuri-800) 100%)',
+        borderBottom: '3px solid var(--color-matsuri-500)',
         padding: '1.1rem 1.25rem'
       }}>
-        <h1 style={{ fontSize: '1rem', fontWeight: 700, color: '#E0EAFF', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <h1 style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: 8 }}>
           <span>📋</span> 提出履歴
         </h1>
       </header>
@@ -238,7 +238,7 @@ export function History() {
                     キャンセル
                   </button>
                   <button onClick={handleUpdate} disabled={processing}
-                    className="flex-1 py-2 bg-matsuri-600 text-white rounded-lg text-sm font-bold">
+                    className="flex-1 py-2 bg-matsuri-700 text-white rounded-lg text-sm font-bold">
                     保存する
                   </button>
                 </div>

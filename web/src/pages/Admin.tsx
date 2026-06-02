@@ -457,10 +457,13 @@ export function Admin() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <div style={{ width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1F2937', flexShrink: 0 }}>
               <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M26 80c0-16 10-38 24-38s24 22 24 38c0 8-8 10-24 10S26 88 26 80z" fill="currentColor"/>
-                <path d="M32 36c4-6 12-8 18-2s14-4 18 2c-4 6-12 8-18 2s-14 4-18-2z" fill="currentColor" opacity="0.85"/>
-                <circle cx="50" cy="42" r="5" fill="#C5A059"/>
-                <path d="M34 44c10 2 22 2 32 0M50 42c-8 8-12 18-16 20M50 42c8 8 12 18 16 20" stroke="#C5A059" stroke-width="4" stroke-linecap="round"/>
+                <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="6" fill="none"/>
+                <path d="M42 22c-8 6-12 20-12 38c0 14 6 22 12 22s12-8 12-22c0-18-4-32-12-38z" fill="currentColor"/>
+                <path d="M58 22c8 6 12 20 12 38c0 14-6 22-12 22s-12-8-12-22c0-18 4-32 12-38z" fill="#C5A059"/>
+                <line x1="30" y1="46" x2="48" y2="40" stroke="#FFFFFF" stroke-width="4"/>
+                <line x1="30" y1="58" x2="48" y2="52" stroke="#FFFFFF" stroke-width="4"/>
+                <line x1="52" y1="40" x2="70" y2="46" stroke="#FFFFFF" stroke-width="4"/>
+                <line x1="52" y1="52" x2="70" y2="58" stroke="#FFFFFF" stroke-width="4"/>
               </svg>
             </div>
             <div>

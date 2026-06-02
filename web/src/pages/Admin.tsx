@@ -447,36 +447,36 @@ export function Admin() {
   // ==============================
   return (
     <div className="page-enter flex-1 flex flex-col">
-      {/* ヘッダー（陽） */}
+      {/* ヘッダー（白テーマ） */}
       <header style={{
-        background: 'linear-gradient(135deg, var(--color-matsuri-900) 0%, var(--color-matsuri-800) 100%)',
-        borderBottom: '3px solid var(--color-matsuri-500)',
+        background: '#FFFFFF',
+        borderBottom: '2px solid #E5E9E8',
         padding: '1rem 1.25rem 0',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
           <div>
-            <h1 style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: 6 }}>
+            <h1 style={{ fontSize: '1rem', fontWeight: 800, color: '#1F2937', display: 'flex', alignItems: 'center', gap: 6 }}>
               <span>⚙️</span> 管理者画面
             </h1>
-            <p style={{ fontSize: '0.65rem', color: 'var(--color-matsuri-100)', marginTop: 1 }}>経費精算の管理・会計報告</p>
+            <p style={{ fontSize: '0.65rem', color: '#6B7280', marginTop: 1, fontWeight: 500 }}>経費精算の管理・会計報告</p>
           </div>
           <button
             onClick={handleLogout}
-            style={{ fontSize: '0.7rem', color: 'var(--color-matsuri-200)', padding: '0.3rem 0.75rem', borderRadius: 8, background: 'rgba(255,255,255,0.12)', border: 'none', cursor: 'pointer' }}
+            style={{ fontSize: '0.7rem', color: '#4B5563', padding: '0.3rem 0.75rem', borderRadius: 8, background: '#F3F4F6', border: 'none', cursor: 'pointer', fontWeight: 'bold' }}
           >
             ログアウト
           </button>
         </div>
 
         {/* タブ */}
-        <div style={{ display: 'flex', gap: 2, background: 'rgba(0,0,0,0.2)', borderRadius: '10px 10px 0 0', padding: '0.3rem 0.3rem 0' }}>
+        <div style={{ display: 'flex', gap: 2, background: '#F3F4F6', borderRadius: '10px 10px 0 0', padding: '0.3rem 0.3rem 0' }}>
           <button
             onClick={() => setActiveTab('unsettled')}
             style={{
               flex: 1, fontSize: '0.65rem', fontWeight: 700, padding: '0.5rem 0.1rem',
               borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
               background: activeTab === 'unsettled' ? 'white' : 'transparent',
-              color: activeTab === 'unsettled' ? 'var(--color-matsuri-900)' : 'rgba(255,255,255,0.55)',
+              color: activeTab === 'unsettled' ? '#1F2937' : '#6B7280',
             }}
           >
             📋 未精算 {items.length > 0 && `(${items.length})`}
@@ -487,7 +487,7 @@ export function Admin() {
               flex: 1, fontSize: '0.65rem', fontWeight: 700, padding: '0.5rem 0.1rem',
               borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
               background: activeTab === 'settled' ? 'white' : 'transparent',
-              color: activeTab === 'settled' ? 'var(--color-matsuri-900)' : 'rgba(255,255,255,0.55)',
+              color: activeTab === 'settled' ? '#1F2937' : '#6B7280',
             }}
           >
             ✅ 精算済み
@@ -498,7 +498,7 @@ export function Admin() {
               flex: 1, fontSize: '0.65rem', fontWeight: 700, padding: '0.5rem 0.1rem',
               borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
               background: activeTab === 'report' ? 'white' : 'transparent',
-              color: activeTab === 'report' ? 'var(--color-matsuri-900)' : 'rgba(255,255,255,0.55)',
+              color: activeTab === 'report' ? '#1F2937' : '#6B7280',
             }}
           >
             📊 会計
@@ -509,7 +509,7 @@ export function Admin() {
               flex: 1, fontSize: '0.65rem', fontWeight: 700, padding: '0.5rem 0.1rem',
               borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
               background: activeTab === 'masters' ? 'white' : 'transparent',
-              color: activeTab === 'masters' ? 'var(--color-matsuri-900)' : 'rgba(255,255,255,0.55)',
+              color: activeTab === 'masters' ? '#1F2937' : '#6B7280',
             }}
           >
             ⚙️ マスター

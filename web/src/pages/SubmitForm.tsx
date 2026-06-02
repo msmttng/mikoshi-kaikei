@@ -245,10 +245,10 @@ export function SubmitForm({ type }: SubmitFormProps) {
 
   return (
     <div className="page-enter flex-1 flex flex-col">
-      {/* ヘッダー（陽） */}
+      {/* ヘッダー（白テーマ） */}
       <header style={{
-        background: 'linear-gradient(135deg, var(--color-matsuri-900) 0%, var(--color-matsuri-800) 100%)',
-        borderBottom: '3px solid var(--color-matsuri-500)',
+        background: '#FFFFFF',
+        borderBottom: '2px solid #E5E9E8',
         padding: '0.9rem 1.1rem',
         display: 'flex',
         alignItems: 'center',
@@ -256,16 +256,16 @@ export function SubmitForm({ type }: SubmitFormProps) {
       }}>
         <button
           onClick={() => navigate('/')}
-          style={{ width: 34, height: 34, borderRadius: '50%', background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0 }}
+          style={{ width: 34, height: 34, borderRadius: '50%', background: '#F3F4F6', border: 'none', color: '#1F2937', fontSize: '1.2rem', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', flexShrink: 0, fontWeight: 'bold' }}
           aria-label="戻る"
         >
           ‹
         </button>
         <div>
-          <h1 style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF' }}>
+          <h1 style={{ fontSize: '1rem', fontWeight: 800, color: '#1F2937' }}>
             {isExpense ? '📷 支出を登録' : '💴 収入を登録'}
           </h1>
-          <p style={{ fontSize: '0.68rem', color: 'var(--color-matsuri-100)', marginTop: 1 }}>
+          <p style={{ fontSize: '0.68rem', color: '#6B7280', marginTop: 1, fontWeight: 500 }}>
             {isExpense ? '領収書を撮影して経費申請' : '寄付・会費などの入金を記録'}
           </p>
         </div>

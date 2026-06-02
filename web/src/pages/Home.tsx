@@ -89,19 +89,29 @@ export function Home() {
 
   return (
     <div className="page-enter flex-1 flex flex-col">
-      {/* ヘッダー（陽） */}
+      {/* ヘッダー（白テーマ＆羽紋ロゴ） */}
       <header style={{
-        background: 'linear-gradient(135deg, var(--color-matsuri-900) 0%, var(--color-matsuri-800) 100%)',
-        borderBottom: '3px solid var(--color-matsuri-500)',
+        background: '#FFFFFF',
+        borderBottom: '2px solid #E5E9E8',
         padding: '1.25rem 1.25rem 1rem'
       }}>
         <div className="flex items-center gap-3">
-          <span className="text-3xl">🏮</span>
+          <div style={{ width: 36, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1F2937', flexShrink: 0 }}>
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="6" fill="none"/>
+              <path d="M42 22c-8 6-12 20-12 38c0 14 6 22 12 22s12-8 12-22c0-18-4-32-12-38z" fill="currentColor"/>
+              <path d="M58 22c8 6 12 20 12 38c0 14-6 22-12 22s-12-8-12-22c0-18 4-32 12-38z" fill="#C5A059"/>
+              <line x1="30" y1="46" x2="48" y2="40" stroke="#FFFFFF" stroke-width="4"/>
+              <line x1="30" y1="58" x2="48" y2="52" stroke="#FFFFFF" stroke-width="4"/>
+              <line x1="52" y1="40" x2="70" y2="46" stroke="#FFFFFF" stroke-width="4"/>
+              <line x1="52" y1="52" x2="70" y2="58" stroke="#FFFFFF" stroke-width="4"/>
+            </svg>
+          </div>
           <div>
-            <h1 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#FFFFFF', letterSpacing: '-0.01em' }}>
+            <h1 style={{ fontSize: '1.05rem', fontWeight: 800, color: '#1F2937', letterSpacing: '-0.01em' }}>
               仲羽田青年会 経費精算サイト
             </h1>
-            <p style={{ fontSize: '0.68rem', color: 'var(--color-matsuri-100)', marginTop: '1px' }}>Nakabata Seinenkai</p>
+            <p style={{ fontSize: '0.68rem', color: '#6B7280', marginTop: '1px', fontWeight: 500 }}>Nakabata Seinenkai</p>
           </div>
         </div>
       </header>

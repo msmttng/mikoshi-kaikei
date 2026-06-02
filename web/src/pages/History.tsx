@@ -86,13 +86,13 @@ export function History() {
 
   return (
     <div className="page-enter flex-1 flex flex-col">
-      {/* ヘッダー（陽） */}
+      {/* ヘッダー（白テーマ） */}
       <header style={{
-        background: 'linear-gradient(135deg, var(--color-matsuri-900) 0%, var(--color-matsuri-800) 100%)',
-        borderBottom: '3px solid var(--color-matsuri-500)',
+        background: '#FFFFFF',
+        borderBottom: '2px solid #E5E9E8',
         padding: '1.1rem 1.25rem'
       }}>
-        <h1 style={{ fontSize: '1rem', fontWeight: 700, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <h1 style={{ fontSize: '1rem', fontWeight: 800, color: '#1F2937', display: 'flex', alignItems: 'center', gap: 8 }}>
           <span>📋</span> 提出履歴
         </h1>
       </header>

@@ -129,26 +129,6 @@ export function Home() {
         </div>
       )}
 
-      {/* 繰越金カード */}
-      {masters.carryoverBalance > 0 && (
-        <div className="px-5 mb-4 mt-4">
-          <div style={{
-            background: 'var(--color-matsuri-50)',
-            borderRadius: '12px',
-            borderLeft: '4px solid var(--color-matsuri-500)',
-            padding: '0.85rem 1.1rem',
-            border: '2px solid #CBD5E1',
-            borderLeftWidth: '5px'
-          }}>
-            <p style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--color-matsuri-900)', letterSpacing: '0.06em' }}>
-              前年度繰越金
-            </p>
-            <p className="amount-display" style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--color-matsuri-900)', marginTop: '2px', letterSpacing: '-0.02em' }}>
-              {formatAmount(masters.carryoverBalance)}
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* メインアクションボタン */}
       <div className="px-5 flex flex-col gap-3">

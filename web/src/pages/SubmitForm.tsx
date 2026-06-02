@@ -261,29 +261,16 @@ export function SubmitForm({ type }: SubmitFormProps) {
         >
           ‹
         </button>
-        {/* 支出(6:宝袋)と収入(8:カメラ)でのロゴの使い分け */}
         <div style={{ width: 30, height: 30, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1F2937', flexShrink: 0 }}>
-          {isExpense ? (
-            /* 6. 吉祥・宝袋 */
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M26 80c0-16 10-38 24-38s24 22 24 38c0 8-8 10-24 10S26 88 26 80z" fill="currentColor"/>
-              <path d="M32 36c4-6 12-8 18-2s14-4 18 2c-4 6-12 8-18 2s-14 4-18-2z" fill="currentColor" opacity="0.85"/>
-              <circle cx="50" cy="42" r="5" fill="#C5A059"/>
-              <path d="M34 44c10 2 22 2 32 0M50 42c-8 8-12 18-16 20M50 42c8 8 12 18 16 20" stroke="#C5A059" stroke-width="4" stroke-linecap="round"/>
-            </svg>
-          ) : (
-            /* 8. さくらシャッター */
-            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="14" y="24" width="72" height="52" rx="10" stroke="currentColor" stroke-width="6" fill="none"/>
-              <rect x="26" y="16" width="16" height="8" rx="2" fill="currentColor"/>
-              <circle cx="72" cy="36" r="4" fill="#C5A059"/>
-              <circle cx="50" cy="50" r="20" stroke="currentColor" stroke-width="4" fill="none"/>
-              <path d="M50 36c2 4 6 8 10 8s10-4 10-8-6-2-10-2-8 0-10 4z" stroke="#C5A059" stroke-width="3" fill="none"/>
-              <path d="M64 50c-2 4-4 8-4 10s4 10 8 10 6-6 6-10-6-8-10-10z" stroke="#C5A059" stroke-width="3" fill="none"/>
-              <path d="M50 64c-2-4-6-8-10-8s-10 4-10 8 6 2 10 2 8 0 10-4z" stroke="#C5A059" stroke-width="3" fill="none"/>
-              <path d="M36 50c2-4 4-8 4-10s-4-10-8-10-6 6-6 10 6 8 10 10z" stroke="#C5A059" stroke-width="3" fill="none"/>
-            </svg>
-          )}
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="6" fill="none"/>
+            <path d="M42 22c-8 6-12 20-12 38c0 14 6 22 12 22s12-8 12-22c0-18-4-32-12-38z" fill="currentColor"/>
+            <path d="M58 22c8 6 12 20 12 38c0 14-6 22-12 22s-12-8-12-22c0-18 4-32 12-38z" fill="#C5A059"/>
+            <line x1="30" y1="46" x2="48" y2="40" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="30" y1="58" x2="48" y2="52" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="52" y1="40" x2="70" y2="46" stroke="#FFFFFF" stroke-width="4"/>
+            <line x1="52" y1="52" x2="70" y2="58" stroke="#FFFFFF" stroke-width="4"/>
+          </svg>
         </div>
         <div>
           <h1 style={{ fontSize: '1rem', fontWeight: 800, color: '#1F2937' }}>

@@ -1305,6 +1305,7 @@ function runOcr(payload) {
   var prompt = 'あなたは日本の領収書OCR専門AIです。画像から以下のJSONを出力してください。\n\n'
     + '出力形式（必ずこのJSONのみ。コードブロック禁止）:\n'
     + '{\n'
+    + '  "reasoning": "金額、日付、支払先をどのように読み取ったか、判断の理由を短く記述",\n'
     + '  "date": "YYYY-MM-DD 形式、読み取れなければ null",\n'
     + '  "amount": "整数（円）、読み取れなければ null",\n'
     + '  "payee": "店名・発行者名、読み取れなければ null",\n'
@@ -1313,7 +1314,8 @@ function runOcr(payload) {
     + '}\n\n'
     + '制約:\n'
     + '- 読み取れない項目は必ず null。推測で埋めない\n'
-    + '- 金額は税込総額（合計欄）を採用\n'
+    + '- 金額は「合計」「税込」「合計金額」の欄に書かれた一番大きな数字を採用し、カンマ(,)を除いた整数にすること\n'
+    + '- 支払先はスタンプや印鑑の文字も注意深く読み取り、(株)はそのまま記録すること\n'
     + '- 日付は和暦の場合は西暦に変換\n'
     + '- 手書き領収書も対応するが、判読困難な場合は confidence を low にする\n'
     + '- 余計な説明文・コードブロック（```）は一切付けない';
@@ -1349,7 +1351,8 @@ function callGeminiWithImage(apiKey, base64, mimeType, prompt) {
     }],
     generationConfig: {
       temperature: 0.1,  // 低温で正確性重視
-      maxOutputTokens: 512
+      maxOutputTokens: 1024,
+      responseMimeType: "application/json"
     }
   };
 

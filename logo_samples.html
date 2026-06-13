@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>神輿会経費精算アプリ — HP用ロゴ提案 10選</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   GLOBAL STYLE & THEME
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Outfit', 'Noto Sans JP', sans-serif;
+  background-color: #F4F7F6;
+  color: #1F2937;
+  padding: 2rem 1.5rem;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ヘッダー */
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header h1 {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: #005B5C; /* 蒼テーマメイン */
+  letter-spacing: -0.01em;
+}
+
+.header p {
+  font-size: 0.9rem;
+  color: #6B7280;
+  margin-top: 0.35rem;
+}
+
+/* ==========================================================================
+   🏠 SIMULATOR HEADER (はめ込みシミュレータ)
+   ========================================================================== */
+.simulator-section {
+  background: white;
+  border: 1px solid #E5E9E8;
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 10px 30px rgba(0, 91, 92, 0.04);
+}
+
+.sim-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #9CA3AF;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+/* シミュレータのヘッダーバー */
+.app-header-mock {
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+  min-height: 68px;
+}
+
+/* シミュレータの背景バリエーション */
+.bg-ao {
+  background: linear-gradient(135deg, #004D4E 0%, #005B5C 100%);
+  border-bottom: 3px solid #C5A059;
+  color: white;
+}
+.bg-white-theme {
+  background: #FFFFFF;
+  border-bottom: 2px solid #CBD5E1;
+  color: #1F2937;
+}
+.bg-miyabi {
+  background: linear-gradient(135deg, #D32F2F 0%, #1A237E 100%);
+  border-bottom: 3px solid #E7E3DC;
+  color: white;
+}
+
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.app-header-logo-container {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-header-logo-container svg {
+  width: 100%;
+  height: 100%;
+}
+
+.app-header-title h2 {
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+}
+
+.app-header-title p {
+  font-size: 0.62rem;
+  opacity: 0.7;
+  margin-top: 1px;
+}
+
+.sim-controls {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  justify-content: center;
+}
+
+.sim-btn {
+  border: 1px solid #CBD5E1;
+  background-color: white;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #4A5568;
+}
+
+.sim-btn.active {
+  background-color: #005B5C;
+  color: white;
+  border-color: #005B5C;
+}
+
+/* ==========================================================================
+   🎨 LOGO GRID CATALOG (10選一覧)
+   ========================================================================== */
+.logo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.logo-card {
+  background: white;
+  border: 1px solid #E5E9E8;
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.logo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 91, 92, 0.08);
+  border-color: #005B5C;
+}
+
+.logo-card.selected {
+  border-color: #C5A059; /* ゴールド */
+  background-color: #FAF9F6;
+  box-shadow: 0 8px 25px rgba(197, 160, 89, 0.12);
+}
+
+.logo-card-preview {
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F8FAFC;
+  border-radius: 12px;
+  border: 1px solid #EDF2F7;
+  padding: 8px;
+  transition: all 0.2s;
+}
+
+.logo-card-info h3 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #1F2937;
+}
+
+.logo-card-info p {
+  font-size: 0.68rem;
+  color: #6B7280;
+  margin-top: 0.25rem;
+}
+
+/* コードコピーボタン */
+.copy-btn {
+  background-color: #EDF2F7;
+  color: #4A5568;
+  border: none;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.copy-btn:hover {
+  background-color: #E2E8F0;
+}
+
+.copy-btn.copied {
+  background-color: #48BB78;
+  color: white;
+}
+
+/* トースト通知 */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background-color: #2D3748;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  opacity: 0;
+  transition: all 0.3s;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* カタログ切り替えナビ */
+.catalog-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.nav-link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 10px 18px;
+  background: white;
+  border: 1px solid #E5E9E8;
+  border-radius: 30px;
+  color: #4B5563;
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.nav-link-btn:hover {
+  transform: translateY(-2px);
+  border-color: #005B5C;
+  color: #005B5C;
+  box-shadow: 0 6px 16px rgba(0, 91, 92, 0.06);
+}
+
+.nav-link-btn.active {
+  background: #005B5C;
+  color: white;
+  border-color: #005B5C;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- タイトル部 -->
+  <div class="header">
+    <h1>🎨 神輿会HP用ロゴデザイン 10選</h1>
+    <p>伝統的な「お祭り」の情緒と、現代的な「視認性・プレミアム感」を両立させた上品なマーク案</p>
+  </div>
+
+  <!-- カタログ切り替えナビ -->
+  <div class="catalog-nav">
+    <a href="logo_samples.html" class="nav-link-btn active">🏮 第1弾：伝統和風エンブレム編</a>
+    <a href="finance_logo_samples.html" class="nav-link-btn">💵 第2弾：機能特化・カメラ会計編</a>
+  </div>
+
+  <!-- =================================================================
+     🏠 SIMULATOR SECTION (はめ込み比較)
+     ================================================================= -->
+  <div class="simulator-section">
+    <span class="sim-title">💡 実際のヘッダーでの見え方シミュレーター</span>
+    
+    <!-- ヘッダーモック本体 -->
+    <div class="app-header-mock bg-ao" id="header-mock">
+      <div class="app-header-left">
+        <!-- ロゴ挿入エリア -->
+        <div class="app-header-logo-container" id="mock-logo-area">
+          <!-- 初期ロゴ: 🏮伝統提灯 -->
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M50 8v84M34 14C34 14 20 28 20 50C20 72 34 86 34 86M66 14C66 14 80 28 80 50C80 72 66 86 66 86" stroke="currentColor" stroke-width="6" stroke-linecap="round"/><rect x="28" y="14" width="44" height="72" rx="10" stroke="currentColor" stroke-width="7" fill="none"/><line x1="28" y1="32" x2="72" y2="32" stroke="currentColor" stroke-width="5"/><line x1="28" y1="50" x2="72" y2="50" stroke="currentColor" stroke-width="5"/><line x1="28" y1="68" x2="72" y2="68" stroke="currentColor" stroke-width="5"/><rect x="40" y="6" width="20" height="8" rx="2" fill="#C5A059"/><rect x="40" y="86" width="20" height="8" rx="2" fill="#C5A059"/></svg>
+        </div>
+        <div class="app-header-title">
+          <h2>仲羽田青年会 経費精算</h2>
+          <p>Nakabata Seinenkai</p>
+        </div>
+      </div>
+      <div style="font-size: 0.7rem; font-weight: 800; opacity: 0.8;">
+        提出者: 山田
+      </div>
+    </div>
+
+    <!-- 背景色変更トグル -->
+    <div class="sim-controls">
+      <button class="sim-btn active" onclick="changeMockBg('ao', this)">🌊 蒼 (AO) テーマ</button>
+      <button class="sim-btn" onclick="changeMockBg('white-theme', this)">◽ 白 (WHITE) テーマ</button>
+      <button class="sim-btn" onclick="changeMockBg('miyabi', this)">🏮 雅 (MIYABI) テーマ</button>
+    </div>
+  </div>
+
+  <!-- =================================================================
+     🎨 LOGO GRID CATALOG (10通りの詳細)
+     ================================================================= -->
+  <span class="sim-title" style="margin-bottom: 0.75rem;">📋 ロゴデザイン一覧 (タップでシミュレータに挿入 ＆ コピー)</span>
+  
+  <div class="logo-grid" id="logo-grid-container">
+    <!-- JSで10通りのロゴが挿入されます -->
+  </div>
+
+</div>
+
+<!-- コピー通知トースト -->
+<div class="toast" id="toast-notify">📋 SVGコードをクリップボードにコピーしました！</div>
+
+<script>
+// ==========================================================================
+// 10通りの極上SVGロゴデータ
+// ==========================================================================
+const logoData = [
+  {
+    id: "logo-chouchin",
+    name: "1. 🏮 伝統の提灯",
+    desc: "スタイリッシュ・アウトライン",
+    explain: "提灯の蛇腹と輪郭を美しい極太線で構築し、上下の金具をゴールドで締めました。お祭りらしさを最も直感的に伝える極上の伝統ロゴ。",
+    svg: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 8v84M34 14C34 14 20 28 20 50C20 72 34 86 34 86M66 14C66 14 80 28 80 50C80 72 66 86 66 86" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+      <rect x="28" y="14" width="44" height="72" rx="10" stroke="currentColor" stroke-width="7" fill="none"/>
+      <line x1="28" y1="32" x2="72" y2="32" stroke="currentColor" stroke-width="5"/>
+      <line x1="28" y1="50" x2="72" y2="50" stroke="currentColor" stroke-width="5"/>
+      <line x1="28" y1="68" x2="72" y2="68" stroke="currentColor" stroke-width="5"/>
+      <rect x="40" y="6" width="20" height="8" rx="2" fill="#C5A059"/>
+      <rect x="40" y="86" width="20" height="8" rx="2" fill="#C5A059"/>
+    </svg>`
+  },
+  {
+    id: "logo-torii",
+    name: "2. ⛩️ モダン鳥居",
+    desc: "幾何学ゴールドミニマル",
+    explain: "鳥居の形状を無駄のない極太フラットパーツで再解釈。笠木（最上部）のみを雅なゴールドとし、伝統的な朱色との完璧な調和と高視認性を両立。",
+    svg: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- 笠木＆島木（ゴールド） -->
+      <path d="M12 18h76M18 26h64" stroke="#C5A059" stroke-width="8" stroke-linecap="round"/>
+      <!-- 貫（中央の横棒） -->
+      <line x1="14" y1="42" x2="86" y2="42" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+      <!-- 柱 -->
+      <line x1="34" y1="26" x2="31" y2="88" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
+      <line x1="66" y1="26" x2="69" y2="88" stroke="currentColor" stroke-width="9" stroke-linecap="round"/>
+      <!-- 額束 -->
+      <rect x="46" y="26" width="8" height="16" fill="currentColor"/>
+    </svg>`
+  },
+  {
+    id: "logo-tomoe",
+    name: "3. 🌀 流麗三つ巴紋",
+    desc: "伝統・三つ巴エンブレム",
+    explain: "神輿渡御や和太鼓、神社でおなじみの「三つ巴」を完璧な円弧でリファクタリング。ゴールドとティールのコントラストで圧倒的高級感を表現。",
+    svg: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="6" fill="none"/>
+      <!-- 巴（中央） -->
+      <path d="M50 50c0-12 10-22 22-22s22 10 22 22-10 22-22 22H50zm0 0c-12 0-22-10-22-22s10-22 22-22c12 0 22 10 22 22H50zm0 0c0 12-10 22-22 22s-22-10-22-22 10-22 22-22h22z" fill="#C5A059"/>
+    </svg>`
+  },
+  {
+    id: "logo-sensu",
+    name: "4. 🪭 末広がりの扇",
+    desc: "吉祥・扇子ラインアート",
+    explain: "青年会の末広がりの繁栄を祝う、極細線による美しい扇子ロゴ。扇の骨をゴールドのシャープなラインで表現し、上品かつ繊細な知性を演出。",
+    svg: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- 扇の輪郭 -->
+      <path d="M50 82C22 75 12 40 12 40c24-10 52-10 76 0 0 0-10 35-38 42z" stroke="currentColor" stroke-width="6" stroke-linejoin="round" fill="none"/>
+      <!-- 扇のひだ線（ゴールド） -->
+      <line x1="50" y1="82" x2="50" y2="34" stroke="#C5A059" stroke-width="4"/>
+      <line x1="50" y1="82" x2="32" y2="38" stroke="#C5A059" stroke-width="4"/>
+      <line x1="50" y1="82" x2="68" y2="38" stroke="#C5A059" stroke-width="4"/>
+      <line x1="50" y1="82" x2="18" y2="44" stroke="#C5A059" stroke-width="4"/>
+      <line x1="50" y1="82" x2="82" y2="44" stroke="#C5A059" stroke-width="4"/>
+      <!-- 要（かなめ） -->
+      <circle cx="50" cy="82" r="6" fill="currentColor"/>
+    </svg>`
+  },
+  {
+    id: "logo-taiko",
+    name: "5. 🥁 躍動の和太鼓",
+    desc: "神輿囃子・太鼓エンブレム",
+    explain: "青年会のお祭り囃子を盛り上げる太鼓の皮と、締め金具（鋲）をデフォルメしたモダンフラットサークル。動きと活気を象徴。",
+    svg: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="42" stroke="currentColor" stroke-width="7" fill="none"/>
+      <circle cx="50" cy="50" r="32" stroke="#C5A059" stroke-dasharray="8 8" stroke-width="6" fill="none"/>
+      <!-- バチ -->
+      <line x1="30" y1="70" x2="70" y2="30" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+      <line x1="22" y1="62" x2="62" y2="22" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: "logo-sakura",
+    name: "6. 🌸 桜の伝統家紋",
+    desc: "桜花調和・和モダン家紋",
+    explain: "日本の心である桜の花びら5枚が、綺麗に調和してひとつの完璧な円を形成する家紋風デザイン。上品さと美しさが極まったロゴ。",
+    svg: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="4" fill="none"/>
+      <!-- 桜のラインアート（ゴールド） -->
+      <path d="M50 16c2 12 12 22 22 22s22-10 22-22S82 2 72 2s-20 2-22 14z" stroke="#C5A059" stroke-width="5" fill="none"/>
+      <path d="M84 50c-12-2-22 12-22 22s10 22 22 22 22-12 22-22-10-20-22-22z" stroke="#C5A059" stroke-width="5" fill="none"/>
+      <path d="M50 84c-2-12-12-22-22-22s-22 10-22 22 12 22 22 22 20-2 22-14z" stroke="#C5A059" stroke-width="5" fill="none"/>
+      <path d="M16 50c12 2 22-12 22-22s-10-22-22-22-22 12-22 22 10 20 22 22z" stroke="#C5A059" stroke-width="5" fill="none"/>
+    </svg>`
+  },
+  {
+    id: "logo-nami",
+    name: "7. 🌊 勢いの波頭",
+    desc: "青海波・波紋サークル",
+    explain: "伝統紋様の「青海波」を円形にデフォルメ。青年会としての力強さと団結、どこまでも寄せては返す永遠の勢いを象徴する爽やかなロゴ。",
+    svg: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="5" fill="none"/>
+      <!-- 波（ゴールド） -->
+      <path d="M22 66c6-10 18-10 24 0M10 74c10-14 30-14 40 0M34 68c6-10 18-10 24 0M46 72c6-10 18-10 24 0" stroke="#C5A059" stroke-width="6" stroke-linecap="round"/>
+      <path d="M16 54c8-12 24-12 32 0M28 56c8-12 24-12 32 0" stroke="currentColor" stroke-width="6" stroke-linecap="round"/>
+    </svg>`
+  },
+  {
+    id: "logo-hanemono",
+    name: "8. 🪶 仲羽田「羽」紋",
+    desc: "オリジナル・モノグラム",
+    explain: "仲羽田の「羽」という文字を、家紋（丸に二つ羽）のようにモダンデフォルメ。青年会だけの真のオリジナル・エンブレム。",
+    svg: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="44" stroke="currentColor" stroke-width="6" fill="none"/>
+      <!-- 羽根2枚（ゴールド＆メイン） -->
+      <path d="M42 22c-8 6-12 20-12 38c0 14 6 22 12 22s12-8 12-22c0-18-4-32-12-38z" fill="currentColor"/>
+      <path d="M58 22c8 6 12 20 12 38c0 14-6 22-12 22s-12-8-12-22c0-18 4-32 12-38z" fill="#C5A059"/>
+      <!-- 羽根のスリット -->
+      <line x1="30" y1="46" x2="48" y2="40" stroke="#F4F7F6" stroke-width="4"/>
+      <line x1="30" y1="58" x2="48" y2="52" stroke="#F4F7F6" stroke-width="4"/>
+      <line x1="52" y1="40" x2="70" y2="46" stroke="#F4F7F6" stroke-width="4"/>
+      <line x1="52" y1="52" x2="70" y2="58" stroke="#F4F7F6" stroke-width="4"/>
+    </svg>`
+  },
+  {
+    id: "logo-spark",
+    name: "9. ✨ 祭りのきらめき",
+    desc: "祭礼の灯・きらめき星",
+    explain: "提灯の火の粉や花火、祭りの熱気を象徴する「きらめき（伝統花形）」のミニマリズムエンブレム。若さとエネルギーを優雅に表現。",
+    svg: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 12c0 20 18 38 38 38c-20 0-38 18-38 38c0-20-18-38-38-38c20 0 38-18 38-38z" fill="currentColor"/>
+      <path d="M50 26c0 12 12 24 24 24c-12 0-24 12-24 24c0-12-12-24-24-24c12 0 24-12 24-24z" fill="#C5A059"/>
+      <circle cx="50" cy="50" r="6" fill="#FFFFFF"/>
+    </svg>`
+  },
+  {
+    id: "logo-musubi",
+    name: "10. 🪢 吉祥結び",
+    desc: "繋がり・吉祥水引",
+    explain: "人々の調和と強い絆（青年会・町会）を結ぶ、吉祥結びの水引を極限までシンプルに描いた、スマートでエレガントなモダンロゴ。",
+    svg: `<svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- 水引の結び目ライン（ゴールド） -->
+      <path d="M50 24c14 0 26 12 26 26s-12 26-26 26s-26-12-26-26s12-26 26-26z" stroke="#C5A059" stroke-width="7" fill="none"/>
+      <!-- クロスする結びひも -->
+      <path d="M24 50h52M50 24v52" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+      <circle cx="50" cy="50" r="12" stroke="currentColor" stroke-width="4" fill="#FFFFFF"/>
+    </svg>`
+  }
+];
+
+// ==========================================================================
+// RENDER LOGOS & ACTIONS
+// ==========================================================================
+let currentSelectedLogoId = "logo-chouchin";
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderLogoGrid();
+  selectLogo("logo-chouchin"); // デフォルト選択
+});
+
+function renderLogoGrid() {
+  const container = document.getElementById("logo-grid-container");
+  container.innerHTML = "";
+
+  logoData.forEach(logo => {
+    const card = document.createElement("div");
+    card.className = `logo-card ${logo.id === currentSelectedLogoId ? 'selected' : ''}`;
+    card.id = logo.id;
+    card.onclick = () => selectLogo(logo.id);
+
+    card.innerHTML = `
+      <div class="logo-card-preview" id="preview-${logo.id}">
+        ${logo.svg}
+      </div>
+      <div class="logo-card-info">
+        <h3>${logo.name}</h3>
+        <p>${logo.desc}</p>
+        <p style="font-size:0.6rem; color:#6B7280; text-align:left; margin-top:6px; line-height:1.35;">${logo.explain}</p>
+      </div>
+      <button class="copy-btn" onclick="copySvgCode('${logo.id}', event)">📋 SVGをコピー</button>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// ロゴの選択とシミュレーターへの反映
+function selectLogo(logoId) {
+  currentSelectedLogoId = logoId;
+  
+  // カードの選択状態更新
+  document.querySelectorAll(".logo-card").forEach(card => {
+    card.classList.remove("selected");
+  });
+  const selectedCard = document.getElementById(logoId);
+  if (selectedCard) selectedCard.classList.add("selected");
+
+  // シミュレータへの反映
+  const logoObj = logoData.find(logo => logo.id === logoId);
+  const mockLogoArea = document.getElementById("mock-logo-area");
+  
+  if (logoObj && mockLogoArea) {
+    mockLogoArea.innerHTML = logoObj.svg;
+    
+    // アニメーション効果を付与
+    mockLogoArea.style.transform = "scale(0.8)";
+    setTimeout(() => {
+      mockLogoArea.style.transform = "scale(1)";
+    }, 150);
+  }
+}
+
+// シミュレータ背景色の変更
+function changeMockBg(bgType, btn) {
+  const mock = document.getElementById("header-mock");
+  mock.className = "app-header-mock";
+  mock.classList.add(`bg-${bgType}`);
+
+  // コントロールボタンのアクティブ状態更新
+  document.querySelectorAll(".sim-controls .sim-btn").forEach(b => {
+    b.classList.remove("active");
+  });
+  btn.classList.add("active");
+}
+
+// ワンクリックコピペ機能
+function copySvgCode(logoId, event) {
+  event.stopPropagation(); // カードクリック（シミュレータ反映）を抑止
+  
+  const logoObj = logoData.find(logo => logo.id === logoId);
+  if (!logoObj) return;
+
+  const codeText = logoObj.svg;
+  
+  navigator.clipboard.writeText(codeText).then(() => {
+    // トースト通知表示
+    const toast = document.getElementById("toast-notify");
+    toast.classList.add("show");
+    setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2000);
+
+    // コピーボタンのテキストを一時変更
+    const btn = event.target;
+    const originText = btn.innerText;
+    btn.innerText = "✓ コピー完了！";
+    btn.classList.add("copied");
+    setTimeout(() => {
+      btn.innerText = originText;
+      btn.classList.remove("copied");
+    }, 1500);
+  });
+}
+</script>
+</body>
+</html>

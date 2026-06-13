@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>経費精算サイト 使い方ガイド — 仲羽田青年会</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy: #1E3A5F;
+      --navy-mid: #263C61;
+      --blue: #3B72B4;
+      --sky: #5A90CC;
+      --light-blue: #E8F0FE;
+      --bg: #F8F9FC;
+      --text: #1a2233;
+      --muted: #5A7FA8;
+      --border: #D8E3F0;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+    }
+
+    /* ─── ヘッダー ─── */
+    .site-header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+      border-bottom: 4px solid var(--blue);
+      padding: 2rem 1.5rem 1.5rem;
+      text-align: center;
+      color: white;
+    }
+    .site-header .emoji { font-size: 2.5rem; display: block; margin-bottom: .4rem; }
+    .site-header h1 { font-size: 1.4rem; font-weight: 900; color: #E0EAFF; letter-spacing: -.02em; }
+    .site-header p { font-size: .8rem; color: #7FA8D4; margin-top: .25rem; }
+    .url-pill {
+      display: inline-block; margin-top: .75rem;
+      background: rgba(255,255,255,.12); border-radius: 20px;
+      padding: .3rem 1rem; font-size: .75rem; color: #B8D0EB;
+      text-decoration: none; border: 1px solid rgba(255,255,255,.2);
+      transition: background .2s;
+    }
+    .url-pill:hover { background: rgba(255,255,255,.22); color: white; }
+
+    /* ─── 目次 ─── */
+    .toc {
+      max-width: 720px; margin: 1.5rem auto; padding: 0 1rem;
+    }
+    .toc nav {
+      background: white; border: 1px solid var(--border); border-radius: 12px;
+      padding: 1.25rem 1.5rem;
+    }
+    .toc h2 { font-size: .85rem; font-weight: 700; color: var(--navy); margin-bottom: .75rem; }
+    .toc ul { list-style: none; display: flex; flex-wrap: wrap; gap: .5rem; }
+    .toc a {
+      display: inline-block; padding: .3rem .85rem; border-radius: 20px;
+      background: var(--light-blue); color: var(--navy); font-size: .75rem; font-weight: 600;
+      text-decoration: none; transition: background .15s;
+    }
+    .toc a:hover { background: var(--blue); color: white; }
+
+    /* ─── メインレイアウト ─── */
+    main { max-width: 720px; margin: 0 auto; padding: 0 1rem 4rem; }
+
+    /* ─── セクション ─── */
+    .section { margin-bottom: 2.5rem; }
+
+    .section-header {
+      display: flex; align-items: center; gap: .6rem;
+      background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+      color: white; border-radius: 12px 12px 0 0;
+      padding: .85rem 1.25rem;
+    }
+    .section-header .icon { font-size: 1.2rem; }
+    .section-header h2 { font-size: 1rem; font-weight: 700; color: #E0EAFF; }
+    .section-header .badge {
+      margin-left: auto; font-size: .65rem; font-weight: 700;
+      padding: .15rem .6rem; border-radius: 10px;
+    }
+    .badge-member { background: #3B72B4; color: white; }
+    .badge-admin  { background: #E0A030; color: #fff; }
+
+    .section-body {
+      background: white; border: 1px solid var(--border);
+      border-top: none; border-radius: 0 0 12px 12px;
+      padding: 1.5rem;
+    }
+
+    /* ─── 見出し ─── */
+    h3 {
+      font-size: .95rem; font-weight: 700; color: var(--navy);
+      margin: 1.5rem 0 .6rem;
+      display: flex; align-items: center; gap: .4rem;
+    }
+    h3:first-child { margin-top: 0; }
+    h3::before { content: ''; display: block; width: 4px; height: 1em; background: var(--blue); border-radius: 2px; }
+
+    h4 { font-size: .85rem; font-weight: 700; color: var(--blue); margin: 1rem 0 .4rem; }
+
+    p { font-size: .875rem; margin-bottom: .75rem; }
+
+    /* ─── ステップ ─── */
+    .steps { list-style: none; display: flex; flex-direction: column; gap: .6rem; margin: .5rem 0 1rem; }
+    .steps li {
+      display: flex; align-items: flex-start; gap: .75rem;
+      background: var(--bg); border-radius: 10px; padding: .6rem .9rem;
+      font-size: .85rem;
+    }
+    .step-num {
+      display: flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: var(--blue); color: white; font-size: .7rem; font-weight: 700;
+      flex-shrink: 0; margin-top: .05rem;
+    }
+
+    /* ─── テーブル ─── */
+    table { width: 100%; border-collapse: collapse; font-size: .82rem; margin: .75rem 0 1rem; }
+    th {
+      background: var(--navy); color: #E0EAFF; text-align: left;
+      padding: .55rem .75rem; font-weight: 700; font-size: .78rem;
+    }
+    td { padding: .5rem .75rem; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: #F8FBFF; }
+
+    /* ─── 注意書き ─── */
+    .note {
+      display: flex; align-items: flex-start; gap: .6rem;
+      background: var(--light-blue); border-left: 4px solid var(--blue);
+      border-radius: 0 8px 8px 0; padding: .7rem 1rem;
+      font-size: .82rem; color: var(--navy); margin: .75rem 0;
+    }
+    .warn {
+      background: #FFF8E1; border-left-color: #E0A030; color: #7A5C00;
+    }
+    .danger {
+      background: #FEF0EF; border-left-color: #C0392B; color: #7A1F1F;
+    }
+    .note .ico { font-size: 1rem; flex-shrink: 0; margin-top: .05rem; }
+
+    /* ─── タブUIモック ─── */
+    .tab-bar {
+      display: flex; gap: 2px; background: var(--navy);
+      border-radius: 10px 10px 0 0; padding: .3rem .3rem 0;
+      margin: 1rem 0 0;
+    }
+    .tab {
+      flex: 1; text-align: center; padding: .4rem .25rem;
+      font-size: .68rem; font-weight: 700; border-radius: 7px 7px 0 0;
+      cursor: default;
+    }
+    .tab.active { background: white; color: var(--navy); }
+    .tab.inactive { color: rgba(255,255,255,.55); }
+    .tab-content {
+      background: white; border: 1px solid var(--border);
+      border-top: none; border-radius: 0 0 10px 10px;
+      padding: .75rem 1rem; font-size: .78rem; color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    /* ─── スクリーンモック ─── */
+    .phone-mock {
+      max-width: 260px; margin: 1rem auto;
+      background: white; border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(30,58,95,.1);
+      font-size: .75rem;
+    }
+    .phone-header {
+      background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+      border-bottom: 3px solid var(--blue);
+      padding: .75rem 1rem; color: #E0EAFF;
+    }
+    .phone-header .ph-title { font-weight: 700; font-size: .85rem; }
+    .phone-header .ph-sub { font-size: .62rem; color: #7FA8D4; }
+    .phone-body { padding: .75rem; }
+    .phone-card {
+      display: flex; align-items: center; gap: .6rem;
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: .6rem .75rem; margin-bottom: .5rem;
+    }
+    .phone-icon {
+      width: 36px; height: 36px; border-radius: 9px;
+      background: linear-gradient(135deg, var(--blue), var(--navy));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+    }
+    .phone-bottom {
+      display: flex; border-top: 1px solid var(--border); background: white;
+    }
+    .phone-bottom span {
+      flex: 1; text-align: center; padding: .5rem 0;
+      font-size: .65rem; color: var(--muted);
+    }
+    .phone-bottom span.active { color: var(--navy); font-weight: 700; }
+
+    /* ─── FAQ ─── */
+    .faq { display: flex; flex-direction: column; gap: .75rem; }
+    .faq-item { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+    .faq-q {
+      background: var(--light-blue); padding: .65rem 1rem;
+      font-size: .82rem; font-weight: 700; color: var(--navy);
+    }
+    .faq-q::before { content: 'Q. '; }
+    .faq-a {
+      padding: .65rem 1rem; font-size: .82rem; color: var(--text);
+      background: white; border-top: 1px solid var(--border);
+    }
+    .faq-a::before { content: '💡 '; }
+
+    /* ─── フッター ─── */
+    footer {
+      background: var(--navy); color: #7FA8D4;
+      text-align: center; padding: 1.5rem 1rem;
+      font-size: .75rem; margin-top: 3rem;
+    }
+    footer a { color: #B8D0EB; }
+
+    @media print {
+      .toc { display: none; }
+      .section { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ ヘッダー ═══ -->
+<header class="site-header">
+  <span class="emoji">🏮</span>
+  <h1>仲羽田青年会 経費精算サイト</h1>
+  <p>使い方ガイド — 一般会員・管理者共通</p>
+  <a class="url-pill" href="https://msmttng.github.io/mikoshi-kaikei/" target="_blank">
+    🌐 https://msmttng.github.io/mikoshi-kaikei/
+  </a>
+</header>
+
+<!-- ═══ 目次 ═══ -->
+<div class="toc">
+  <nav>
+    <h2>📑 目次</h2>
+    <ul>
+      <li><a href="#install">📱 インストール</a></li>
+      <li><a href="#home">🏠 ホーム画面</a></li>
+      <li><a href="#expense">📷 支出の登録</a></li>
+      <li><a href="#income">💴 収入の登録</a></li>
+      <li><a href="#history">📋 履歴の確認</a></li>
+      <li><a href="#admin-login">🔐 管理者ログイン</a></li>
+      <li><a href="#unsettled">未精算管理</a></li>
+      <li><a href="#settled">精算済み管理</a></li>
+      <li><a href="#report">会計レポート</a></li>
+      <li><a href="#masters">マスター管理</a></li>
+      <li><a href="#faq">❓ よくある質問</a></li>
+    </ul>
+  </nav>
+</div>
+
+<main>
+
+<!-- ═══ インストール ═══ -->
+<section class="section" id="install">
+  <div class="section-header">
+    <span class="icon">📱</span>
+    <h2>スマホへのインストール（推奨）</h2>
+    <span class="badge badge-member">全員</span>
+  </div>
+  <div class="section-body">
+    <p>ホーム画面に追加しておくと、アプリのようにすぐ起動できます。</p>
+
+    <h3>iPhone（Safari）の場合</h3>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span><strong>Safari</strong> でサイトURLを開く（Chromeでは不可）</span></li>
+      <li><span class="step-num">2</span><span>画面下の <strong>共有ボタン（□↑）</strong> をタップ</span></li>
+      <li><span class="step-num">3</span><span><strong>「ホーム画面に追加」</strong> をタップ</span></li>
+      <li><span class="step-num">4</span><span>右上の <strong>「追加」</strong> をタップして完了 ✅</span></li>
+    </ol>
+
+    <h3>Android（Chrome）の場合</h3>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span><strong>Chrome</strong> でサイトURLを開く</span></li>
+      <li><span class="step-num">2</span><span>右上の <strong>メニュー（⋮）</strong> をタップ</span></li>
+      <li><span class="step-num">3</span><span><strong>「ホーム画面に追加」</strong> をタップ</span></li>
+      <li><span class="step-num">4</span><span><strong>「追加」</strong> をタップして完了 ✅</span></li>
+    </ol>
+
+    <div class="note"><span class="ico">💡</span><span>インストール後はホーム画面のアイコンをタップするだけで起動できます。アプリのように使えます。</span></div>
+  </div>
+</section>
+
+<!-- ═══ ホーム ═══ -->
+<section class="section" id="home">
+  <div class="section-header">
+    <span class="icon">🏠</span>
+    <h2>ホーム画面の見方</h2>
+    <span class="badge badge-member">一般会員</span>
+  </div>
+  <div class="section-body">
+
+    <div class="phone-mock">
+      <div class="phone-header">
+        <div class="ph-title">🏮 仲羽田青年会 経費精算サイト</div>
+        <div class="ph-sub">Nakabata Seinenkai</div>
+      </div>
+      <div class="phone-body" style="background:#E8F0FE; padding:.5rem .75rem; border-bottom:1px solid #D8E3F0;">
+        <div style="font-size:.62rem; color:#3B72B4; font-weight:700;">前年度繰越金</div>
+        <div style="font-size:1.1rem; font-weight:900; color:#1E3A5F;">¥1,211,366</div>
+      </div>
+      <div class="phone-body">
+        <div class="phone-card">
+          <div class="phone-icon">📷</div>
+          <div>
+            <div style="font-weight:700; color:#1E3A5F; font-size:.8rem;">支出を登録</div>
+            <div style="font-size:.62rem; color:#5A7FA8;">領収書を撮影して経費申請</div>
+          </div>
+        </div>
+        <div class="phone-card">
+          <div class="phone-icon" style="background:linear-gradient(135deg,#5A90CC,#3B72B4);">💴</div>
+          <div>
+            <div style="font-weight:700; color:#1E3A5F; font-size:.8rem;">収入を登録</div>
+            <div style="font-size:.62rem; color:#5A7FA8;">奉納・会費などの入金を記録</div>
+          </div>
+        </div>
+        <div style="font-size:.7rem; color:#3B72B4; font-weight:700; margin:.5rem 0 .3rem;">📝 最近の提出</div>
+        <div style="font-size:.68rem; color:#94A3B8; text-align:center; padding:.3rem;">（履歴が表示されます）</div>
+      </div>
+      <div class="phone-bottom">
+        <span class="active">🏠<br>ホーム</span>
+        <span>📋<br>履歴</span>
+        <span>⚙️<br>管理</span>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>画面の要素</th><th>説明</th></tr>
+      <tr><td>前年度繰越金カード</td><td>昨年から引き継いだ繰越残高</td></tr>
+      <tr><td>📷 支出を登録</td><td>立替払いや費用の申請ページへ</td></tr>
+      <tr><td>💴 収入を登録</td><td>奉納金・会費などの記録ページへ</td></tr>
+      <tr><td>最近の提出</td><td>自分の直近5件の提出履歴</td></tr>
+      <tr><td>🏠📋⚙️（下タブ）</td><td>ホーム・履歴・管理の画面切替</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ 支出登録 ═══ -->
+<section class="section" id="expense">
+  <div class="section-header">
+    <span class="icon">📷</span>
+    <h2>支出を登録する</h2>
+    <span class="badge badge-member">一般会員</span>
+  </div>
+  <div class="section-body">
+    <p>立替払いや経費を申請するときに使います。領収書を撮影するとAIが自動で金額・日付・支払先を読み取ります。</p>
+
+    <h3>登録の手順</h3>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span>ホーム画面の <strong>「📷 支出を登録」</strong> をタップ</span></li>
+      <li><span class="step-num">2</span><span>領収書を撮影（またはギャラリーから選択）<br><span style="font-size:.78rem; color:#5A7FA8;">→ AIが自動で内容を読み取ります（数秒かかります）</span></span></li>
+      <li><span class="step-num">3</span><span>読み取り内容を確認・修正する</span></li>
+      <li><span class="step-num">4</span><span><strong>「支出を登録する」</strong> ボタンをタップ</span></li>
+      <li><span class="step-num">5</span><span>「登録しました！」と表示されたら完了 ✅</span></li>
+    </ol>
+
+    <h3>入力項目の説明</h3>
+    <table>
+      <tr><th>項目</th><th>説明</th><th>必須</th></tr>
+      <tr><td>提出者</td><td>自分の名前（プルダウンから選択）</td><td>✅</td></tr>
+      <tr><td>日付</td><td>支払った日付（AIが自動入力）</td><td>✅</td></tr>
+      <tr><td>事業区分</td><td>費用の種類（連合関連・交際費など）</td><td>✅</td></tr>
+      <tr><td>金額</td><td>支払金額（AIが自動入力）</td><td>✅</td></tr>
+      <tr><td>数量</td><td>例：30枚、5個、1パックなど</td><td>任意</td></tr>
+      <tr><td>但し書き</td><td>例：御祭礼費として</td><td>任意</td></tr>
+      <tr><td>支払先</td><td>例：○○酒店、○○スーパー</td><td>任意</td></tr>
+      <tr><td>備考</td><td>その他メモ</td><td>任意</td></tr>
+    </table>
+
+    <div class="note"><span class="ico">💡</span><span>複数の領収書をまとめて選択すると、1枚ずつ順番に登録できます。</span></div>
+    <div class="note"><span class="ico">💡</span><span>領収書なしで登録することもできます。写真なしで各項目を手入力してください。</span></div>
+  </div>
+</section>
+
+<!-- ═══ 収入登録 ═══ -->
+<section class="section" id="income">
+  <div class="section-header">
+    <span class="icon">💴</span>
+    <h2>収入を登録する</h2>
+    <span class="badge badge-member">一般会員</span>
+  </div>
+  <div class="section-body">
+    <p>奉納金・会費・補助金など、収入があった場合に記録します。</p>
+
+    <ol class="steps">
+      <li><span class="step-num">1</span><span>ホーム画面の <strong>「💴 収入を登録」</strong> をタップ</span></li>
+      <li><span class="step-num">2</span><span>各項目を入力（支出と同じ操作）</span></li>
+      <li><span class="step-num">3</span><span><strong>「収入を登録する」</strong> ボタンをタップ</span></li>
+    </ol>
+
+    <h3>収入の事業区分の種類</h3>
+    <table>
+      <tr><th>区分</th><th>例</th></tr>
+      <tr><td>年会費</td><td>会員からの年会費</td></tr>
+      <tr><td>町会補助金</td><td>町内会からの補助</td></tr>
+      <tr><td>祭礼奉納</td><td>御祭りへの奉納金</td></tr>
+      <tr><td>直会参加費</td><td>直会・宴会の参加費</td></tr>
+      <tr><td>個人奉納</td><td>個人からの奉納</td></tr>
+      <tr><td>預金利息</td><td>銀行口座の利息</td></tr>
+      <tr><td>その他</td><td>上記以外</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ 履歴確認 ═══ -->
+<section class="section" id="history">
+  <div class="section-header">
+    <span class="icon">📋</span>
+    <h2>提出履歴を確認する</h2>
+    <span class="badge badge-member">一般会員</span>
+  </div>
+  <div class="section-body">
+    <p>自分が過去に提出した内容や、精算状況を確認できます。</p>
+
+    <ol class="steps">
+      <li><span class="step-num">1</span><span>画面下の <strong>「📋 履歴」</strong> タブをタップ</span></li>
+      <li><span class="step-num">2</span><span>プルダウンから <strong>自分の名前</strong> を選択</span></li>
+      <li><span class="step-num">3</span><span>一覧が表示されます</span></li>
+      <li><span class="step-num">4</span><span>各項目をタップすると詳細を確認できます</span></li>
+    </ol>
+
+    <h3>バッジの意味</h3>
+    <table>
+      <tr><th>バッジ</th><th>意味</th></tr>
+      <tr><td><span style="background:#FEE8E8;color:#B43B3B;padding:.15rem .5rem;border-radius:10px;font-size:.78rem;font-weight:700;">未精算</span></td><td>まだ精算が完了していない状態</td></tr>
+      <tr><td><span style="background:#E6F4EC;color:#1E6B3A;padding:.15rem .5rem;border-radius:10px;font-size:.78rem;font-weight:700;">精算済</span></td><td>管理者が精算処理を完了した状態</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ セパレーター ═══ -->
+<div style="text-align:center; padding:1rem 0; color:#94A3B8; font-size:.8rem; letter-spacing:.1em;">
+  ─── 以下 管理者向け ───
+</div>
+
+<!-- ═══ 管理者ログイン ═══ -->
+<section class="section" id="admin-login">
+  <div class="section-header">
+    <span class="icon">🔐</span>
+    <h2>管理者画面へのログイン</h2>
+    <span class="badge badge-admin">管理者</span>
+  </div>
+  <div class="section-body">
+    <div class="note warn"><span class="ico">⚠️</span><span>管理者キーは代表・会計担当のみが保持しています。他の方には共有しないでください。</span></div>
+
+    <ol class="steps">
+      <li><span class="step-num">1</span><span>画面下の <strong>「⚙️ 管理」</strong> タブをタップ</span></li>
+      <li><span class="step-num">2</span><span>管理者キーを入力</span></li>
+      <li><span class="step-num">3</span><span><strong>「ログイン」</strong> をタップ</span></li>
+    </ol>
+
+    <h3>管理者画面のタブ構成</h3>
+    <div class="tab-bar">
+      <div class="tab active">📋 未精算</div>
+      <div class="tab inactive">✅ 精算済み</div>
+      <div class="tab inactive">📊 会計</div>
+      <div class="tab inactive">⚙️ マスター</div>
+    </div>
+    <div class="tab-content">タブをタップして各機能に切り替えます</div>
+
+    <table>
+      <tr><th>タブ</th><th>できること</th></tr>
+      <tr><td>📋 未精算</td><td>未精算データの確認・一括精算・修正・削除</td></tr>
+      <tr><td>✅ 精算済み</td><td>精算済みデータの修正・削除・未精算に戻す</td></tr>
+      <tr><td>📊 会計</td><td>年度別収支レポート閲覧・PDF出力</td></tr>
+      <tr><td>⚙️ マスター</td><td>提出者リスト・繰越金の管理</td></tr>
+    </table>
+  </div>
+</section>
+
+<!-- ═══ 未精算タブ ═══ -->
+<section class="section" id="unsettled">
+  <div class="section-header">
+    <span class="icon">📋</span>
+    <h2>未精算の管理</h2>
+    <span class="badge badge-admin">管理者</span>
+  </div>
+  <div class="section-body">
+
+    <h3>精算済みにする</h3>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span>精算したい項目の <strong>チェックボックス</strong> をタップ（複数選択OK）</span></li>
+      <li><span class="step-num">2</span><span>右上の <strong>「精算済みにする」</strong> ボタンをタップ</span></li>
+      <li><span class="step-num">3</span><span>「〇件を精算済にしました」と表示されれば完了 ✅</span></li>
+    </ol>
+    <div class="note"><span class="ico">💡</span><span>精算したデータは「精算済みタブ」に移動します。履歴からも確認できます。</span></div>
+
+    <h3>データを修正する</h3>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span>修正したい行の右端 <strong>✏️ ボタン</strong> をタップ</span></li>
+      <li><span class="step-num">2</span><span>日付・金額・区分などを編集</span></li>
+      <li><span class="step-num">3</span><span><strong>「保存」</strong> をタップ</span></li>
+    </ol>
+
+    <h3>データを削除する</h3>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span>削除したい行の右端 <strong>🗑️ ボタン</strong> をタップ</span></li>
+      <li><span class="step-num">2</span><span>確認ダイアログで <strong>「OK」</strong> をタップ</span></li>
+    </ol>
+    <div class="note danger"><span class="ico">🚫</span><span>削除したデータは元に戻せません。誤って削除しないよう注意してください。</span></div>
+  </div>
+</section>
+
+<!-- ═══ 精算済みタブ ═══ -->
+<section class="section" id="settled">
+  <div class="section-header">
+    <span class="icon">✅</span>
+    <h2>精算済みデータの管理</h2>
+    <span class="badge badge-admin">管理者</span>
+  </div>
+  <div class="section-body">
+    <p>精算が完了したデータを後から確認・修正・削除できます。</p>
+
+    <h3>年度を絞り込む</h3>
+    <p>左上のプルダウンで年を選択（2026・2025・…）すると、その年のデータのみ表示されます。自動で更新されます。</p>
+
+    <h3>データを修正する</h3>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span>対象行の <strong>✏️ ボタン</strong> をタップ</span></li>
+      <li><span class="step-num">2</span><span>日付・金額・位分・但し書きなどを編集</span></li>
+      <li><span class="step-num">3</span><span><strong>「保存」</strong> をタップ</span></li>
+    </ol>
+
+    <h3>未精算に戻す（誤精算の修正）</h3>
+    <p>誤って精算してしまった場合に、未精算の状態に戻せます。</p>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span>対象データの <strong>チェックボックス</strong> をタップ</span></li>
+      <li><span class="step-num">2</span><span><strong>「↩ 未精算に戻す」</strong> ボタンをタップ</span></li>
+      <li><span class="step-num">3</span><span>確認ダイアログで <strong>「OK」</strong> → 未精算タブに戻ります</span></li>
+    </ol>
+
+    <h3>データを完全削除する</h3>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span>対象行の <strong>🗑️ ボタン</strong> をタップ</span></li>
+      <li><span class="step-num">2</span><span>確認後に完全削除されます</span></li>
+    </ol>
+    <div class="note danger"><span class="ico">🚫</span><span>削除したデータは元に戻せません。必要な場合は事前にスプレッドシートでバックアップしてください。</span></div>
+  </div>
+</section>
+
+<!-- ═══ 会計レポート ═══ -->
+<section class="section" id="report">
+  <div class="section-header">
+    <span class="icon">📊</span>
+    <h2>会計レポートの確認・PDF出力</h2>
+    <span class="badge badge-admin">管理者</span>
+  </div>
+  <div class="section-body">
+
+    <h3>収支レポートを確認する</h3>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span><strong>「📊 会計」</strong> タブをタップ</span></li>
+      <li><span class="step-num">2</span><span>年度プルダウンで確認したい年を選択 → 自動で更新</span></li>
+    </ol>
+
+    <h3>表示内容の説明</h3>
+    <table>
+      <tr><th>表示項目</th><th>説明</th></tr>
+      <tr><td>前年度繰越金</td><td>昨年から引き継いだ残高</td></tr>
+      <tr><td>収入合計</td><td>当年度の全収入合計</td></tr>
+      <tr><td>支出合計</td><td>当年度の全支出合計</td></tr>
+      <tr><td>次年度繰越金</td><td>繰越金 ＋ 収入 － 支出</td></tr>
+      <tr><td>収入内訳</td><td>事業区分ごとの収入金額</td></tr>
+      <tr><td>支出内訳</td><td>事業区分ごとの支出金額（予算比ゲージ付き）</td></tr>
+    </table>
+
+    <div class="note"><span class="ico">💡</span><span>会計レポートは精算済み・未精算に関わらず<strong>登録された全データ</strong>を集計します。</span></div>
+
+    <h3>会計報告書PDFを出力する</h3>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span>レポート画面下の <strong>「📄 会計報告書を生成 (PDF)」</strong> をタップ</span></li>
+      <li><span class="step-num">2</span><span>数秒待つと自動でダウンロードが始まります</span></li>
+      <li><span class="step-num">3</span><span><code>会計報告書_2026.pdf</code> というファイルで保存されます</span></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ═══ マスター管理 ═══ -->
+<section class="section" id="masters">
+  <div class="section-header">
+    <span class="icon">⚙️</span>
+    <h2>マスターデータの管理</h2>
+    <span class="badge badge-admin">管理者</span>
+  </div>
+  <div class="section-body">
+
+    <h3>提出者リストを編集する</h3>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span><strong>「⚙️ マスター」</strong> タブ → <strong>「提出者」</strong> を選択</span></li>
+      <li><span class="step-num">2</span><span>入力欄に名前を入力 → <strong>「追加」</strong> ボタン</span></li>
+      <li><span class="step-num">3</span><span>▲▼ ボタンで順番を変更、✕ ボタンで削除</span></li>
+      <li><span class="step-num">4</span><span><strong>「変更を保存」</strong> をタップして確定</span></li>
+    </ol>
+
+    <h3>前年度繰越金を更新する</h3>
+    <ol class="steps">
+      <li><span class="step-num">1</span><span>マスタータブ → <strong>「前年度繰越金」</strong> を選択</span></li>
+      <li><span class="step-num">2</span><span>金額を入力（例：1,211,366）</span></li>
+      <li><span class="step-num">3</span><span><strong>「変更を保存」</strong> をタップ</span></li>
+    </ol>
+    <div class="note"><span class="ico">💡</span><span>ホーム画面に表示される繰越金もここを変更することで更新されます。</span></div>
+  </div>
+</section>
+
+<!-- ═══ よくある質問 ═══ -->
+<section class="section" id="faq">
+  <div class="section-header">
+    <span class="icon">❓</span>
+    <h2>よくある質問</h2>
+    <span class="badge badge-member">全員</span>
+  </div>
+  <div class="section-body">
+    <div class="faq">
+      <div class="faq-item">
+        <div class="faq-q">提出者の名前が選択肢にない</div>
+        <div class="faq-a">管理者に連絡して「マスター管理」から追加してもらってください。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">登録したのに履歴に表示されない</div>
+        <div class="faq-a">履歴タブで名前を選び直すと更新されます。またはアプリを完全に終了（タスクキル）して再起動してください。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">OCRで読み取った金額が違う</div>
+        <div class="faq-a">フォームの金額欄を手動で修正してから登録できます。AIの読み取りミスは手動で直せます。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">精算済みにしたのに会計レポートに反映されない</div>
+        <div class="faq-a">会計レポートは精算済み・未精算に関わらず全データを集計します。年度選択が正しいか確認してください。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">ログインしても管理者画面が開かない</div>
+        <div class="faq-a">管理者キーが正しいか確認してください。それでも解決しない場合はアプリを再起動してください。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">画面が古いデザインのまま更新されない</div>
+        <div class="faq-a">アプリを完全に終了（タスクキル）してから再起動してください。iPhoneの場合は画面下から上にスワイプしてアプリを閉じてください。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  🏮 仲羽田青年会 経費精算サイト — 使い方ガイド v2.0<br>
+  <a href="https://msmttng.github.io/mikoshi-kaikei/" target="_blank">https://msmttng.github.io/mikoshi-kaikei/</a><br>
+  <span style="font-size:.68rem; margin-top:.3rem; display:block;">2026年4月作成</span>
+</footer>
+
+</body>
+</html>

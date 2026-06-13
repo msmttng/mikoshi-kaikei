@@ -3,16 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>神輿会 経費精算</title>
-    <meta name="description" content="神輿会の経費精算アプリ。支出・収入をスマホから簡単登録。" />
+    <title>仲羽田青年会 経費精算</title>
+    <meta name="description" content="仲羽田青年会の経費精算アプリ。支出・収入をスマホから簡単登録。" />
+    
+    <!-- ▼ 追加 OGP -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:site_name"   content="仲羽田青年会 会計" />
+    <meta property="og:title"       content="仲羽田青年会 経費精算" />
+    <meta property="og:description" content="お祭りの収支をスマホから簡単に記録・確認できます。" />
+    <meta property="og:url"         content="https://msmttng.github.io/mikoshi-kaikei/" />
+    <meta property="og:image"       content="https://msmttng.github.io/mikoshi-kaikei/ogp.png" />
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    
+    <!-- LINE は Twitter Card も参照する -->
+    <meta name="twitter:card"  content="summary_large_image" />
+    <meta name="twitter:title" content="仲羽田青年会 経費精算" />
+    <meta name="twitter:image" content="https://msmttng.github.io/mikoshi-kaikei/ogp.png" />
+    
+    <!-- ▼ Github Pages SPA Hack (復元) -->
+    <script>
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect != location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+    </script>
     <meta name="theme-color" content="#B71C1C" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="神輿会会計" />
-    <link rel="apple-touch-icon" href="/mikoshi-kaikei/icons/icon-192.png" />
-    <link rel="icon" type="image/png" href="/mikoshi-kaikei/icons/icon-192.png" />
-    <script type="module" crossorigin src="/mikoshi-kaikei/assets/index-C2orrE2o.js"></script>
-    <link rel="stylesheet" crossorigin href="/mikoshi-kaikei/assets/index-CEJs5XGe.css">
+    <meta name="apple-mobile-web-app-title" content="仲羽田青年会会計" />
+    <link rel="apple-touch-icon" href="/mikoshi-kaikei/icons/icon-192.png?v=2" />
+    <link rel="icon" type="image/svg+xml" href="/mikoshi-kaikei/icons.svg?v=2" />
+    <link rel="icon" type="image/png" href="/mikoshi-kaikei/icons/icon-192.png?v=2" />
+    <script type="module" crossorigin src="/mikoshi-kaikei/assets/index-VQhosYhe.js"></script>
+    <link rel="stylesheet" crossorigin href="/mikoshi-kaikei/assets/index-B7YBLrzf.css">
   <link rel="manifest" href="/mikoshi-kaikei/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/mikoshi-kaikei/registerSW.js"></script></head>
   <body>
     <div id="root"></div>

@@ -1,0 +1,2201 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>神輿会経費精算アプリ — 高視認性ライトデザイン提案</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@300;400;500;700;900&family=Noto+Serif+JP:wght@500;700;900&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   1. GLOBAL RESET & BASE STYLES
+   ========================================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* シミュレータの外側のPC用スタイル */
+  --outer-bg: #EAF0F6;
+  --outer-text: #2D3748;
+  --outer-card: #FFFFFF;
+  --outer-border: #E2E8F0;
+  --outer-primary: #3182CE;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  font-family: 'Noto Sans JP', sans-serif;
+  background-color: var(--outer-bg);
+  color: var(--outer-text);
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   2. THEME DEFINITIONS (DESIGN SYSTEMS)
+   ========================================================================== */
+
+/* 🏮 1. 雅 (MIYABI) — クラシック・まつりライト */
+.theme-miyabi {
+  --primary: #D32F2F; /* 漆朱 */
+  --primary-rgb: 211, 47, 47;
+  --primary-hover: #B71C1C;
+  --accent: #1A237E; /* 藍墨 */
+  --bg: #FAF8F5; /* 鳥の子色 */
+  --card: #FFFFFF;
+  --text: #1C1917; /* 墨黒 */
+  --text-muted: #78716C;
+  --border: #E7E3DC;
+  --shadow: 0 4px 20px rgba(211, 47, 47, 0.05), 0 2px 8px rgba(0, 0, 0, 0.02);
+  --radius: 12px;
+  --font-title: 'Noto Serif JP', serif;
+  --font-body: 'Noto Sans JP', sans-serif;
+  --amount-color: #D32F2F;
+  --status-unsettled-bg: #FEF2F2;
+  --status-unsettled-text: #EF4444;
+}
+
+/* 🌊 2. 蒼 (AO) — モダン・ティール＆ゴールド */
+.theme-ao {
+  --primary: #005B5C; /* 深御納戸 */
+  --primary-rgb: 0, 91, 92;
+  --primary-hover: #004D4E;
+  --accent: #C5A059; /* 金砂 */
+  --bg: #F4F7F6; /* 白磁 */
+  --card: #FFFFFF;
+  --text: #1F2937;
+  --text-muted: #6B7280;
+  --border: #E5E9E8;
+  --shadow: 0 8px 30px rgba(0, 91, 92, 0.04), 0 2px 8px rgba(0, 0, 0, 0.01);
+  --radius: 16px;
+  --font-title: 'Outfit', 'Noto Sans JP', sans-serif;
+  --font-body: 'Noto Sans JP', sans-serif;
+  --amount-color: #005B5C;
+  --status-unsettled-bg: #F0FDF4;
+  --status-unsettled-text: #16A34A;
+}
+
+/* 🌿 3. 翠 (SUI) — フレッシュ・ミント＆スレート */
+.theme-sui {
+  --primary: #2E7D32; /* 常盤色 */
+  --primary-rgb: 46, 125, 50;
+  --primary-hover: #1B5E20;
+  --accent: #37474F; /* 煤竹 */
+  --bg: #F1F8F5; /* 薄荷白 */
+  --card: #FFFFFF;
+  --text: #212529;
+  --text-muted: #6C757D;
+  --border: #E1EBE6;
+  --shadow: 0 4px 16px rgba(46, 125, 50, 0.06);
+  --radius: 14px;
+  --font-title: 'Noto Sans JP', sans-serif;
+  --font-body: 'Noto Sans JP', sans-serif;
+  --amount-color: #2E7D32;
+  --status-unsettled-bg: #FFFBEB;
+  --status-unsettled-text: #D97706;
+}
+
+/* ☀️ 4. 陽 (YOU) — 陽気なコーラル＆ディープインディゴ */
+.theme-you {
+  --primary: #E65100; /* 陽光オレンジ */
+  --primary-rgb: 230, 81, 0;
+  --primary-hover: #BF360C;
+  --accent: #0D47A1; /* 濃紺 */
+  --bg: #FFFFFF;
+  --card: #F8F9FA;
+  --text: #0A192F;
+  --text-muted: #5A6A85;
+  --border: #CBD5E1;
+  --shadow: none; /* 視認性重視のためフラットに */
+  --radius: 8px;
+  --font-title: 'BIZ UDPGothic', sans-serif;
+  --font-body: 'BIZ UDPGothic', sans-serif;
+  --amount-color: #0D47A1;
+  --status-unsettled-bg: #FFF3E0;
+  --status-unsettled-text: #E65100;
+}
+
+/* ◽ 5. 禅 (ZEN) — エレガント・ピュアミニマル */
+.theme-zen {
+  --primary: #18181B; /* 墨色 */
+  --primary-rgb: 24, 24, 27;
+  --primary-hover: #09090B;
+  --accent: #52525B;
+  --bg: #F4F4F5;
+  --card: #FFFFFF;
+  --text: #09090B;
+  --text-muted: #71717A;
+  --border: #E4E4E7;
+  --shadow: 0 1px 3px rgba(0,0,0,0.02);
+  --radius: 6px;
+  --font-title: 'Outfit', 'Inter', sans-serif;
+  --font-body: 'Inter', 'Noto Sans JP', sans-serif;
+  --amount-color: #18181B;
+  --status-unsettled-bg: #FAFAFA;
+  --status-unsettled-text: #18181B;
+  --status-unsettled-border: 1px solid #18181B;
+}
+
+/* ==========================================================================
+   3. OUTER FRAME & CONTROL PANEL
+   ========================================================================== */
+.outer-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  display: grid;
+  grid-template-columns: 420px 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .outer-wrapper {
+    grid-template-columns: 1fr;
+    padding: 1rem;
+    gap: 1.5rem;
+  }
+}
+
+/* 左側：コントロールパネル */
+.control-panel {
+  background-color: var(--outer-card);
+  border: 1px solid var(--outer-border);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.panel-header {
+  margin-bottom: 2rem;
+}
+
+.panel-header h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1A202C;
+  letter-spacing: -0.02em;
+}
+
+.panel-header p {
+  font-size: 0.85rem;
+  color: #718096;
+  margin-top: 0.25rem;
+}
+
+.section-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #A0AEC0;
+  margin-bottom: 0.85rem;
+  display: block;
+}
+
+/* テーマセレクターボタン */
+.theme-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  border: 2px solid #E2E8F0;
+  background-color: #FFFFFF;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+  width: 100%;
+}
+
+.theme-btn:hover {
+  border-color: #CBD5E1;
+  transform: translateY(-2px);
+}
+
+.theme-btn.active {
+  border-color: var(--outer-primary);
+  background-color: #F7FAFC;
+  box-shadow: 0 4px 12px rgba(49, 130, 206, 0.1);
+}
+
+.theme-indicator {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+.theme-name {
+  flex: 1;
+}
+
+.theme-name h3 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2D3748;
+}
+
+.theme-name p {
+  font-size: 0.7rem;
+  color: #718096;
+  margin-top: 0.15rem;
+}
+
+/* アシスタント機能（文字サイズ・コントラスト） */
+.assist-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.assist-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.btn-group {
+  display: flex;
+  background-color: #EDF2F7;
+  padding: 3px;
+  border-radius: 8px;
+}
+
+.btn-group button {
+  flex: 1;
+  border: none;
+  background: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  color: #4A5568;
+}
+
+.btn-group button.active {
+  background-color: #FFFFFF;
+  color: #1A202C;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.toggle-btn {
+  width: 100%;
+  border: 1px solid #CBD5E1;
+  background-color: white;
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #4A5568;
+}
+
+.toggle-btn.active {
+  background-color: #2D3748;
+  color: white;
+  border-color: #2D3748;
+}
+
+/* 説明カード */
+.explain-card {
+  background-color: #F8FAFC;
+  border-radius: 12px;
+  padding: 1.25rem;
+  border-left: 4px solid var(--outer-primary);
+}
+
+.explain-card h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #1E293B;
+  margin-bottom: 0.4rem;
+}
+
+.explain-card p {
+  font-size: 0.75rem;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* 右側：シミュレーター */
+.simulator-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.phone-mock {
+  width: 390px;
+  height: 844px;
+  background-color: #000000;
+  border-radius: 48px;
+  padding: 12px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+  border: 4px solid #2D3748;
+}
+
+/* インダイレクトベゼル・ノッチ */
+.phone-notch {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 30px;
+  background-color: #000000;
+  border-radius: 0 0 16px 16px;
+  z-index: 1000;
+}
+
+/* シミュレーター内部のアプリコンテナ */
+#app-container {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg);
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  color: var(--text);
+  font-family: var(--font-body);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* ==========================================================================
+   4. APP INNER LAYOUT & COMPONENTS
+   ========================================================================== */
+
+/* ステータスバー（擬似） */
+.app-status-bar {
+  height: 44px;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text);
+  z-index: 999;
+  user-select: none;
+}
+
+.status-time {
+  margin-bottom: 2px;
+}
+
+.status-icons {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 2px;
+}
+
+/* アプリメインヘッダー */
+.app-header {
+  padding: 0.75rem 1.25rem 0.75rem;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.3s, border 0.3s;
+}
+
+.app-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.app-header-logo {
+  font-size: 1.75rem;
+}
+
+.app-header-title {
+  font-family: var(--font-title);
+}
+
+.app-header-title h2 {
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.app-header-title p {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 1px;
+}
+
+/* メインコンテンツスクロールエリア */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: relative;
+  scroll-behavior: smooth;
+}
+
+/* スクロールバー非表示 */
+.app-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* ==========================================================================
+   5. FEATURE PAGES (HOME, SUBMIT, HISTORY, ADMIN)
+   ========================================================================== */
+.app-page {
+  display: none;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: pageEnter 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.app-page.active {
+  display: flex;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 🏠 ホーム画面コンポーネント */
+.carryover-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+/* 伝統的デザインの時は和風グラデーションバーを配置 */
+.theme-miyabi .carryover-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+}
+
+.theme-ao .carryover-card {
+  border-left: 4px solid var(--primary);
+}
+
+.carryover-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.carryover-amount {
+  font-size: 1.65rem;
+  font-weight: 900;
+  color: var(--amount-color);
+  margin-top: 0.25rem;
+  letter-spacing: -0.02em;
+  font-family: var(--font-title);
+}
+
+/* クイックアクションボタン */
+.action-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+.action-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+  border-bottom: 2.5px solid var(--border);
+}
+
+.action-card:hover {
+  transform: translateY(-2px);
+  border-bottom-color: var(--primary);
+}
+
+.action-card:active {
+  transform: translateY(0);
+}
+
+.action-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: calc(var(--radius) * 0.75);
+  background-color: rgba(var(--primary-rgb), 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  color: var(--primary);
+  flex-shrink: 0;
+  transition: all 0.3s;
+}
+
+.theme-zen .action-icon {
+  border: 1px solid var(--primary);
+  background-color: transparent;
+}
+
+.action-info {
+  flex: 1;
+}
+
+.action-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.action-desc {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.action-arrow {
+  font-size: 1rem;
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+/* 最近の提出セクション */
+.section-title-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-section-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ledger-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ledger-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  box-shadow: var(--shadow);
+  transition: all 0.25s;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.ledger-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ledger-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.badge-type {
+  font-size: 0.55rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.badge-type.expense {
+  background-color: rgba(211, 47, 47, 0.08);
+  color: #D32F2F;
+}
+
+.badge-type.income {
+  background-color: rgba(22, 163, 74, 0.08);
+  color: #16A34A;
+}
+
+.ledger-date {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.badge-status {
+  font-size: 0.55rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.badge-status.unsettled {
+  background-color: var(--status-unsettled-bg);
+  color: var(--status-unsettled-text);
+  border: var(--status-unsettled-border);
+}
+
+.badge-status.settled {
+  background-color: #F3F4F6;
+  color: #4B5563;
+}
+
+.ledger-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.ledger-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.ledger-category {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ledger-desc {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ledger-amount {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  font-family: var(--font-title);
+}
+
+.ledger-amount.expense {
+  color: #D32F2F;
+}
+
+.ledger-amount.income {
+  color: #16A34A;
+}
+
+/* ==========================================================================
+   📷 6. SUBMIT FORM PAGE STYLES (OCR ANIMATIONS)
+   ========================================================================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.form-input, .form-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: calc(var(--radius) * 0.7);
+  border: 1.5px solid var(--border);
+  background-color: var(--card);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  outline: none;
+  font-family: var(--font-body);
+}
+
+.form-input:focus, .form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.08);
+}
+
+/* OCRスキャンエリア */
+.ocr-scan-zone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  background-color: var(--card);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.ocr-scan-zone:hover {
+  border-color: var(--primary);
+  background-color: rgba(var(--primary-rgb), 0.01);
+}
+
+.ocr-icon {
+  font-size: 2.25rem;
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.ocr-text h4 {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.ocr-text p {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+/* OCR解析中ローディングリング */
+.ocr-loading-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(255,255,255,0.95);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+}
+
+.ocr-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ocr-loading-overlay span {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--primary);
+  letter-spacing: 0.05em;
+  animation: blink 1.5s infinite ease-in-out;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+/* 領収書プレビュー画像 */
+.receipt-preview {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: none;
+  border: 1px solid var(--border);
+}
+
+.receipt-attached-info {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  background-color: rgba(var(--primary-rgb), 0.05);
+  border-radius: 6px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--primary);
+  width: 100%;
+}
+
+.receipt-attached-info button {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+/* 送信ボタン類 */
+.form-buttons {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: calc(var(--radius) * 0.7);
+  background-color: var(--primary);
+  color: #FFFFFF;
+  font-size: 0.85rem;
+  font-weight: 800;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.15);
+}
+
+.submit-btn:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.submit-btn:active {
+  transform: translateY(0);
+}
+
+.cancel-btn {
+  width: 100%;
+  padding: 0.85rem;
+  border-radius: calc(var(--radius) * 0.7);
+  background-color: transparent;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1.5px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-btn:hover {
+  background-color: rgba(0,0,0,0.02);
+  color: var(--text);
+}
+
+/* ==========================================================================
+   📝 7. HISTORY PAGE STYLES (FILTER & SEARCH)
+   ========================================================================== */
+.history-filters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background-color: rgba(0,0,0,0.03);
+  padding: 3px;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.history-filters button {
+  border: none;
+  background: none;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 6px 0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-muted);
+}
+
+.history-filters button.active {
+  background-color: var(--card);
+  color: var(--primary);
+  box-shadow: var(--shadow);
+}
+
+.search-box {
+  position: relative;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.6rem 1rem 0.6rem 2.2rem;
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  background-color: var(--card);
+  color: var(--text);
+  font-size: 0.75rem;
+  font-weight: 500;
+  outline: none;
+}
+
+.search-icon-pos {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.85rem;
+  opacity: 0.4;
+}
+
+/* ==========================================================================
+   📊 8. ADMIN DASHBOARD STYLES (GRAPHS & DATA)
+   ========================================================================== */
+.admin-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.summary-tile {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem;
+  box-shadow: var(--shadow);
+}
+
+.summary-tile-label {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.summary-tile-value {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: var(--text);
+  margin-top: 0.15rem;
+  font-family: var(--font-title);
+}
+
+.summary-tile-value.expense {
+  color: #D32F2F;
+}
+
+/* ダッシュボードグラフコンポーネント */
+.chart-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.chart-header {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chart-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* SVG ドーナツグラフ */
+.donut-chart-svg {
+  width: 90px;
+  height: 90px;
+  transform: rotate(-90deg);
+  flex-shrink: 0;
+}
+
+.donut-base {
+  fill: transparent;
+  stroke: var(--border);
+  stroke-width: 14;
+}
+
+.donut-segment {
+  fill: transparent;
+  stroke-width: 14;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease-out;
+}
+
+.chart-legend {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.legend-color {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+/* 横並び積み上げ棒グラフ */
+.progress-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.bar-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.bar-container {
+  width: 100%;
+  height: 8px;
+  background-color: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s cubic-bezier(0.1, 0.8, 0.25, 1);
+}
+
+/* 一括精算アクションブロック */
+.admin-actions-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.15rem;
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-left: 4px solid var(--primary);
+}
+
+.admin-actions-title {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.admin-actions-desc {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.admin-action-btn {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  padding: 0.75rem;
+  border-radius: calc(var(--radius) * 0.6);
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.admin-action-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.admin-action-btn:active {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   📱 9. BOTTOM NAVIGATION BAR
+   ========================================================================== */
+.app-nav-bar {
+  height: 64px;
+  background-color: var(--card);
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+  justify-items: center;
+  z-index: 999;
+  padding-bottom: 8px; /* ホームインジケータ用余白 */
+  transition: background 0.3s, border 0.3s;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
+
+.nav-icon {
+  font-size: 1.25rem;
+  transition: transform 0.2s;
+}
+
+.nav-label {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.nav-item.active {
+  color: var(--primary);
+}
+
+.nav-item.active .nav-icon {
+  transform: translateY(-2px) scale(1.08);
+}
+
+/* 擬似ホームインジケーター（iOSバー） */
+.phone-indicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 130px;
+  height: 5px;
+  background-color: var(--text);
+  border-radius: 3px;
+  z-index: 1000;
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   10. SYSTEM ACCESSIBILITY OVERRIDES
+   ========================================================================== */
+/* 文字サイズ補正 */
+.font-size-large #app-container {
+  --radius: 14px;
+}
+.font-size-large .carryover-label { font-size: 0.75rem; }
+.font-size-large .carryover-amount { font-size: 1.9rem; }
+.font-size-large .action-title { font-size: 1.05rem; }
+.font-size-large .action-desc { font-size: 0.78rem; }
+.font-size-large .app-section-title { font-size: 0.95rem; }
+.font-size-large .ledger-category { font-size: 0.95rem; }
+.font-size-large .ledger-desc { font-size: 0.78rem; }
+.font-size-large .ledger-amount { font-size: 1.1rem; }
+.font-size-large .form-label { font-size: 0.85rem; }
+.font-size-large .form-input, .font-size-large .form-select { font-size: 0.9rem; }
+.font-size-large .submit-btn, .font-size-large .cancel-btn { font-size: 0.95rem; }
+
+.font-size-small #app-container {
+  --radius: 10px;
+}
+.font-size-small .carryover-label { font-size: 0.6rem; }
+.font-size-small .carryover-amount { font-size: 1.45rem; }
+.font-size-small .action-title { font-size: 0.82rem; }
+.font-size-small .action-desc { font-size: 0.62rem; }
+.font-size-small .app-section-title { font-size: 0.75rem; }
+.font-size-small .ledger-category { font-size: 0.72rem; }
+.font-size-small .ledger-desc { font-size: 0.6rem; }
+.font-size-small .ledger-amount { font-size: 0.85rem; }
+
+/* 直射日光・ハイコントラストモード補正 */
+.high-contrast #app-container {
+  --bg: #FFFFFF !important;
+  --card: #FFFFFF !important;
+  --border: #000000 !important;
+  --text: #000000 !important;
+  --text-muted: #1A1A1A !important;
+  --shadow: none !important;
+}
+.high-contrast .action-card {
+  border-width: 2px !important;
+  border-bottom-width: 4px !important;
+  border-color: #000000 !important;
+}
+.high-contrast .ledger-item {
+  border-width: 2px !important;
+  border-color: #000000 !important;
+}
+.high-contrast .form-input, .high-contrast .form-select, .high-contrast .ocr-scan-zone {
+  border: 2px solid #000000 !important;
+}
+.high-contrast .badge-type.expense { background-color: #000000 !important; color: #FFFFFF !important; border: 1px solid #000000; }
+.high-contrast .badge-type.income { background-color: #000000 !important; color: #FFFFFF !important; border: 1px solid #000000; }
+.high-contrast .badge-status.unsettled { background-color: #000000 !important; color: #FFFFFF !important; border: 1px solid #000000; }
+.high-contrast .badge-status.settled { background-color: #E5E7EB !important; color: #000000 !important; border: 1px solid #000000; }
+
+/* トースト通知 */
+.toast-msg {
+  position: absolute;
+  top: 54px;
+  left: 20px;
+  right: 20px;
+  background-color: #1E293B;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  animation: toastSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  z-index: 1001;
+}
+
+@keyframes toastSlide {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+</style>
+</head>
+<body>
+
+<div class="outer-wrapper">
+  
+  <!-- 左側：コントロールセンター -->
+  <div class="control-panel">
+    <div class="panel-header">
+      <h1>🏮 ライトデザイン改善案</h1>
+      <p>神輿会経費精算アプリ mikoshi-kaikei</p>
+    </div>
+
+    <!-- 1. テーマセレクト -->
+    <span class="section-label">1. デザインテーマの切り替え</span>
+    <div class="theme-selector">
+      <!-- 雅 -->
+      <button class="theme-btn active" onclick="switchTheme('miyabi')">
+        <div class="theme-indicator" style="background-color: #D32F2F; color: white;">🏮</div>
+        <div class="theme-name">
+          <h3>雅 (MIYABI) — まつりライト</h3>
+          <p>伝統の朱赤と藍墨。シニアも見やすい紅白調和。</p>
+        </div>
+      </button>
+
+      <!-- 蒼 -->
+      <button class="theme-btn" onclick="switchTheme('ao')">
+        <div class="theme-indicator" style="background-color: #005B5C; color: white;">🌊</div>
+        <div class="theme-name">
+          <h3>蒼 (AO) — 和モダンティール</h3>
+          <p>洗練された青緑と金砂。若々しく美しい高級感。</p>
+        </div>
+      </button>
+
+      <!-- 翠 -->
+      <button class="theme-btn" onclick="switchTheme('sui')">
+        <div class="theme-indicator" style="background-color: #2E7D32; color: white;">🌿</div>
+        <div class="theme-name">
+          <h3>翠 (SUI) — 新緑ミント</h3>
+          <p>爽やかなミント。清潔感と誤操作しづらいマイルドさ。</p>
+        </div>
+      </button>
+
+      <!-- 陽 -->
+      <button class="theme-btn" onclick="switchTheme('you')">
+        <div class="theme-indicator" style="background-color: #E65100; color: white;">☀️</div>
+        <div class="theme-name">
+          <h3>陽 (YOU) — コントラスト特化</h3>
+          <p>超強コントラスト。炎天下の屋外でも完璧に読める。</p>
+        </div>
+      </button>
+
+      <!-- 禅 -->
+      <button class="theme-btn" onclick="switchTheme('zen')">
+        <div class="theme-indicator" style="background-color: #18181B; color: white;">◽</div>
+        <div class="theme-name">
+          <h3>禅 (ZEN) — ピュアミニマル</h3>
+          <p>無駄な装飾の排除。最先端の余白と極細ライン。</p>
+        </div>
+      </button>
+    </div>
+
+    <!-- 2. アクセシビリティ・アシスタント -->
+    <span class="section-label">2. 視認性・検証アシスト</span>
+    <div class="assist-bar">
+      <div class="assist-group">
+        <span style="font-size: 0.65rem; font-weight: 700; color: #4A5568;">文字サイズ補正</span>
+        <div class="btn-group">
+          <button onclick="setFontSize('small')">小</button>
+          <button class="active" onclick="setFontSize('medium')">中</button>
+          <button onclick="setFontSize('large')">大</button>
+        </div>
+      </div>
+      <div class="assist-group">
+        <span style="font-size: 0.65rem; font-weight: 700; color: #4A5568;">炎天下/弱視シミュレート</span>
+        <button id="contrast-toggle" class="toggle-btn" onclick="toggleContrast()">
+          ☀️ 輝度・コントラスト強調
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. テーマ説明カード -->
+    <div class="explain-card">
+      <h4 id="explain-title">雅 (MIYABI) — クラシック・まつりライト</h4>
+      <p id="explain-body">日本の祭り衣装や提灯、漆器を連想させる「漆朱（赤）」と「藍墨（濃紺）」を採用した、最も日本の祭礼らしいデザイン。クリーム調の「鳥の子色」背景は、純白と比べて目に優しく、かつ視認性コントラストも非常に高く設計されています。フォントに美しい日本の明朝体「Noto Serif JP」をブレンドし、格式高い青年会の気品を演出します。</p>
+    </div>
+  </div>
+
+  <!-- 右側：スマートフォンシミュレーター -->
+  <div class="simulator-area">
+    <div class="phone-mock">
+      <div class="phone-notch"></div>
+      
+      <!-- アプリケーション本体 -->
+      <div id="app-container" class="theme-miyabi">
+        
+        <!-- 擬似ステータスバー -->
+        <div class="app-status-bar">
+          <div class="status-time">11:38</div>
+          <div class="status-icons">🏮 📡 🔋 98%</div>
+        </div>
+
+        <!-- トースト通知用エリア -->
+        <div id="app-toast-area"></div>
+
+        <!-- ヘッダー -->
+        <header class="app-header">
+          <div class="app-header-left">
+            <span class="app-header-logo">🏮</span>
+            <div class="app-header-title">
+              <h2>仲羽田青年会 経費精算</h2>
+              <p>Nakabata Seinenkai</p>
+            </div>
+          </div>
+          <div style="font-size: 0.72rem; font-weight: 800; opacity: 0.7;">
+            提出者: 山田
+          </div>
+        </header>
+
+        <!-- メインコンテンツ -->
+        <div class="app-content" id="app-scroll-content">
+          
+          <!-- =================================================================
+             🏠 ホーム画面 (ID: page-home)
+             ================================================================= -->
+          <div id="page-home" class="app-page active">
+            <!-- 繰越金 -->
+            <div class="carryover-card">
+              <p class="carryover-label">前年度繰越金残高</p>
+              <h3 class="carryover-amount">¥1,211,366</h3>
+            </div>
+
+            <!-- アクションボタン -->
+            <div class="action-cards">
+              <div class="action-card" onclick="switchPage('submit-expense')">
+                <div class="action-icon">📷</div>
+                <div class="action-info">
+                  <h3 class="action-title">支出を提出する</h3>
+                  <p class="action-desc">領収書を撮影して爆速経費申請</p>
+                </div>
+                <span class="action-arrow">›</span>
+              </div>
+
+              <div class="action-card" onclick="showToast('※このデモでは支出提出をご体験いただけます！')">
+                <div class="action-icon">💴</div>
+                <div class="action-info">
+                  <h3 class="action-title">収入を記録する</h3>
+                  <p class="action-desc">奉納金や会費など入金の記録</p>
+                </div>
+                <span class="action-arrow">›</span>
+              </div>
+            </div>
+
+            <!-- 最近の提出 -->
+            <div class="section-title-wrap">
+              <h2 class="app-section-title">📝 最近のあなたの提出</h2>
+              <span style="font-size: 0.65rem; color: var(--primary); font-weight: 700; cursor: pointer;" onclick="switchPage('history')">すべて見る</span>
+            </div>
+
+            <div class="ledger-list" id="home-ledger-list">
+              <!-- ダミーリストがJSで挿入されます -->
+            </div>
+          </div>
+
+          <!-- =================================================================
+             📷 支出提出フォーム (ID: page-submit-expense)
+             ================================================================= -->
+          <div id="page-submit-expense" class="app-page">
+            <div class="section-title-wrap">
+              <h2 class="app-section-title">📷 支出経費の提出</h2>
+              <span style="font-size: 0.62rem; color: var(--text-muted); font-weight: 700;">Gemini 2.5 OCR 対応</span>
+            </div>
+
+            <!-- OCRスキャンゾーン -->
+            <div class="ocr-scan-zone" id="ocr-trigger" onclick="runOcrDemo()">
+              <div class="ocr-icon">📷</div>
+              <div class="ocr-text">
+                <h4>領収書・レシートを撮影する</h4>
+                <p>Geminiが金額・店舗名・日付を自動認識します</p>
+              </div>
+              
+              <!-- 領収書プレビュー画像 -->
+              <img src="" id="receipt-preview-img" class="receipt-preview" alt="領収書プレビュー">
+              <div class="receipt-attached-info" id="receipt-attached-badge">
+                <span>📎 領収書添付済み (receipt_demo.png)</span>
+                <button type="button" onclick="resetOcr(event)">✕</button>
+              </div>
+
+              <!-- 解析中ローディング -->
+              <div class="ocr-loading-overlay" id="ocr-loader">
+                <div class="ocr-spinner"></div>
+                <span>Gemini OCR 解析中...</span>
+              </div>
+            </div>
+
+            <!-- フォーム項目 -->
+            <div class="form-group">
+              <label class="form-label">提出者 <span style="color:red;">*</span></label>
+              <select class="form-select" id="form-submitter">
+                <option value="山田太郎">山田太郎</option>
+                <option value="田中花子">田中花子</option>
+                <option value="佐藤一郎">佐藤一郎</option>
+                <option value="鈴木二郎">鈴木二郎</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">日付 <span style="color:red;">*</span></label>
+              <input type="date" class="form-input" id="form-date" value="2026-06-02">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">金額 (円) <span style="color:red;">*</span></label>
+              <input type="number" class="form-input" id="form-amount" placeholder="金額を入力してください">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">事業区分 <span style="color:red;">*</span></label>
+              <select class="form-select" id="form-category">
+                <option value="例大祭">例大祭 (神輿渡御・準備関連)</option>
+                <option value="直会・懇親">直会・懇親 (慰労会・直会)</option>
+                <option value="備品・装束">備品・装束 (提灯・ロープ・半纏)</option>
+                <option value="通常運営">通常運営 (事務用品・消耗品)</option>
+                <option value="その他">その他</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">但し書き (品目・内容) <span style="color:red;">*</span></label>
+              <input type="text" class="form-input" id="form-desc" placeholder="例: お神酒用のビール・お茶代">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">支払先 (店舗名・会社名) <span style="color:red;">*</span></label>
+              <input type="text" class="form-input" id="form-payee" placeholder="例: マルエツ 仲羽田店">
+            </div>
+
+            <div class="form-buttons">
+              <button class="submit-btn" onclick="submitExpenseForm()">経費を申請する</button>
+              <button class="cancel-btn" onclick="switchPage('home')">キャンセル</button>
+            </div>
+          </div>
+
+          <!-- =================================================================
+             📝 履歴一覧画面 (ID: page-history)
+             ================================================================= -->
+          <div id="page-history" class="app-page">
+            <h2 class="app-section-title">📝 経費精算・提出履歴</h2>
+
+            <!-- フィルタータブ -->
+            <div class="history-filters">
+              <button class="active" id="filter-all" onclick="filterHistory('all')">すべて</button>
+              <button id="filter-unsettled" onclick="filterHistory('unsettled')">未精算</button>
+              <button id="filter-settled" onclick="filterHistory('settled')">精算済</button>
+            </div>
+
+            <!-- 簡易検索ボックス -->
+            <div class="search-box">
+              <span class="search-icon-pos">🔍</span>
+              <input type="text" class="search-input" id="search-query" oninput="searchHistory()" placeholder="但し書きや提出者で検索...">
+            </div>
+
+            <!-- 履歴リスト -->
+            <div class="ledger-list" id="history-ledger-list">
+              <!-- ダミーデータがJSで挿入されます -->
+            </div>
+          </div>
+
+          <!-- =================================================================
+             📊 管理者ダッシュボード (ID: page-admin)
+             ================================================================= -->
+          <div id="page-admin" class="app-page">
+            <h2 class="app-section-title">📊 管理者精算ダッシュボード</h2>
+
+            <!-- 統計数値 -->
+            <div class="admin-summary">
+              <div class="summary-tile">
+                <p class="summary-tile-label">未精算件数</p>
+                <h4 class="summary-tile-value" id="admin-unsettled-count">3 件</h4>
+              </div>
+              <div class="summary-tile">
+                <p class="summary-tile-label">未精算金額</p>
+                <h4 class="summary-tile-value expense" id="admin-unsettled-sum">¥38,450</h4>
+              </div>
+            </div>
+
+            <!-- 円グラフ (SVG) -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <span>📁 支出の事業区分内訳</span>
+                <span style="font-size: 0.62rem; color: var(--text-muted);">総額 ¥84,200</span>
+              </div>
+              <div class="chart-body">
+                <svg class="donut-chart-svg" viewBox="0 0 42 42">
+                  <circle class="donut-base" cx="21" cy="21" r="15.915"></circle>
+                  
+                  <!-- 例大祭 (50%) -->
+                  <circle class="donut-segment" cx="21" cy="21" r="15.915" stroke="#D32F2F" stroke-dasharray="50 100" stroke-dashoffset="0" id="segment-1"></circle>
+                  <!-- 備品 (30%) -->
+                  <circle class="donut-segment" cx="21" cy="21" r="15.915" stroke="#005B5C" stroke-dasharray="30 100" stroke-dashoffset="-50" id="segment-2"></circle>
+                  <!-- 直会 (20%) -->
+                  <circle class="donut-segment" cx="21" cy="21" r="15.915" stroke="#C5A059" stroke-dasharray="20 100" stroke-dashoffset="-80" id="segment-3"></circle>
+                </svg>
+                <div class="chart-legend">
+                  <div class="legend-item">
+                    <span><span class="legend-color" style="background-color: #D32F2F;"></span>例大祭</span>
+                    <span>50%</span>
+                  </div>
+                  <div class="legend-item">
+                    <span><span class="legend-color" style="background-color: #005B5C;"></span>備品装束</span>
+                    <span>30%</span>
+                  </div>
+                  <div class="legend-item">
+                    <span><span class="legend-color" style="background-color: #C5A059;"></span>直会懇親</span>
+                    <span>20%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 積み上げ予算進捗率 -->
+            <div class="chart-card">
+              <div class="chart-header">
+                <span>📈 今年度の支出予算進捗率</span>
+                <span style="color: var(--primary);">8.4% (総予算100万)</span>
+              </div>
+              <div class="progress-bars">
+                <div class="bar-row">
+                  <div class="bar-labels">
+                    <span>全事業合計支出</span>
+                    <span id="budget-percent-text">¥84,200 / ¥1,000,000</span>
+                  </div>
+                  <div class="bar-container">
+                    <div class="bar-fill" style="width: 8.4%; background-color: var(--primary);" id="budget-progress-bar"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 一括精算承認アクション -->
+            <div class="admin-actions-card">
+              <h3 class="admin-actions-title">💳 承認・一括精算の実行</h3>
+              <p class="admin-actions-desc">提出者から申請された未精算の経費（計3件）を確認し、一括で精算完了（Google Sheetsへ自動記録）します。</p>
+              <button class="admin-action-btn" id="bulk-settle-btn" onclick="executeBulkSettle()">
+                <span>💳</span> 未精算の経費を一括精算する
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ボトムナビゲーション -->
+        <nav class="app-nav-bar">
+          <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
+            <span class="nav-icon">🏠</span>
+            <span class="nav-label">ホーム</span>
+          </div>
+          <div class="nav-item" id="nav-submit-expense" onclick="switchPage('submit-expense')">
+            <span class="nav-icon">📷</span>
+            <span class="nav-label">支出提出</span>
+          </div>
+          <div class="nav-item" id="nav-history" onclick="switchPage('history')">
+            <span class="nav-icon">📝</span>
+            <span class="nav-label">提出履歴</span>
+          </div>
+          <div class="nav-item" id="nav-admin" onclick="switchPage('admin')">
+            <span class="nav-icon">📊</span>
+            <span class="nav-label">管理者</span>
+          </div>
+        </nav>
+
+        <!-- 擬似iOSインジケーター -->
+        <div class="phone-indicator"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- ==========================================================================
+   11. JAVASCRIPT LOGIC
+   ========================================================================== -->
+<script>
+// ===================================
+// DUMMY STATE MANAGEMENT
+// ===================================
+let ledgerData = [
+  { id: 1, type: '支出', date: '2026-06-01', submitter: '山田太郎', category: '備品・装束', amount: 8400, description: '神輿用紅白ロープ 10m', payee: 'コーナン 江東店', status: '未精算' },
+  { id: 2, type: '支出', date: '2026-05-30', submitter: '山田太郎', category: '直会・懇親', amount: 24500, description: '金曜役員会用のオードブル', payee: 'ほっともっと 仲羽田店', status: '未精算' },
+  { id: 3, type: '支出', date: '2026-05-28', submitter: '田中花子', category: '例大祭', amount: 5550, description: '詰所用の消毒用アルコール', payee: 'マツモトキヨシ', status: '未精算' },
+  { id: 4, type: '支出', date: '2026-05-20', submitter: '佐藤一郎', category: '例大祭', amount: 35000, description: '本祭り用木札・お守り製作', payee: '江戸神輿社', status: '精算済' },
+  { id: 5, type: '収入', date: '2026-05-15', submitter: '山田太郎', category: '会費', amount: 10000, description: '令和8年度 青年会年会費', payee: '青年会事務局', status: '精算済' },
+  { id: 6, type: '支出', date: '2026-05-10', submitter: '鈴木二郎', category: '備品・装束', amount: 10750, description: '詰所設置用LED投光器', payee: 'ヤマダデンキ', status: '精算済' }
+];
+
+const currentSubmitter = "山田太郎";
+
+// ===================================
+// INITIALIZATION
+// ===================================
+document.addEventListener("DOMContentLoaded", () => {
+  renderHomeHistory();
+  renderHistoryPage('all');
+  updateAdminMetrics();
+});
+
+// ===================================
+// RENDER METHODS
+// ===================================
+
+function formatAmount(num) {
+  return "¥" + num.toLocaleString();
+}
+
+function formatDate(dateStr) {
+  const parts = dateStr.split('-');
+  if (parts.length === 3) {
+    return `${parts[0]}/${parts[1]}/${parts[2]}`;
+  }
+  return dateStr;
+}
+
+// ホーム画面用の履歴（自分自身の最近の5件）
+function renderHomeHistory() {
+  const container = document.getElementById("home-ledger-list");
+  container.innerHTML = "";
+  
+  const myItems = ledgerData
+    .filter(item => item.submitter === currentSubmitter)
+    .slice(0, 5);
+
+  if (myItems.length === 0) {
+    container.innerHTML = `<p style="font-size:0.75rem; text-align:center; color:var(--text-muted); padding:1rem;">まだ提出がありません</p>`;
+    return;
+  }
+
+  myItems.forEach(item => {
+    container.appendChild(createLedgerItemNode(item));
+  });
+}
+
+// 履歴一覧画面のレンダリング
+function renderHistoryPage(filterMode = 'all') {
+  const container = document.getElementById("history-ledger-list");
+  container.innerHTML = "";
+
+  let filtered = [...ledgerData];
+  
+  if (filterMode === 'unsettled') {
+    filtered = ledgerData.filter(item => item.status === '未精算');
+  } else if (filterMode === 'settled') {
+    filtered = ledgerData.filter(item => item.status === '精算済');
+  }
+
+  // 検索語
+  const query = document.getElementById("search-query").value.toLowerCase().trim();
+  if (query) {
+    filtered = filtered.filter(item => 
+      item.description.toLowerCase().includes(query) || 
+      item.submitter.toLowerCase().includes(query) || 
+      item.payee.toLowerCase().includes(query) ||
+      item.category.toLowerCase().includes(query)
+    );
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<p style="font-size:0.75rem; text-align:center; color:var(--text-muted); padding:2rem;">該当する履歴が見つかりません</p>`;
+    return;
+  }
+
+  filtered.forEach(item => {
+    container.appendChild(createLedgerItemNode(item));
+  });
+}
+
+// 個別履歴ノード作成
+function createLedgerItemNode(item) {
+  const div = document.createElement("div");
+  div.className = "ledger-item";
+  div.setAttribute("data-id", item.id);
+  
+  const amountSign = item.type === '支出' ? '-' : '+';
+  const amountClass = item.type === '支出' ? 'expense' : 'income';
+  const badgeTypeClass = item.type === '支出' ? 'expense' : 'income';
+  const badgeStatusClass = item.status === '未精算' ? 'unsettled' : 'settled';
+
+  div.innerHTML = `
+    <div class="ledger-top">
+      <div class="ledger-meta">
+        <span class="badge-type ${badgeTypeClass}">${item.type}</span>
+        <span class="ledger-date">${formatDate(item.date)}</span>
+        <span style="font-size: 0.55rem; color: var(--text-muted); font-weight:600;">(${item.submitter})</span>
+      </div>
+      <span class="badge-status ${badgeStatusClass}">${item.status}</span>
+    </div>
+    <div class="ledger-bottom">
+      <div class="ledger-details">
+        <h4 class="ledger-category">${item.category}</h4>
+        <p class="ledger-desc">${item.description || item.payee || "(詳細なし)"}</p>
+      </div>
+      <span class="ledger-amount ${amountClass}">${amountSign}${formatAmount(item.amount)}</span>
+    </div>
+  `;
+  return div;
+}
+
+// 管理者数値・進捗アップデート
+function updateAdminMetrics() {
+  const unsettled = ledgerData.filter(item => item.status === '未精算' && item.type === '支出');
+  const unsettledCount = unsettled.length;
+  const unsettledSum = unsettled.reduce((sum, item) => sum + item.amount, 0);
+
+  document.getElementById("admin-unsettled-count").innerText = `${unsettledCount} 件`;
+  document.getElementById("admin-unsettled-sum").innerText = formatAmount(unsettledSum);
+
+  // 予算全体の計算
+  const totalExpense = ledgerData
+    .filter(item => item.type === '支出')
+    .reduce((sum, item) => sum + item.amount, 0);
+  
+  const totalBudget = 1000000;
+  const percent = Math.min((totalExpense / totalBudget) * 100, 100).toFixed(1);
+  
+  document.getElementById("budget-percent-text").innerText = `${formatAmount(totalExpense)} / ${formatAmount(totalBudget)}`;
+  document.getElementById("budget-progress-bar").style.width = `${percent}%`;
+  
+  const budgetText = document.querySelector("#page-admin .chart-card span[style*='color']");
+  if (budgetText) {
+    budgetText.innerText = `${percent}% (総予算100万)`;
+  }
+}
+
+// ===================================
+// USER NAVIGATION
+// ===================================
+function switchPage(pageId) {
+  // すべてのページを非表示
+  document.querySelectorAll(".app-page").forEach(page => {
+    page.classList.remove("active");
+  });
+
+  // 目的のページを表示
+  const activePage = document.getElementById(`page-${pageId}`);
+  if (activePage) {
+    activePage.classList.add("active");
+  }
+
+  // ボトムナビの選択状態変更
+  document.querySelectorAll(".app-nav-bar .nav-item").forEach(item => {
+    item.classList.remove("active");
+  });
+  
+  let navId = `nav-${pageId}`;
+  // フォーム画面時は支出ナビを選択状態にする
+  if (pageId === 'submit-expense') {
+    navId = 'nav-submit-expense';
+  }
+  const activeNav = document.getElementById(navId);
+  if (activeNav) {
+    activeNav.classList.add("active");
+  }
+
+  // ページ切り替え時に一番上へスクロール
+  document.getElementById("app-scroll-content").scrollTop = 0;
+}
+
+// ===================================
+// DUMMY OCR SERVICE (GEMINI SIMULATOR)
+// ===================================
+const ocrMockData = {
+  receiptImage: "https://images.unsplash.com/photo-1554415707-6e8cfc93fe23?q=80&w=400&auto=format&fit=crop",
+  date: "2026-06-02",
+  amount: 8750,
+  category: "備品・装束",
+  desc: "お祭り提灯用のフック・結束バンド",
+  payee: "コーナン 江東深川店"
+};
+
+function runOcrDemo() {
+  const loader = document.getElementById("ocr-loader");
+  const uploadText = document.querySelector(".ocr-scan-zone .ocr-text");
+  const ocrIcon = document.querySelector(".ocr-scan-zone .ocr-icon");
+  const previewImg = document.getElementById("receipt-preview-img");
+  const badge = document.getElementById("receipt-attached-badge");
+
+  // 解析中表示
+  loader.style.display = "flex";
+
+  setTimeout(() => {
+    // 解析完了
+    loader.style.display = "none";
+    uploadText.style.display = "none";
+    ocrIcon.style.display = "none";
+    
+    // 画像プレビューとバッジを表示
+    previewImg.src = ocrMockData.receiptImage;
+    previewImg.style.display = "block";
+    badge.style.display = "flex";
+
+    // フォームに徐々に自動入力されるタイピングアニメーションをエミュレート
+    typeInput("form-date", ocrMockData.date);
+    typeInput("form-amount", ocrMockData.amount);
+    typeInput("form-desc", ocrMockData.desc);
+    typeInput("form-payee", ocrMockData.payee);
+    
+    // ドロップダウン瞬時変更
+    document.getElementById("form-category").value = ocrMockData.category;
+
+    showToast("✨ Gemini OCR が領収書から経費を自動抽出しました！");
+  }, 1800); // 1.8秒のドラマチックなウェイト
+}
+
+function typeInput(elementId, value) {
+  const el = document.getElementById(elementId);
+  el.value = "";
+  const valStr = value.toString();
+  let i = 0;
+  
+  function type() {
+    if (i < valStr.length) {
+      el.value += valStr.charAt(i);
+      i++;
+      setTimeout(type, 30);
+    }
+  }
+  type();
+}
+
+function resetOcr(event) {
+  event.stopPropagation(); // トリガーの発火を防ぐ
+  
+  const uploadText = document.querySelector(".ocr-scan-zone .ocr-text");
+  const ocrIcon = document.querySelector(".ocr-scan-zone .ocr-icon");
+  const previewImg = document.getElementById("receipt-preview-img");
+  const badge = document.getElementById("receipt-attached-badge");
+
+  previewImg.style.display = "none";
+  previewImg.src = "";
+  badge.style.display = "none";
+  
+  uploadText.style.display = "block";
+  ocrIcon.style.display = "block";
+
+  // フォーム消去
+  document.getElementById("form-amount").value = "";
+  document.getElementById("form-desc").value = "";
+  document.getElementById("form-payee").value = "";
+}
+
+// ===================================
+// FORM SUBMISSION (LOCAL STATE)
+// ===================================
+function submitExpenseForm() {
+  const amount = parseInt(document.getElementById("form-amount").value);
+  const desc = document.getElementById("form-desc").value.trim();
+  const payee = document.getElementById("form-payee").value.trim();
+  const category = document.getElementById("form-category").value;
+  const date = document.getElementById("form-date").value;
+  const submitter = document.getElementById("form-submitter").value;
+
+  if (!amount || !desc || !payee) {
+    showToast("⚠️ すべての必須項目（*）を入力してください。");
+    return;
+  }
+
+  // 新規データをリストの先頭に追加
+  const newEntry = {
+    id: Date.now(),
+    type: '支出',
+    date: date,
+    submitter: submitter,
+    category: category,
+    amount: amount,
+    description: desc,
+    payee: payee,
+    status: '未精算'
+  };
+
+  ledgerData.unshift(newEntry);
+
+  // フォームリセット
+  document.getElementById("form-amount").value = "";
+  document.getElementById("form-desc").value = "";
+  document.getElementById("form-payee").value = "";
+  const mockEvent = { stopPropagation: () => {} };
+  resetOcr(mockEvent);
+
+  // 再読み込み
+  renderHomeHistory();
+  renderHistoryPage('all');
+  updateAdminMetrics();
+
+  // ホームに戻る
+  switchPage('home');
+  showToast("✅ 経費精算の申請が完了しました！");
+}
+
+// ===================================
+// HISTORY INTERACTION
+// ===================================
+let currentHistoryFilter = 'all';
+
+function filterHistory(filterMode) {
+  currentHistoryFilter = filterMode;
+  
+  document.querySelectorAll(".history-filters button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+  
+  document.getElementById(`filter-${filterMode}`).classList.add("active");
+  renderHistoryPage(filterMode);
+}
+
+function searchHistory() {
+  renderHistoryPage(currentHistoryFilter);
+}
+
+// ===================================
+// ADMIN INTERACTION
+// ===================================
+function executeBulkSettle() {
+  const unsettled = ledgerData.filter(item => item.status === '未精算');
+  
+  if (unsettled.length === 0) {
+    showToast("未精算のデータはありません。");
+    return;
+  }
+
+  // アニメーションを伴い、すべて精算済みにする
+  ledgerData.forEach(item => {
+    if (item.status === '未精算') {
+      item.status = '精算済';
+    }
+  });
+
+  // ダッシュボード及び履歴のUIを再描画
+  renderHomeHistory();
+  renderHistoryPage(currentHistoryFilter);
+  updateAdminMetrics();
+
+  // グラフのアニメーションをトリガー
+  const seg1 = document.getElementById("segment-1");
+  const seg2 = document.getElementById("segment-2");
+  const seg3 = document.getElementById("segment-3");
+  
+  // 精算済みになるとグラフの総予算の比率が滑らかに変化
+  seg1.style.strokeDasharray = "60 100";
+  seg2.style.strokeDasharray = "25 100";
+  seg2.style.strokeDashoffset = "-60";
+  seg3.style.strokeDasharray = "15 100";
+  seg3.style.strokeDashoffset = "-85";
+
+  showToast("💳 未精算経費を一括精算・Sheetsに確定記録しました！");
+}
+
+// ===================================
+// SYSTEM CONTROLS (THEME, FONTS, COONTRAST)
+// ===================================
+const themeExplains = {
+  miyabi: {
+    title: "雅 (MIYABI) — まつりライト",
+    body: "日本の祭り衣装や提灯、漆器を連想させる「漆朱（赤）」と「藍墨（濃紺）」を採用した、最も日本の祭礼らしいデザイン。クリーム調の「鳥の子色」背景は、純白と比べて目に優しく、かつ視認性コントラストも非常に高く設計されています。フォントに美しい日本の明朝体「Noto Serif JP」をブレンドし、格式高い青年会の気品を演出します。"
+  },
+  ao: {
+    title: "蒼 (AO) — 和モダンティール",
+    body: "伝統的でありながら極めて現代的でスマートな「深御納戸（ディープティール）」を基調とし、アクセントに雅な「金砂（マットゴールド）」を配した高級和モダン。白磁をイメージした極めて薄いグリーングレーの背景に、ゆったりとしたカード設計が特徴。若い青年会員がスマホで格好よく使える、プレミアム感あふれる上品なデザインです。"
+  },
+  sui: {
+    title: "翠 (SUI) — 新緑ミント",
+    body: "目に優しく疲れにくい「常盤色（フォレストグリーン）」と、都会的な「スレートグレー」の組み合わせ。爽快でクリーンな「薄荷白」背景は、非常にすっきりとした清潔感を表現します。丸みを帯びたインターフェースパーツは、親しみやすさを与えるとともに、誤操作しづらいユニバーサルなタッチターゲットを提供します。"
+  },
+  you: {
+    title: "陽 (YOU) — コントラスト特化",
+    body: "視覚アクセシビリティの限界に挑戦した、屋外・直射日光下専用とも言える超高コントラスト・ライトデザイン。力強い「陽光オレンジ」と、引き締まった「濃紺」を配し、太めの罫線と文字によって影のないフラットな平面でも絶対的な見やすさを確保します。見やすさを最優先するシニア役員などにも最適です。"
+  },
+  zen: {
+    title: "禅 (ZEN) — ピュアミニマル",
+    body: "極限まで引き算を行い、日本の『禅』や『ミニマリズム』に通じる気高さを表現したモノトーン主体のデザイン。極細のグレイ線、上品なフォント「Outfit」、大胆にとられた余白のみでUIを構築します。ノイズが徹底的に排除されており、文字情報のみに集中して正確かつ素早く作業を行えるビジネスライクなデザインです。"
+  }
+};
+
+function switchTheme(themeName) {
+  const container = document.getElementById("app-container");
+  
+  // テーマクラスをクリアして新規付与
+  container.className = "";
+  container.classList.add(`theme-${themeName}`);
+
+  // コントロールボタンのアクティブクラス更新
+  document.querySelectorAll(".theme-selector .theme-btn").forEach(btn => {
+    btn.classList.remove("active");
+  });
+  
+  // クリックされたボタンをアクティブに
+  event.currentTarget.classList.add("active");
+
+  // 説明カード更新
+  document.getElementById("explain-title").innerText = themeExplains[themeName].title;
+  document.getElementById("explain-body").innerText = themeExplains[themeName].body;
+
+  // テーマに合わせてダッシュボードグラフのカラーを一瞬変更
+  const seg1 = document.getElementById("segment-1");
+  const seg2 = document.getElementById("segment-2");
+  const seg3 = document.getElementById("segment-3");
+  
+  if (themeName === 'miyabi') {
+    seg1.style.stroke = "#D32F2F"; seg2.style.stroke = "#005B5C"; seg3.style.stroke = "#C5A059";
+  } else if (themeName === 'ao') {
+    seg1.style.stroke = "#005B5C"; seg2.style.stroke = "#C5A059"; seg3.style.stroke = "#1F2937";
+  } else if (themeName === 'sui') {
+    seg1.style.stroke = "#2E7D32"; seg2.style.stroke = "#37474F"; seg3.style.stroke = "#81C784";
+  } else if (themeName === 'you') {
+    seg1.style.stroke = "#E65100"; seg2.style.stroke = "#0D47A1"; seg3.style.stroke = "#1565C0";
+  } else if (themeName === 'zen') {
+    seg1.style.stroke = "#18181B"; seg2.style.stroke = "#71717A"; seg3.style.stroke = "#D4D4D8";
+  }
+}
+
+function setFontSize(size) {
+  const container = document.getElementById("app-container");
+  
+  container.classList.remove("font-size-small", "font-size-large");
+  
+  if (size === 'small') {
+    container.classList.add("font-size-small");
+  } else if (size === 'large') {
+    container.classList.add("font-size-large");
+  }
+
+  // コントロールボタンのアクティブ更新
+  document.querySelectorAll(".assist-group:first-child .btn-group button").forEach(btn => {
+    btn.classList.remove("active");
+  });
+  event.currentTarget.classList.add("active");
+}
+
+function toggleContrast() {
+  const container = document.getElementById("app-container");
+  const btn = document.getElementById("contrast-toggle");
+  
+  container.classList.toggle("high-contrast");
+  btn.classList.toggle("active");
+}
+
+function showToast(message) {
+  const toastArea = document.getElementById("app-toast-area");
+  toastArea.innerHTML = "";
+  
+  const div = document.createElement("div");
+  div.className = "toast-msg";
+  div.innerHTML = `<span>🔔</span> <span>${message}</span>`;
+  
+  toastArea.appendChild(div);
+  
+  // 3.5秒後に自動消去
+  setTimeout(() => {
+    div.style.animation = "none";
+    div.offsetHeight; // リフロー
+    div.style.animation = "toastSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) reverse forwards";
+    setTimeout(() => {
+      div.remove();
+    }, 300);
+  }, 3500);
+}
+</script>
+</body>
+</html>
